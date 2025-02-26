@@ -5,6 +5,7 @@ import Providers from "@/components/Provider";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
+import "simplebar-react/dist/simplebar.min.css";
 
 // Load Inter font
 const inter = Inter({
