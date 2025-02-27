@@ -1,4 +1,4 @@
-import ChatWrapperPDF from "@/components/ChatWrapperPDF";
+import ChatWrapperPDF from "@/components/chat/ChatWrapperPDF";
 import ChatWrapperURL from "@/components/ChatWrapperURL";
 import PDFRenderer from "@/components/PDFRenderer";
 import WebsiteRenderer from "@/components/WebsiteRenderer";
@@ -46,7 +46,7 @@ const Page = async ({ params }: PageProps) => {
         </div>
         <div className="shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
           {file.type === "pdf" ? (
-            <ChatWrapperPDF />
+            <ChatWrapperPDF fileId={file.id} />
           ) : file.type === "URL" ? (
             <ChatWrapperURL url={file.url} />
           ) : (
