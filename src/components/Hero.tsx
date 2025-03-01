@@ -79,8 +79,7 @@ export default function Hero() {
             </h1>
 
             <p className="mt-8 text-lg text-pretty text-gray-700 tracking-tight">
-              Talk to your documents! Upload files and let AI answer your
-              questions.
+              Upload your files and let AI answer your questions.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a

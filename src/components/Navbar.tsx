@@ -14,12 +14,9 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import {
-  LoginLink,
-  RegisterLink,
-} from "@kinde-oss/kinde-auth-nextjs/components";
-import { buttonVariants } from "./ui/button";
-import { ArrowRight } from "lucide-react";
+import { Button, buttonVariants } from "./ui/button";
+import { ArrowBigRightDash, ArrowRight, ArrowRightIcon } from "lucide-react";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -167,22 +164,24 @@ export function Navbar() {
         </div>
 
         {/* Button on the right */}
-        <div className="flex lg:flex-1 justify-end">
-          <LoginLink
-            className={buttonVariants({
-              variant: "ghost",
-              size: "sm",
-            })}
-          >
-            Sign in
-          </LoginLink>
-          <RegisterLink
-            className={buttonVariants({
-              size: "sm",
-            })}
-          >
-            Get Started <ArrowRight className="ml-1.5 h-5 w-5" />
-          </RegisterLink>
+        <div className="flex lg:flex-1 justify-end gap-3">
+          <SignInButton mode="modal">
+            <Button
+              className="text-black font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200 flex focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50"
+              variant="ghost"
+            >
+              Sign In
+            </Button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <Button
+              className="bg-indigo-500 hover:bg-indigo-600 text-white gap-2 font-medium px-4 rounded-md shadow-sm transition-colors duration-200 flex focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50"
+              variant="ghost"
+            >
+              Sign Up
+              <ArrowRightIcon className="size-5" />
+            </Button>
+          </SignUpButton>
         </div>
       </div>
     </div>

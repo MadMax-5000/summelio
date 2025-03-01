@@ -6,7 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import "simplebar-react/dist/simplebar.min.css";
-
+import { ClerkProvider } from "@clerk/nextjs";
 // Load Inter font
 const inter = Inter({
   subsets: ["latin"],
@@ -24,12 +24,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <Providers>
-        <body className={cn(inter.className, "antialiased")}>
-          {children} <Toaster />
-        </body>
-      </Providers>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <Providers>
+          <body className={cn(inter.className, "antialiased")}>
+            {children} <Toaster />
+          </body>
+        </Providers>
+      </html>
+    </ClerkProvider>
   );
 }
