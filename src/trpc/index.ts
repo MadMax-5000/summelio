@@ -6,9 +6,11 @@ import { currentUser } from "@clerk/nextjs/server";
 
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
     const user = await currentUser();
-
+    console.log("Current user in authCallback:", user);
     if (!user || !user.id || user.emailAddresses.length === 0) {
+      console.log("User authentication failed - redirecting to sign-in");
       return { success: false, reason: "User not authenticated" };
     }
     const userId = user.id;
@@ -27,6 +29,7 @@ export const appRouter = router({
           email,
         },
       });
+      console.log("Created new user in database:", userId);
     }
     return { success: true };
   }),

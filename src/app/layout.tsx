@@ -24,7 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      signInFallbackRedirectUrl="/auth-callback"
+      signUpFallbackRedirectUrl="/auth-callback"
+    >
       <html lang="en">
         <Providers>
           <body className={cn(inter.className, "antialiased")}>
