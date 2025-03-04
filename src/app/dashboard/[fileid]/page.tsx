@@ -3,6 +3,7 @@ import ChatWrapperURL from "@/components/ChatWrapperURL";
 import PDFRenderer from "@/components/PDFRenderer";
 import WebsiteRenderer from "@/components/WebsiteRenderer";
 import { db } from "@/db";
+import { currentUser } from "@clerk/nextjs/server";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
@@ -16,8 +17,7 @@ interface PageProps {
 const Page = async ({ params }: PageProps) => {
   // retrieve the file Id
   const { fileid } = await params;
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const user = await currentUser();
   if (!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid}`);
 
   // make database call

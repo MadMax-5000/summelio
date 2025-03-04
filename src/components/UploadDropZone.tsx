@@ -157,7 +157,7 @@ const UploadDropZone = () => {
                 </div>
                 <Button
                   type="submit"
-                  className="text-white text-sm whitespace-nowrap flex-shrink-0"
+                  className="text-white text-sm whitespace-nowrap flex-shrink-0 bg-indigo-500 hover:bg-indigo-600"
                   disabled={isUploading}
                 >
                   <LinkIcon className="mr-2 h-4 w-4" /> Add URL

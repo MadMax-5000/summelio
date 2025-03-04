@@ -76,13 +76,13 @@ export function Navbar() {
         <div className="flex lg:flex-1">
           <Link href="/" passHref legacyBehavior>
             <a className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
+              <span className="sr-only">Summelio</span>
               <Image
-                alt="Your Company Logo"
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-                className="h-8 w-auto"
-                width={32}
-                height={32}
+                alt="Summelio logo"
+                src="/images/SUMMELIO.png"
+                className="h-10 w-auto"
+                width={50}
+                height={50}
               />
             </a>
           </Link>

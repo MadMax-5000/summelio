@@ -128,7 +128,7 @@ export default function Dashboard() {
                               <Link href={`/dashboard/${file.id}`}>
                                 <Button
                                   variant="outline"
-                                  className="border-gray-300 text-white text-base px-3 py-1.5 hover:bg-zinc-900 bg-black hover:text-white "
+                                  className="border-gray-300 text-white text-base px-3 py-1.5 hover:bg-indigo-600 bg-indigo-500 hover:text-white "
                                 >
                                   Chat with AI
                                 </Button>
