@@ -36,7 +36,9 @@ const ChatInput = ({
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
-                    handleSubmit();
+                    handleSubmit(
+                      e as unknown as React.FormEvent<HTMLFormElement>
+                    );
                     setInput("");
                   }
                 }}
