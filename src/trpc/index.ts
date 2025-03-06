@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { z } from "zod";
 import { currentUser } from "@clerk/nextjs/server";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
+import { absoluteURL } from "@/lib/utils";
 
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
@@ -41,6 +42,17 @@ export const appRouter = router({
         userId,
       },
     });
+  }),
+  createLemonSqueezySession: privateProcedure.mutation(async ({ ctx }) => {
+    const { userId } = ctx;
+    const billingURL = absoluteURL("/dashboard/billing");
+    if (!userId) throw new TRPCError({ code: "UNAUTHORIZED" });
+    const dbUser = await db.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+    if (!dbUser) throw new TRPCError({ code: "UNAUTHORIZED" });
   }),
   getFileMessages: privateProcedure
     .input(

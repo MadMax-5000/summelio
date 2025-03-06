@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Plus } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type FAQItem = {
   question: string;
@@ -7,34 +9,36 @@ type FAQItem = {
 
 const faqs: FAQItem[] = [
   {
-    question: "Can I cancel at anytime?",
+    question: "What is Summelio?",
     answer:
-      "Yes, you can cancel anytime no questions are asked while you cancel but we would highly appreciate if you will give us some feedback.",
+      "A tool that allows you to upload PDFs and Web Pages and interact with them through an AI-powered chatbot.",
   },
   {
-    question: "My team has credits. How do we use them?",
+    question: "What file types are supported?",
     answer:
-      "Once your team signs up for a subscription plan. This is where we sit down, grab a cup of coffee and dial in the details.",
+      "Currently, we support: PDFs and Web pages. Future support will include: Audio, Word, PowerPoint and Excel",
   },
   {
-    question: "How does Preline's pricing work?",
+    question: "How does the AI chatbot work?",
     answer:
-      "Our subscriptions are tiered. Understanding the task at hand and ironing out the wrinkles is key.",
+      "It uses AI technologies like embeddings and NLP to understand your content and engage with you and answering questions.",
   },
   {
-    question: "How secure is Preline?",
+    question: "Do I need to install anything?",
     answer:
-      "Protecting the data you trust to Preline is our first priority. This part is really crucial in keeping the project in line to completion.",
+      "No, it’s completely web-based. Just sign up, upload your content, and start interacting.",
   },
   {
-    question: "How do I get access to a theme I purchased?",
-    answer:
-      "If you lose the link for a theme you purchased, don't panic! We've got you covered. You can login to your account, tap your avatar in the upper right corner, and tap Purchases. If you didn't create a login or can't remember the information, you can use our handy Redownload page, just remember to use the same email you originally made your purchases with.",
+    question: "Is my data secure?",
+    answer: "Yes, your files are encrypted and stored securely.",
   },
   {
-    question: "Upgrade License Type",
-    answer:
-      "There may be times when you need to upgrade your license from the original type you purchased and we have a solution that ensures you can apply your original purchase cost to the new license purchase.",
+    question: "Can I get support?",
+    answer: "Yes, our support team is available via email or our portal.",
+  },
+  {
+    question: "What’s the pricing?",
+    answer: "We offer flexible plans. Check our Pricing page for details.",
   },
 ];
 
@@ -66,31 +70,25 @@ const FAQSection = () => {
             >
               <button
                 onClick={() => toggleAccordion(index)}
-                className="pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-gray-800 rounded-lg transition hover:text-indigo-500 focus:outline-none"
+                className="pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-indigo-600 rounded-lg transition hover:text-indigo-500 focus:outline-none"
               >
                 {faq.question}
-                <svg
-                  className={`size-5 text-gray-600 transition ${
-                    activeIndex === index ? "rotate-180" : ""
-                  }`}
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
+                <Plus className="w-6 h-6 text-gray-600" />
               </button>
-              {activeIndex === index && (
-                <div className="w-full overflow-hidden transition-[height] duration-200">
-                  <p className="text-gray-800">{faq.answer}</p>
-                </div>
-              )}
+              <AnimatePresence initial={false}>
+                {activeIndex === index && (
+                  <motion.div
+                    key="content"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="text-gray-800">{faq.answer}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ))}
         </div>

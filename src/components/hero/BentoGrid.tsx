@@ -1,116 +1,169 @@
-export default function BentoGrid() {
+import {
+  FileText,
+  Globe,
+  MessageSquare,
+  Zap,
+  Database,
+  Shield,
+  Sparkles,
+  Bot,
+} from "lucide-react";
+import Image from "next/image";
+
+export default function Home() {
   return (
-    <div className="bg-gray-50 py-24 sm:py-32">
-      <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-        <h2 className="text-center text-base/7 font-semibold text-indigo-600">
-          Deploy faster
-        </h2>
-        <p className="mx-auto mt-2 max-w-lg text-center text-4xl font-semibold tracking-tight text-balance text-gray-700 sm:text-5xl">
-          Everything you need to deploy your app
-        </p>
-        <div className="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
-          <div className="relative lg:row-span-2">
-            <div className="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]"></div>
-            <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] lg:rounded-l-[calc(2rem+1px)]">
-              <div className="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
-                <p className="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
-                  Mobile friendly
-                </p>
-                <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
-                  Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure
-                  qui lorem cupidatat commodo.
-                </p>
-              </div>
-              <div className="@container relative min-h-[30rem] w-full grow max-lg:mx-auto max-lg:max-w-sm">
-                <div className="absolute inset-x-10 top-10 bottom-0 overflow-hidden rounded-t-[12cqw] border-x-[3cqw] border-t-[3cqw] border-gray-700 bg-gray-900 shadow-2xl">
-                  <img
-                    className="size-full object-cover object-top"
-                    src="https://tailwindui.com/plus-assets/img/component-images/bento-03-mobile-friendly.png"
-                    alt=""
-                  />
-                </div>
+    <main className="min-h-screen bg-gray-50 tracking-tight">
+      <section className="container mx-auto px-4 py-24">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-semibold text-indigo-600 mb-4 tracking-tight">
+            Transform Content into Conversations
+          </h2>
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto tracking-tight items-center flex justify-center">
+            Turn your PDFs and web pages into AI chatbots that understand your
+            content.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-5 max-w-6xl mx-auto">
+          {/* AI-Powered Chatbots */}
+          <div className="col-span-1 md:col-span-4 bg-indigo-50 rounded-3xl p-8 transition-all hover:shadow-md flex flex-col h-full">
+            <div className="flex items-start">
+              <div className="bg-indigo-100 p-3 rounded-2xl">
+                <Bot className="h-8 w-8 text-indigo-600" />
               </div>
             </div>
-            <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 lg:rounded-l-[2rem]"></div>
+            <h3 className="text-2xl font-semibold text-gray-700 mt-6 mb-3">
+              AI-Powered Chatbots
+            </h3>
+            <p className="text-gray-700">
+              Our advanced AI understands the context your documents, providing
+              accurate and helpful responses to user queries.
+            </p>
           </div>
-          <div className="relative max-lg:row-start-1">
-            <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem]"></div>
-            <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
-              <div className="px-8 pt-8 sm:px-10 sm:pt-10">
-                <p className="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
-                  Performance
-                </p>
-                <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit
-                  maiores impedit.
-                </p>
-              </div>
-              <div className="flex flex-1 items-center justify-center px-8 max-lg:pt-10 max-lg:pb-12 sm:px-10 lg:pb-2">
-                <img
-                  className="w-full max-lg:max-w-xs"
-                  src="https://tailwindui.com/plus-assets/img/component-images/bento-03-performance.png"
-                  alt=""
-                />
+
+          {/* PDF Upload */}
+          <div className="col-span-1 md:col-span-2 bg-indigo-100 rounded-3xl p-8 transition-all hover:shadow-md flex flex-col h-full">
+            <div className="flex items-start">
+              <div className="bg-white p-3 rounded-2xl">
+                <FileText className="h-6 w-6 text-indigo-600" />
               </div>
             </div>
-            <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 max-lg:rounded-t-[2rem]"></div>
+            <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-3">
+              PDF Processing
+            </h3>
+            <p className="text-gray-700">
+              Upload any PDF document and convert it into an interactive chatbot
+              in seconds.
+            </p>
           </div>
-          <div className="relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2">
-            <div className="absolute inset-px rounded-lg bg-white"></div>
-            <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)]">
-              <div className="px-8 pt-8 sm:px-10 sm:pt-10">
-                <p className="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
-                  Security
-                </p>
-                <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
-                  Morbi viverra dui mi arcu sed. Tellus semper adipiscing
-                  suspendisse semper morbi.
-                </p>
-              </div>
-              <div className="@container flex flex-1 items-center max-lg:py-6 lg:pb-2">
-                <img
-                  className="h-[min(152px,40cqw)] object-cover"
-                  src="https://tailwindui.com/plus-assets/img/component-images/bento-03-security.png"
-                  alt=""
-                />
-              </div>
+
+          {/* Demo Image */}
+          <div className="col-span-1 md:col-span-4 bg-white rounded-3xl overflow-hidden transition-all hover:shadow-md border border-indigo-100 h-[400px]">
+            <div className="relative w-full h-full">
+              <Image
+                src="/images/bentoimage.png"
+                alt="PDF to Chatbot Demo showing Napoleon Bonaparte information"
+                fill
+                className="object-contain"
+              />
             </div>
-            <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5"></div>
           </div>
-          <div className="relative lg:row-span-2">
-            <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"></div>
-            <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-b-[calc(2rem+1px)] lg:rounded-r-[calc(2rem+1px)]">
-              <div className="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
-                <p className="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
-                  Powerful APIs
-                </p>
-                <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
-                  Sit quis amet rutrum tellus ullamcorper ultricies libero dolor
-                  eget sem sodales gravida.
-                </p>
-              </div>
-              <div className="relative min-h-[30rem] w-full grow">
-                <div className="absolute top-10 right-0 bottom-0 left-10 overflow-hidden rounded-tl-xl bg-gray-900 shadow-2xl">
-                  <div className="flex bg-gray-800/40 ring-1 ring-white/5">
-                    <div className="-mb-px flex text-sm/6 font-medium text-gray-400">
-                      <div className="border-r border-b border-r-white/10 border-b-white/20 bg-white/5 px-4 py-2 text-white">
-                        NotificationSetting.jsx
-                      </div>
-                      <div className="border-r border-gray-600/10 px-4 py-2">
-                        App.jsx
-                      </div>
-                    </div>
-                  </div>
-                  <div className="px-6 pt-6 pb-14">
-                    {/* Your code example */}
-                  </div>
-                </div>
+
+          {/* Web Scraping */}
+          <div className="col-span-1 md:col-span-2 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-3xl p-8 text-white transition-all hover:shadow-md flex flex-col h-full">
+            <div className="flex items-start">
+              <div className="bg-white/20 p-3 rounded-2xl">
+                <Globe className="h-6 w-6 text-white" />
               </div>
             </div>
-            <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"></div>
+            <h3 className="text-xl font-semibold mt-6 mb-3">
+              Web Page Integration
+            </h3>
+            <p className="text-white/90">
+              Simply enter a URL and our system will crawl the content to create
+              a knowledgeable smart chatbot.
+            </p>
+          </div>
+
+          {/* Fast Processing */}
+          <div className="col-span-1 md:col-span-2 bg-indigo-50 rounded-3xl p-8 transition-all hover:shadow-md flex flex-col h-full">
+            <div className="flex items-start">
+              <div className="bg-indigo-100 p-3 rounded-2xl">
+                <Zap className="h-6 w-6 text-indigo-600" />
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-3">
+              Lightning Fast
+            </h3>
+            <p className="text-gray-700">
+              Process documents and generate chatbots in seconds, not minutes or
+              hours.
+            </p>
+          </div>
+
+          {/* Knowledge Base */}
+          <div className="col-span-1 md:col-span-2 bg-indigo-900 rounded-3xl p-8 text-white transition-all hover:shadow-md flex flex-col h-full">
+            <div className="flex items-start">
+              <div className="bg-white/20 p-3 rounded-2xl">
+                <Database className="h-6 w-6 text-white" />
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold mt-6 mb-3">Knowledge Base</h3>
+            <p className="text-white/90">
+              All your documents are stored in a secure, searchable knowledge
+              base that powers your chatbots.
+            </p>
+          </div>
+
+          {/* Security */}
+          <div className="col-span-1 md:col-span-2 bg-indigo-50 rounded-3xl p-8 transition-all hover:shadow-md flex flex-col h-full">
+            <div className="flex items-start">
+              <div className="bg-indigo-100 p-3 rounded-2xl">
+                <Shield className="h-6 w-6 text-indigo-600" />
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-3">
+              Enterprise Security
+            </h3>
+            <p className="text-gray-700">
+              Your data is encrypted and protected with enterprise-grade
+              security measures.
+            </p>
+          </div>
+
+          {/* Conversations */}
+          <div className="col-span-1 md:col-span-3 bg-indigo-100 rounded-3xl p-8 transition-all hover:shadow-md flex flex-col h-full">
+            <div className="flex items-start">
+              <div className="bg-white p-3 rounded-2xl">
+                <MessageSquare className="h-6 w-6 text-indigo-600" />
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-3">
+              Natural Conversations
+            </h3>
+            <p className="text-gray-700">
+              Users can have natural, flowing conversations with your content
+              through our intuitive chat interface.
+            </p>
+          </div>
+
+          {/* AI Features */}
+          <div className="col-span-1 md:col-span-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-3xl p-8 text-white transition-all hover:shadow-md flex flex-col h-full">
+            <div className="flex items-start">
+              <div className="bg-white/20 p-3 rounded-2xl">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold mt-6 mb-3">
+              Advanced AI Features
+            </h3>
+            <p className="text-white/90">
+              Benefit from continuous learning, multi-language support, and
+              context-aware responses.
+            </p>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

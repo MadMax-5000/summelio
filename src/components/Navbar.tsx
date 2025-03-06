@@ -13,23 +13,8 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Button } from "./ui/button";
-import { FileText, Globe, ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
-
-const components = [
-  {
-    title: "PDF",
-    href: "/features/pdf",
-    description: "Upload and analyze your PDF to extract key insights",
-    icon: <FileText className="w-6 h-6 text-indigo-500" />,
-  },
-  {
-    title: "Web Page",
-    href: "/features/web-page",
-    description: "Summarize web pages into concise, AI-generated responses",
-    icon: <Globe className="w-6 h-6 text-indigo-500" />,
-  },
-];
 
 export function Navbar() {
   return (
@@ -53,27 +38,11 @@ export function Navbar() {
           <NavigationMenu>
             <NavigationMenuList className="flex gap-8">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="font-medium text-base text-gray-700 hover:text-gray-900">
-                  Features
-                </NavigationMenuTrigger>
-                <NavigationMenuContent className="w-[450px] bg-white rounded-lg shadow-lg border border-indigo-200 p-4">
-                  <ul className="flex flex-col gap-3">
-                    {components.map((component) => (
-                      <ListItem
-                        key={component.title}
-                        title={component.title}
-                        href={component.href}
-                      >
-                        <div className="flex items-center gap-3">
-                          {component.icon}
-                          <span className="text-gray-700 text-sm">
-                            {component.description}
-                          </span>
-                        </div>
-                      </ListItem>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
+                <Link href="#feature-section" passHref legacyBehavior>
+                  <NavigationMenuLink className="font-medium text-base text-gray-700 hover:text-gray-900 px-4">
+                    Features
+                  </NavigationMenuLink>
+                </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link href="#pricing" passHref legacyBehavior>
@@ -120,35 +89,3 @@ export function Navbar() {
     </div>
   );
 }
-
-interface ListItemProps extends React.ComponentPropsWithoutRef<"a"> {
-  title: string;
-}
-
-const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
-  ({ className, title, children, ...props }, ref) => {
-    return (
-      <li>
-        <NavigationMenuLink asChild>
-          <Link href={props.href as string} passHref legacyBehavior>
-            <a
-              ref={ref}
-              className={cn(
-                "flex items-center gap-3 p-3 rounded-md transition-colors hover:bg-indigo-50",
-                className
-              )}
-              {...props}
-            >
-              <div className="flex flex-col">
-                <span className="font-medium text-indigo-800">{title}</span>
-                <div className="mt-1 text-sm text-indigo-600">{children}</div>
-              </div>
-            </a>
-          </Link>
-        </NavigationMenuLink>
-      </li>
-    );
-  }
-);
-
-ListItem.displayName = "ListItem";
