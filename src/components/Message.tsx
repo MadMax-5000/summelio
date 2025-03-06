@@ -8,38 +8,35 @@ interface MessageProps {
 
 export const Message = ({ content, isUserMessage }: MessageProps) => {
   return (
-    <div
-      className={cn({
-        "bg-zinc-800": isUserMessage,
-        "bg-zinc-900": !isUserMessage,
-      })}
-    >
-      <div className="p-6">
-        <div className="max-w-3xl mx-auto flex items-start gap-2.5">
-          <div
-            className={cn(
-              "size-10 shrink-0 aspect-square rounded-full border border-zinc-700 bg-zinc-900 flex justify-center items-center",
-              {
-                "bg-blue-950 border-blue-700 text-zinc-200": isUserMessage,
-              }
-            )}
-          >
-            {isUserMessage ? (
-              <User className="size-5" />
-            ) : (
-              <Bot className="size-5 text-white" />
-            )}
-          </div>
-          <div className="flex flex-col ml-6 w-full">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-semibold text-gray-200 dark:text-white">
-                {isUserMessage ? "You" : "Summelio"}
-              </span>
-            </div>
-            <p className="text-sm font-normal py-2.5 dark:text-white text-white">
-              {content}
-            </p>
-          </div>
+    <div className={cn("flex items-end", { "justify-end": isUserMessage })}>
+      <div
+        className={cn(
+          "relative flex h-6 aspect-square items-center justify-center",
+          {
+            "order-2 bg-indigo-600 rounded-sm": isUserMessage,
+            "order-1 bg-gray-800 rounded-sm": !isUserMessage,
+          }
+        )}
+      >
+        {isUserMessage ? (
+          <User className="fill-gray-200 text-gray-200 h-3/4 w-3/4" />
+        ) : (
+          <Bot className="fill-gray-300 h-3/4 w-3/4" />
+        )}
+      </div>
+      <div
+        className={cn("flex flex-col space-y-2 text-base max-w-md mx-2", {
+          "order-1 items-end": isUserMessage,
+          "order-2 items-start": !isUserMessage,
+        })}
+      >
+        <div
+          className={cn("px-4 py-2 rounded-lg inline-block", {
+            "bg-indigo-600 text-gray-100": isUserMessage,
+            "bg-gray-300 text-gray-900": !isUserMessage,
+          })}
+        >
+          {content}
         </div>
       </div>
     </div>

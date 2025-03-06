@@ -3,7 +3,6 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
 import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
@@ -12,150 +11,88 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Button, buttonVariants } from "./ui/button";
-import { ArrowBigRightDash, ArrowRight, ArrowRightIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { FileText, Globe, ArrowRightIcon } from "lucide-react";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 
-const components: { title: string; href: string; description: string }[] = [
+const components = [
   {
     title: "PDF",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+    href: "/features/pdf",
+    description: "Upload and analyze your PDF to extract key insights",
+    icon: <FileText className="w-6 h-6 text-indigo-500" />,
   },
   {
-    title: "Web page",
-    href: "/docs/primitives/hover-card",
-    description:
-      "For sighted users to preview content available behind a link.",
-  },
-  {
-    title: "Video",
-    href: "/docs/primitives/progress",
-    description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-  },
-  {
-    title: "Excel",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Audio",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "PowerPoint",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
-  {
-    title: "Books",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
-  {
-    title: "Documentation",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
+    title: "Web Page",
+    href: "/features/web-page",
+    description: "Summarize web pages into concise, AI-generated responses",
+    icon: <Globe className="w-6 h-6 text-indigo-500" />,
   },
 ];
 
 export function Navbar() {
   return (
-    <div className="sticky z-[100] w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex justify-between items-center px-6 lg:px-8 border-b border-gray-600/10 py-3">
-        {/* Logo on the left */}
-        <div className="flex lg:flex-1">
-          <Link href="/" passHref legacyBehavior>
-            <a className="-m-1.5 p-1.5">
-              <span className="sr-only">Summelio</span>
-              <Image
-                alt="Summelio logo"
-                src="/images/SUMMELIO.png"
-                className="h-10 w-auto"
-                width={50}
-                height={50}
-              />
-            </a>
-          </Link>
-        </div>
+    <div className="sticky top-0 z-50 w-full bg-gray-50/20 backdrop-blur-md shadow-md">
+      <div className="flex justify-between items-center px-6 lg:px-12 border-b border-indigo-200 py-3">
+        {/* Logo */}
+        <Link href="/" passHref legacyBehavior>
+          <a className="flex items-center">
+            <Image
+              alt="Summelio logo"
+              src="/images/SUMMELIO.png"
+              className="h-10 w-auto"
+              width={40}
+              height={40}
+            />
+          </a>
+        </Link>
 
-        {/* Navigation Menu in the center */}
-        <div className="flex justify-center flex-1 relative">
+        {/* Navigation Menu */}
+        <div className="flex-grow flex justify-center">
           <NavigationMenu>
-            <NavigationMenuList className="gap-4">
+            <NavigationMenuList className="flex gap-8">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="font-medium text-base text-gray-700">
-                  Getting started
+                <NavigationMenuTrigger className="font-medium text-base text-gray-700 hover:text-gray-900">
+                  Features
                 </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                    <li className="row-span-3">
-                      <NavigationMenuLink asChild>
-                        <Link href="/" passHref legacyBehavior>
-                          <a className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
-                            <div className="mb-2 mt-4 text-lg font-medium">
-                              shadcn/ui
-                            </div>
-                            <p className="text-sm leading-tight text-muted-foreground">
-                              Beautifully designed components built with Radix
-                              UI and Tailwind CSS.
-                            </p>
-                          </a>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                    <ListItem href="/docs" title="Introduction">
-                      Re-usable components built using Radix UI and Tailwind
-                      CSS.
-                    </ListItem>
-                    <ListItem href="/docs/installation" title="Installation">
-                      How to install dependencies and structure your app.
-                    </ListItem>
-                    <ListItem
-                      href="/docs/primitives/typography"
-                      title="Typography"
-                    >
-                      Styles for headings, paragraphs, lists...etc
-                    </ListItem>
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="font-medium text-base text-pretty text-gray-700">
-                  Products
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                <NavigationMenuContent className="w-[450px] bg-white rounded-lg shadow-lg border border-indigo-200 p-4">
+                  <ul className="flex flex-col gap-3">
                     {components.map((component) => (
                       <ListItem
                         key={component.title}
                         title={component.title}
                         href={component.href}
                       >
-                        {component.description}
+                        <div className="flex items-center gap-3">
+                          {component.icon}
+                          <span className="text-gray-700 text-sm">
+                            {component.description}
+                          </span>
+                        </div>
                       </ListItem>
                     ))}
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/docs" passHref legacyBehavior>
-                  <NavigationMenuLink
-                    className={cn(
-                      navigationMenuTriggerStyle(),
-                      "font-medium text-base text-pretty text-gray-700"
-                    )}
-                  >
-                    Documentation
+                <Link href="#pricing" passHref legacyBehavior>
+                  <NavigationMenuLink className="font-medium text-base text-gray-700 hover:text-indigo-900 px-4">
+                    Pricing
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/use-cases" passHref legacyBehavior>
+                  <NavigationMenuLink className="font-medium text-base text-gray-700 hover:text-indigo-900 px-4">
+                    Use Cases
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="#faq" passHref legacyBehavior>
+                  <NavigationMenuLink className="font-medium text-base text-gray-700 hover:text-indigo-900 px-4">
+                    FAQ
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
@@ -163,23 +100,19 @@ export function Navbar() {
           </NavigationMenu>
         </div>
 
-        {/* Button on the right */}
-        <div className="flex lg:flex-1 justify-end gap-3">
+        {/* Authentication Buttons */}
+        <div className="flex items-center gap-4">
           <SignInButton mode="modal">
             <Button
-              className="text-black font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200 flex focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50"
+              className="text-indigo-700 font-medium py-2 px-4 rounded-md hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-400"
               variant="ghost"
             >
               Sign In
             </Button>
           </SignInButton>
           <SignUpButton mode="modal">
-            <Button
-              className="bg-indigo-500 hover:bg-indigo-600 text-white gap-2 font-medium px-4 rounded-md shadow-sm transition-colors duration-200 flex focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50"
-              variant="ghost"
-            >
-              Sign Up
-              <ArrowRightIcon className="size-5" />
+            <Button className="bg-indigo-700 hover:bg-indigo-900 text-white flex items-center gap-2 font-medium py-2 px-4 rounded-md shadow transition-colors duration-200 focus:ring-2 focus:ring-indigo-400">
+              Sign Up <ArrowRightIcon className="w-4 h-4" />
             </Button>
           </SignUpButton>
         </div>
@@ -188,32 +121,34 @@ export function Navbar() {
   );
 }
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <Link href={props.href as string} passHref legacyBehavior>
-          <a
-            ref={ref}
-            className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-              className
-            )}
-            {...props}
-          >
-            <div className="leading-none font-medium text-base text-pretty">
-              {title}
-            </div>
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground font-light">
-              {children}
-            </p>
-          </a>
-        </Link>
-      </NavigationMenuLink>
-    </li>
-  );
-});
+interface ListItemProps extends React.ComponentPropsWithoutRef<"a"> {
+  title: string;
+}
+
+const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
+  ({ className, title, children, ...props }, ref) => {
+    return (
+      <li>
+        <NavigationMenuLink asChild>
+          <Link href={props.href as string} passHref legacyBehavior>
+            <a
+              ref={ref}
+              className={cn(
+                "flex items-center gap-3 p-3 rounded-md transition-colors hover:bg-indigo-50",
+                className
+              )}
+              {...props}
+            >
+              <div className="flex flex-col">
+                <span className="font-medium text-indigo-800">{title}</span>
+                <div className="mt-1 text-sm text-indigo-600">{children}</div>
+              </div>
+            </a>
+          </Link>
+        </NavigationMenuLink>
+      </li>
+    );
+  }
+);
+
 ListItem.displayName = "ListItem";

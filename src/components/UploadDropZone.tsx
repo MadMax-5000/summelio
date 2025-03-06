@@ -14,7 +14,11 @@ const UploadDropZone = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [urlInput, setUrlInput] = useState<string>("");
+  const [isUrlUploading, setIsUrlUploading] = useState<boolean>(false);
+  const [urlUploadProgress, setUrlUploadProgress] = useState<number>(0);
+  const [processingUrl, setProcessingUrl] = useState<string>("");
   const { startUpload } = useUploadThing("fileuploader");
+
   // Add the trpc mutation for file fetching
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: (file) => {
@@ -23,6 +27,7 @@ const UploadDropZone = () => {
     retry: true,
     retryDelay: 500,
   });
+
   // Add trpc mutation for URL saving
   const { mutate: saveUrl } = trpc.saveUrlAsFile.useMutation({
     onSuccess: (file) => {
@@ -30,10 +35,12 @@ const UploadDropZone = () => {
     },
   });
 
-  const startSimulatedProgress = () => {
-    setUploadProgress(0);
+  const startSimulatedProgress = (
+    setProgressFn: React.Dispatch<React.SetStateAction<number>>
+  ) => {
+    setProgressFn(0);
     const interval = setInterval(() => {
-      setUploadProgress((prevProgress) => {
+      setProgressFn((prevProgress: number) => {
         if (prevProgress >= 95) {
           clearInterval(interval);
           return prevProgress;
@@ -47,16 +54,20 @@ const UploadDropZone = () => {
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       setIsUploading(true);
-      const progressInterval = startSimulatedProgress();
+      setIsUrlUploading(false);
+      setProcessingUrl("");
+      const progressInterval = startSimulatedProgress(setUploadProgress);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       const res = await startUpload(acceptedFiles);
       clearInterval(progressInterval);
       if (!res) {
+        setIsUploading(false);
         return toast("Something went wrong");
       }
       const [fileResponse] = res;
       const key = fileResponse?.key;
       if (!key) {
+        setIsUploading(false);
         return toast("Something went wrong");
       }
       setUploadProgress(100);
@@ -74,25 +85,34 @@ const UploadDropZone = () => {
     try {
       // Basic URL Validation
       new URL(urlInput); // This will throw if invalid
-      setIsUploading(true);
-      const progressInterval = startSimulatedProgress();
 
-      // submit the URL to backend
+      // Reset file upload state if any
+      setIsUploading(false);
+      setUploadProgress(0);
+
+      // Set URL upload state
+      setIsUrlUploading(true);
+      setProcessingUrl(urlInput);
+      const progressInterval = startSimulatedProgress(setUrlUploadProgress);
+
+      // Submit the URL to backend
       saveUrl({
         url: urlInput,
         name: new URL(urlInput).hostname,
       });
-      // Clear the input
-      setUrlInput("");
 
       // Let the progress finish to 100%
       setTimeout(() => {
         clearInterval(progressInterval);
-        setUploadProgress(100);
+        setUrlUploadProgress(100);
       }, 1500);
+
+      // Clear the input
+      setUrlInput("");
     } catch (error) {
       toast("Please enter a valid URL");
-      setIsUploading(false);
+      setIsUrlUploading(false);
+      setProcessingUrl("");
     }
   };
 
@@ -113,6 +133,12 @@ const UploadDropZone = () => {
     }
     setIsUploading(false);
     setUploadProgress(0);
+  }, []);
+
+  const handleRemoveUrl = useCallback(() => {
+    setIsUrlUploading(false);
+    setUrlUploadProgress(0);
+    setProcessingUrl("");
   }, []);
 
   return (
@@ -139,7 +165,7 @@ const UploadDropZone = () => {
               >
                 Click to upload
               </label>{" "}
-              or drag and drop
+              or drag and drop your PDF
             </p>
             <p className="text-gray-700 text-sm">Maximum file size 16MB.</p>
             <div className="mt-6 w-full">
@@ -148,17 +174,17 @@ const UploadDropZone = () => {
                 <div className="flex-1 min-w-0 mr-2">
                   <Input
                     type="text"
-                    placeholder="Paste YouTube or website URL"
+                    placeholder="Paste Your Web Page URL here"
                     className="w-full border-gray-200 focus:ring-gray-600 text-base"
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
-                    disabled={isUploading}
+                    disabled={isUploading || isUrlUploading}
                   />
                 </div>
                 <Button
                   type="submit"
                   className="text-white text-sm whitespace-nowrap flex-shrink-0 bg-indigo-500 hover:bg-indigo-600"
-                  disabled={isUploading}
+                  disabled={isUploading || isUrlUploading}
                 >
                   <LinkIcon className="mr-2 h-4 w-4" /> Add URL
                 </Button>
@@ -168,7 +194,8 @@ const UploadDropZone = () => {
         </div>
       </div>
 
-      {acceptedFiles && acceptedFiles[0] && (
+      {/* File upload progress card */}
+      {isUploading && acceptedFiles && acceptedFiles[0] && (
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div className="p-4">
             <div className="flex items-center gap-3">
@@ -214,8 +241,9 @@ const UploadDropZone = () => {
           </div>
         </div>
       )}
-      {/* Show URL upload progress */}
-      {isUploading && urlInput && !acceptedFiles[0] && (
+
+      {/* URL upload progress card */}
+      {isUrlUploading && processingUrl && (
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div className="p-4">
             <div className="flex items-center gap-3">
@@ -226,16 +254,14 @@ const UploadDropZone = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-900">
-                      {urlInput}
+                      {processingUrl}
                     </p>
                     <p className="text-sm text-gray-500">URL</p>
                   </div>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setUrlInput("");
-                      setIsUploading(false);
-                      setUploadProgress(0);
+                      handleRemoveUrl();
                     }}
                     className="p-1 hover:bg-gray-100 rounded-full transition-colors"
                   >
@@ -246,14 +272,14 @@ const UploadDropZone = () => {
                   <div className="flex-1">
                     <Progress
                       indicatorColor={
-                        uploadProgress === 100 ? "bg-green-500" : "bg-black"
+                        urlUploadProgress === 100 ? "bg-green-500" : "bg-black"
                       }
-                      value={uploadProgress}
+                      value={urlUploadProgress}
                       className="h-1 w-full bg-gray-100"
                     />
                   </div>
                   <span className="text-sm text-gray-500 min-w-[40px] text-right">
-                    {uploadProgress}%
+                    {urlUploadProgress}%
                   </span>
                 </div>
               </div>

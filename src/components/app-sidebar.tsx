@@ -33,7 +33,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import Skeleton from "react-loading-skeleton";
-import Image from "next/image";
+import { SignOutButton } from "@clerk/nextjs"; // Import SignOutButton
 
 const items = [
   { title: "Home", url: "#", icon: Home },
@@ -106,8 +106,13 @@ export function AppSidebar() {
                   <span>Billing</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <LogOutIcon />
-                  <span>Sign out</span>
+                  {/* SignOutButton Component */}
+                  <SignOutButton redirectUrl="http://localhost:3000">
+                    <SidebarMenuButton className="focus:outline-none focus:ring-0 focus:ring-indigo-100">
+                      <LogOutIcon className="w-4 h-4 mr-2" />
+                      <span>Sign out</span>
+                    </SidebarMenuButton>
+                  </SignOutButton>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

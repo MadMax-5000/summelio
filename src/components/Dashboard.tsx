@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { AppSidebar } from "./app-sidebar";
+import { Globe, File } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import Skeleton from "react-loading-skeleton";
 import UploadDropZone from "./UploadDropZone";
@@ -25,11 +26,14 @@ import {
 import { trpc } from "@/_trpc/client";
 import { useState } from "react";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const router = useRouter();
   const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<
     string | null
   >(null);
+  const [loadingFileId, setLoadingFileId] = useState<string | null>(null);
   const utils = trpc.useContext();
   const { data: files, isLoading } = trpc.getUserFiles.useQuery();
   const { mutate: deleteFile } = trpc.deleteFile.useMutation({
@@ -43,6 +47,11 @@ export default function Dashboard() {
       setCurrentlyDeletingFile(null);
     },
   });
+
+  const handleChatWithAI = (fileId: string) => {
+    setLoadingFileId(fileId);
+    router.push(`/dashboard/${fileId}`);
+  };
 
   const truncateName = (name: string) =>
     name.split(/\s+/).length > 7
@@ -111,7 +120,19 @@ export default function Dashboard() {
                               {truncateName(file.name)}
                             </TableCell>
                             <TableCell className="text-base text-gray-700">
-                              {file.type}
+                              {file.type === "URL" ? (
+                                <div className="flex items-center gap-1">
+                                  <Globe className="h-4 w-4" />
+                                  <span>{file.type}</span>
+                                </div>
+                              ) : file.type === "pdf" ? (
+                                <div className="flex items-center gap-1">
+                                  <File className="h-4 w-4" />
+                                  <span>{file.type}</span>
+                                </div>
+                              ) : (
+                                file.name
+                              )}
                             </TableCell>
                             <TableCell className="text-base text-gray-700">
                               <span
@@ -128,19 +149,29 @@ export default function Dashboard() {
                             {/* Single Action column for both buttons */}
                             <TableCell className="text-base text-gray-700">
                               <div className="flex items-center space-x-2">
-                                <Link href={`/dashboard/${file.id}`}>
-                                  <Button
-                                    variant="outline"
-                                    className="border-gray-300 text-white text-base px-3 py-1.5 hover:bg-indigo-600 bg-indigo-500 hover:text-white "
-                                  >
-                                    Chat with AI
-                                  </Button>
-                                </Link>
+                                <Button
+                                  variant="outline"
+                                  className="border-gray-300 text-white text-base px-3 py-1.5 hover:bg-indigo-600 bg-indigo-500 hover:text-white"
+                                  onClick={() => handleChatWithAI(file.id)}
+                                  disabled={loadingFileId === file.id}
+                                >
+                                  {loadingFileId === file.id ? (
+                                    <div className="flex items-center gap-2">
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                      <span>Loading...</span>
+                                    </div>
+                                  ) : (
+                                    "Chat with AI"
+                                  )}
+                                </Button>
                                 <Button
                                   variant="outline"
                                   className="border-gray-300 text-gray-700 text-base px-3 py-1.5 hover:bg-red-300 hover:text-white"
                                   onClick={() => deleteFile({ id: file.id })}
-                                  disabled={currentlyDeletingFile === file.id}
+                                  disabled={
+                                    currentlyDeletingFile === file.id ||
+                                    loadingFileId === file.id
+                                  }
                                 >
                                   {currentlyDeletingFile === file.id ? (
                                     <Loader2 className="h-4 w-4 animate-spin" />

@@ -23,9 +23,9 @@ const ChatInput = ({
   setInput,
 }: ChatInputProps) => {
   return (
-    <div className="z-10 bg-white absolute bottom-0 left-0 w-full">
+    <div className="absolute bottom-0 left-0 w-full">
       <div className="mx-2 flex flex-row gap-3 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-        <div className="relative flex h-full flex-1 items-stretch md:flex-col ">
+        <div className="relative flex h-full flex-1 items-stretch md:flex-col">
           <div className="relative flex flex-col w-full flex-grow p-4">
             <form onSubmit={handleSubmit} className="relative">
               <Textarea
@@ -43,14 +43,10 @@ const ChatInput = ({
                   }
                 }}
                 autoFocus
-                className="resize-none bg-gray-300 rounded-xl text-base text-gray-700"
+                className="resize-none pr-12 text-base py-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
               />
-              <Button
-                size="sm"
-                type="submit"
-                className="absolute z-10 bg-gray-300 right-2 bottom-2 text-black"
-              >
-                <Send className="size-6 text-gray-700" />
+              <Button type="submit" className="absolute bottom-1.5 right-[8px]">
+                <Send className="size-4" />
               </Button>
             </form>
           </div>

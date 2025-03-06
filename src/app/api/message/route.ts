@@ -35,6 +35,7 @@ export const POST = async (req: NextRequest) => {
   const embeddings = new OpenAIEmbeddings({
     openAIApiKey: process.env.OPENAI_API_KEY,
     model: "text-embedding-3-small",
+    dimensions: 1024,
   });
   const UpstachIndex = getUpStachIndex();
 

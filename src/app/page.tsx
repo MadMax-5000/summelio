@@ -6,6 +6,7 @@ import BentoGrid from "@/components/hero/BentoGrid";
 import FeatureSection from "@/components/hero/FeatureSection";
 import FAQSection from "@/components/FAQSection";
 import FooterSection from "@/components/FooterSection";
+import PricingPlans from "@/components/PricingSection";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <Hero />
       <BentoGrid />
       <FeatureSection />
+      <PricingPlans />
       <FAQSection />
       <FooterSection />
     </>

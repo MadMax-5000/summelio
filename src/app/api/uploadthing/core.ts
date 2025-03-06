@@ -90,6 +90,7 @@ export const ourFileRouter = {
         const embeddings = new OpenAIEmbeddings({
           openAIApiKey: process.env.OPENAI_API_KEY,
           model: "text-embedding-3-small",
+          dimensions: 1024,
         });
 
         // Process documents and create embeddings
