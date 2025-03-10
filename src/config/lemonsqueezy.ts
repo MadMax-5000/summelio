@@ -2,10 +2,11 @@ export const PLANS = [
   {
     name: "Pro Plan",
     slug: "pro",
-    quota: 30, // change this later
-    pagesPerPdf: 10,
+    quotaPDF: 30,
+    quotaWebsite: 30,
+    pagesPerPdf: 50,
     price: {
-      amount: 29,
+      amount: 19,
       priceIds: {
         test: "462961",
         production: "",
@@ -15,8 +16,9 @@ export const PLANS = [
   {
     name: "Business Plan",
     slug: "business",
-    quota: 100, // change this later
-    pagesPerPdf: 200,
+    quotaPDF: 1000,
+    quotaWebsite: 1000,
+    pagesPerPdf: 2000,
     price: {
       amount: 59,
       priceIds: {

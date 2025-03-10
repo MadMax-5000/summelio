@@ -4,7 +4,6 @@ import { db } from "@/db";
 import { z } from "zod";
 import { currentUser } from "@clerk/nextjs/server";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
-import { absoluteURL } from "@/lib/utils";
 
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
@@ -42,17 +41,6 @@ export const appRouter = router({
         userId,
       },
     });
-  }),
-  createLemonSqueezySession: privateProcedure.mutation(async ({ ctx }) => {
-    const { userId } = ctx;
-    const billingURL = absoluteURL("/dashboard/billing");
-    if (!userId) throw new TRPCError({ code: "UNAUTHORIZED" });
-    const dbUser = await db.user.findFirst({
-      where: {
-        id: userId,
-      },
-    });
-    if (!dbUser) throw new TRPCError({ code: "UNAUTHORIZED" });
   }),
   getFileMessages: privateProcedure
     .input(
@@ -179,8 +167,43 @@ export const appRouter = router({
       });
       return urlFile;
     }),
+
+  getUserSubscription: privateProcedure.query(async ({ ctx }) => {
+    const { userId } = ctx;
+    
+    const user = await db.user.findUnique({
+      where: { id: userId ?? undefined},
+      select: {
+        lemonSqueezyCustomerId: true,
+        lemonSqueezySubscriptionId: true,
+        lemonSqueezyPriceId: true,
+        lemonSqueezyCurrentPeriodEnd: true,
+      },
+    });
+    
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+    
+    const hasActiveSubscription = user.lemonSqueezyCurrentPeriodEnd 
+      ? new Date(user.lemonSqueezyCurrentPeriodEnd) > new Date() 
+      : false;
+      
+    const planMap: Record<string, {name: string, type: "pro" | "business"}> = {
+      "716126": {name: "Pro Plan", type: "pro"},
+      "716134": {name: "Business Plan", type: "business"},
+    };
+    
+    const planInfo = user.lemonSqueezyPriceId ? planMap[user.lemonSqueezyPriceId] : null;
+    
+    return {
+      isSubscribed: hasActiveSubscription,
+      plan: hasActiveSubscription && planInfo ? planInfo.name : "Free",
+      planType: hasActiveSubscription && planInfo ? planInfo.type : null,
+      subscriptionEnds: user.lemonSqueezyCurrentPeriodEnd,
+      priceId: user.lemonSqueezyPriceId,
+      subscriptionId: user.lemonSqueezySubscriptionId,
+      customerId: user.lemonSqueezyCustomerId,
+    };
+  }),
 });
 
 export type appRouter = typeof appRouter;
-
-// this is updated for clerk

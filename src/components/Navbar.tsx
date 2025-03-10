@@ -71,7 +71,7 @@ export function Navbar() {
 
         {/* Authentication Buttons */}
         <div className="flex items-center gap-4">
-          <SignInButton mode="modal">
+          <SignInButton >
             <Button
               className="text-indigo-700 font-medium py-2 px-4 rounded-md hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-400"
               variant="ghost"
@@ -79,7 +79,7 @@ export function Navbar() {
               Sign In
             </Button>
           </SignInButton>
-          <SignUpButton mode="modal">
+          <SignUpButton >
             <Button className="bg-indigo-700 hover:bg-indigo-900 text-white flex items-center gap-2 font-medium py-2 px-4 rounded-md shadow transition-colors duration-200 focus:ring-2 focus:ring-indigo-400">
               Sign Up <ArrowRightIcon className="w-4 h-4" />
             </Button>

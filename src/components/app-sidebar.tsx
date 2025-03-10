@@ -34,9 +34,10 @@ import {
 } from "./ui/dropdown-menu";
 import Skeleton from "react-loading-skeleton";
 import { SignOutButton } from "@clerk/nextjs"; // Import SignOutButton
+import Link from "next/link";
 
 const items = [
-  { title: "Home", url: "#", icon: Home },
+  { title: "Home", url: "/dashboard", icon: Home },
   { title: "Feedback", url: "#", icon: ThumbsUp },
   { title: "Quick Guide", url: "#", icon: BookCheck },
   { title: "All Files", url: "#", icon: FolderOpen },
@@ -102,8 +103,10 @@ export function AppSidebar() {
                   <span>Account</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <CircleDollarSign />
-                  <span>Billing</span>
+                  <Link href="/dashboard/billing" className="flex items-center space-x-2">
+                    <CircleDollarSign className="w-5 h-5 mr-2" />
+                    <span>Billing</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   {/* SignOutButton Component */}

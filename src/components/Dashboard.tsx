@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { AppSidebar } from "./app-sidebar";
 import { Globe, File } from "lucide-react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import Skeleton from "react-loading-skeleton";
 import UploadDropZone from "./UploadDropZone";
 import { Loader2 } from "lucide-react";

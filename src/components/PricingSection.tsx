@@ -1,12 +1,17 @@
-import { HelpCircle } from "lucide-react"; // Import icon from lucide-react
-import { Check } from "lucide-react";
-import { useState, useEffect, useCallback, useRef } from "react";
+"use client";
+
+import { HelpCircle, Check } from "lucide-react";
+import { useState, useEffect } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import { toast } from "sonner";
+import axios from "axios";
+import { RedirectToSignIn, useUser } from "@clerk/nextjs";
+import { trpc } from "@/_trpc/client";
 
 // Updated FeatureTooltip component to accept plan type for styling
 const FeatureTooltip = ({
@@ -29,9 +34,7 @@ const FeatureTooltip = ({
       <Tooltip delayDuration={300}>
         <TooltipTrigger className="cursor-default ml-1.5">
           <HelpCircle
-            className={`h-4 w-4 ${
-              planType === "pro" ? "text-zinc-500" : "text-white"
-            }`}
+            className={`h-4 w-4 ${planType === "pro" ? "text-zinc-500" : "text-white"}`}
           />
         </TooltipTrigger>
         <TooltipContent className={tooltipStyles[planType]}>
@@ -43,36 +46,111 @@ const FeatureTooltip = ({
 };
 
 export default function PricingSection() {
+  const { isSignedIn, user, isLoaded } = useUser();
+
+  // Track which plan the user wants to purchase
+  const [selectedPlan, setSelectedPlan] = useState<{
+    type: "pro" | "business";
+    productId: string;
+  } | null>(null);
+
+  // Track when we need to show the sign-in UI
+  const [showSignIn, setShowSignIn] = useState(false);
+
+  // Track when a purchase flow is in progress
+  const [isPurchasing, setIsPurchasing] = useState(false);
+
+  // Get user's subscription data
+  const { data: subscription, isLoading: isLoadingSubscription } = trpc.getUserSubscription.useQuery(
+    undefined,
+    { enabled: !!isSignedIn }
+  );
+
+  // Price display state
   const [isAnnual, setIsAnnual] = useState(false);
   const [proPriceDisplay, setProPriceDisplay] = useState("19");
   const [businessPriceDisplay, setBusinessPriceDisplay] = useState("39");
 
+  // Pricing constants
   const proMonthlyPrice = 19;
   const businessMonthlyPrice = 39;
   const annualDiscount = 0.17; // 17% discount
 
-  const proAnnualPrice =
-    Math.round(proMonthlyPrice * 12 * (1 - annualDiscount)) / 12;
-  const businessAnnualPrice =
-    Math.round(businessMonthlyPrice * 12 * (1 - annualDiscount)) / 12;
+  const proAnnualPrice = Math.round(proMonthlyPrice * 12 * (1 - annualDiscount)) / 12;
+  const businessAnnualPrice = Math.round(businessMonthlyPrice * 12 * (1 - annualDiscount)) / 12;
 
-  // Refs to store animation frame IDs for cancellation
-  const proAnimationRef = useRef<number | null>(null);
-  const businessAnimationRef = useRef<number | null>(null);
+  // Handle plan selection and redirection flow
+  const handlePlanSelection = async (planType: "pro" | "business", productId: string) => {
+    // Store which plan was selected
+    setSelectedPlan({ type: planType, productId });
 
-  // Animate value function with cancellation support.
-  const animateValue = useCallback(
-    (
+    // If not signed in, show sign-in UI
+    if (!isSignedIn) {
+      setShowSignIn(true);
+      return;
+    }
+
+    // Check if user already has this plan
+    if (subscription?.priceId === productId && subscription?.isSubscribed) {
+      toast.info(`You already have the ${planType === "pro" ? "Pro" : "Business"} plan!`);
+      return;
+    }
+
+    // Start purchase flow
+    await initiatePurchase(productId);
+  };
+
+  // Initiate the purchase flow
+  const initiatePurchase = async (productId: string) => {
+    if (!user) return;
+
+    try {
+      setIsPurchasing(true);
+      const response = await axios.post("/api/subscribe", {
+        productId,
+        userId: user.id,
+      });
+
+      if (response.data.checkoutUrl) {
+        window.location.assign(response.data.checkoutUrl);
+      } else {
+        throw new Error("No checkout URL received");
+      }
+    } catch (error) {
+      console.error("Purchase error:", error);
+      toast.error("Failed to start checkout process. Please try again.");
+    } finally {
+      setIsPurchasing(false);
+    }
+  };
+
+  // Effect to handle returning from sign-in
+  useEffect(() => {
+    // Only run when auth is loaded and user has been authenticated
+    if (isLoaded && isSignedIn && selectedPlan && showSignIn) {
+      // Reset sign-in flag
+      setShowSignIn(false);
+
+      // Start purchase with the previously selected plan
+      initiatePurchase(selectedPlan.productId);
+    }
+  }, [isLoaded, isSignedIn, selectedPlan, showSignIn]);
+
+  // Price animation effect - calculate based on annual vs monthly
+  useEffect(() => {
+    const proTarget = isAnnual ? proAnnualPrice : proMonthlyPrice;
+    const businessTarget = isAnnual ? businessAnnualPrice : businessMonthlyPrice;
+
+    const proStart = Number.parseInt(proPriceDisplay);
+    const businessStart = Number.parseInt(businessPriceDisplay);
+
+    // Animate price changes
+    const animateValue = (
       start: number,
       end: number,
       setter: (value: string) => void,
-      duration: number = 500,
-      animationRef: React.MutableRefObject<number | null>
+      duration: number = 500
     ) => {
-      // Cancel any ongoing animation
-      if (animationRef.current !== null) {
-        cancelAnimationFrame(animationRef.current);
-      }
       let startTimestamp: number | null = null;
       const step = (timestamp: number) => {
         if (startTimestamp === null) startTimestamp = timestamp;
@@ -80,44 +158,20 @@ export default function PricingSection() {
         const currentValue = Math.floor(progress * (end - start) + start);
         setter(currentValue.toString());
         if (progress < 1) {
-          animationRef.current = window.requestAnimationFrame(step);
+          window.requestAnimationFrame(step);
         } else {
           setter(Math.floor(end).toString());
-          animationRef.current = null;
         }
       };
-      animationRef.current = window.requestAnimationFrame(step);
-    },
-    []
-  );
+      window.requestAnimationFrame(step);
+    };
 
-  // Only depend on isAnnual (and the computed prices) so that animation isn’t restarted mid-run
-  useEffect(() => {
-    const proTarget = isAnnual ? proAnnualPrice : proMonthlyPrice;
-    const businessTarget = isAnnual
-      ? businessAnnualPrice
-      : businessMonthlyPrice;
+    animateValue(proStart, proTarget, setProPriceDisplay);
+    animateValue(businessStart, businessTarget, setBusinessPriceDisplay);
+  }, [isAnnual, proAnnualPrice, businessAnnualPrice]);
 
-    // Use the current state as the starting point
-    const proStart = Number.parseInt(proPriceDisplay);
-    const businessStart = Number.parseInt(businessPriceDisplay);
-
-    animateValue(proStart, proTarget, setProPriceDisplay, 500, proAnimationRef);
-    animateValue(
-      businessStart,
-      businessTarget,
-      setBusinessPriceDisplay,
-      500,
-      businessAnimationRef
-    );
-  }, [isAnnual, proAnnualPrice, businessAnnualPrice, animateValue]);
-
-  // Define features with custom tooltips using Lorem Ipsum as placeholder text
   const proFeatures = [
-    {
-      feature: "20 PDFs",
-      tooltip: "Upload up to 20 PDF documents per month.",
-    },
+    { feature: "20 PDFs", tooltip: "Upload up to 20 PDF documents per month." },
     {
       feature: "50 Pages per PDF",
       tooltip: "Each PDF can include up to 50 pages.",
@@ -186,15 +240,11 @@ export default function PricingSection() {
           </h1>
           <div className="flex items-center gap-3">
             <div
-              className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                isAnnual ? "bg-indigo-500" : "bg-gray-200"
-              } cursor-pointer`}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full ${isAnnual ? "bg-indigo-500" : "bg-gray-200"} cursor-pointer`}
               onClick={() => setIsAnnual(!isAnnual)}
             >
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                  isAnnual ? "translate-x-6" : "translate-x-1"
-                }`}
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${isAnnual ? "translate-x-6" : "translate-x-1"}`}
               />
             </div>
             <div className="flex items-center">
@@ -236,8 +286,15 @@ export default function PricingSection() {
                   {isAnnual ? "per month, billed annually" : "monthly"}
                 </span>
               </div>
-              <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-11 font-medium mt-4 rounded-md">
-                Get Started
+              <button
+                onClick={() => handlePlanSelection("pro", "716126")}
+                disabled={isPurchasing}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-11 font-medium mt-4 rounded-md disabled:opacity-70"
+              >
+                {isPurchasing ? "Processing..." :
+                  subscription?.priceId === "716126" && subscription?.isSubscribed
+                    ? "Current Plan"
+                    : "Get Started"}
               </button>
             </div>
 
@@ -279,8 +336,15 @@ export default function PricingSection() {
                   {isAnnual ? "per month, billed annually" : "monthly"}
                 </span>
               </div>
-              <button className="w-full bg-white hover:bg-indigo-50 text-indigo-700 h-11 font-medium mt-4 rounded-md">
-                Get Started
+              <button
+                onClick={() => handlePlanSelection("business", "716134")}
+                disabled={isPurchasing}
+                className="w-full bg-white hover:bg-indigo-50 text-indigo-700 h-11 font-medium mt-4 rounded-md disabled:opacity-70"
+              >
+                {isPurchasing ? "Processing..." :
+                  subscription?.priceId === "716134" && subscription?.isSubscribed
+                    ? "Current Plan"
+                    : "Get Started"}
               </button>
             </div>
 
@@ -303,6 +367,21 @@ export default function PricingSection() {
           </div>
         </div>
       </div>
+
+      {/* Current subscription information */}
+      {isSignedIn && subscription && !isLoadingSubscription && (
+        <div className="mt-8 text-center">
+          <p className="text-gray-700">
+            Your current plan: <span className="font-bold">{subscription.plan}</span>
+            {subscription.subscriptionEnds && subscription.isSubscribed && (
+              <span> (renews on {new Date(subscription.subscriptionEnds).toLocaleDateString()})</span>
+            )}
+          </p>
+        </div>
+      )}
+
+      {/* Show sign-in UI when needed */}
+      {showSignIn && <RedirectToSignIn />}
     </section>
   );
 }
