@@ -13,9 +13,9 @@ type StreamResponse = {
 };
 
 export const ChatContext = createContext<StreamResponse>({
-  addMessage: () => {},
+  addMessage: () => { },
   message: "",
-  handleInputChange: () => {},
+  handleInputChange: () => { },
   isLoading: false,
 });
 
@@ -60,8 +60,8 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
               pageParams: [],
             };
           }
-          let newPages = [...old.pages];
-          let latestPages = newPages[0]!;
+          const newPages = [...old.pages];
+          const latestPages = newPages[0]!;
           latestPages.messages = [
             {
               createdAt: new Date().toISOString(),
@@ -111,11 +111,11 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
           (old) => {
             if (!old) return { pages: [], pageParams: [] };
 
-            let isAiResponseCreated = old.pages.some((page) =>
+            const isAiResponseCreated = old.pages.some((page) =>
               page.messages.some((message) => message.id === "ai-response")
             );
 
-            let updatedPages = old.pages.map((page) => {
+            const updatedPages = old.pages.map((page) => {
               if (page === old.pages[0]) {
                 let updatedMessages;
 

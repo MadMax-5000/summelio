@@ -88,4 +88,6 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
   }
 );
 
+PMessage.displayName = "PMessage";
+
 export default PMessage;

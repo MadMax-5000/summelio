@@ -5,9 +5,6 @@ import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
 
-export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
-
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaAutosizeProps>(
   ({ className, ...props }, ref) => {
     return (
