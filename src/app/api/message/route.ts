@@ -8,6 +8,11 @@ import { openai } from "@/lib/openai";
 import { UpstashVectorStore } from "@langchain/community/vectorstores/upstash";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 
+interface Message {
+  isUserMessage: boolean;
+  text: string;
+}
+
 export const POST = async (req: NextRequest) => {
   // Endpoint for asking a question to a PDF file
   const body = await req.json();
@@ -53,7 +58,7 @@ export const POST = async (req: NextRequest) => {
     },
     take: 6,
   });
-  const formattedPrevMessages = prevMessages.map((msg) => ({
+  const formattedPrevMessages = prevMessages.map((msg: Message) => ({
     role: msg.isUserMessage ? ("user" as const) : ("assistant" as const),
     content: msg.text,
   }));
