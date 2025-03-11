@@ -3,8 +3,9 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "@/_trpc/client";
 import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
 
-const Page = () => {
+const AuthCallback = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const origin = searchParams.get("origin");
@@ -39,5 +40,11 @@ const Page = () => {
     </div>
   );
 };
+
+const Page = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <AuthCallback />
+  </Suspense>
+);
 
 export default Page;

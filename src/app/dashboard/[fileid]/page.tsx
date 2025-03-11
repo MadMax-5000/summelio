@@ -13,7 +13,7 @@ interface PageProps {
   };
 }
 
-const Page = async ({ params }: PageProps) => {
+const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
   // Await the params before using its properties
   const { fileid } = await params;
   const user = await currentUser();
