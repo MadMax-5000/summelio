@@ -1,11 +1,10 @@
 "use client";
 import Link from "next/link";
 import { AppSidebar } from "./app-sidebar";
-import { Globe, File } from "lucide-react";
+import { Globe, File, Loader2 } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Skeleton from "react-loading-skeleton";
 import UploadDropZone from "./UploadDropZone";
-import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -27,6 +26,15 @@ import { trpc } from "@/_trpc/client";
 import { useState } from "react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
+
+// Define interfaces for your data structures
+interface FileData {
+  id: string;
+  name: string;
+  type: string;
+  uploadStatus: string;
+  createdAt: string;
+}
 
 export default function Dashboard() {
   const router = useRouter();
@@ -101,17 +109,18 @@ export default function Dashboard() {
                       <TableHead className="text-gray-700">
                         Date uploaded
                       </TableHead>
+                      <TableHead className="text-gray-700">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {files && files.length !== 0 ? (
                       files
                         .sort(
-                          (a, b) =>
+                          (a: FileData, b: FileData) =>
                             new Date(b.createdAt).getTime() -
                             new Date(a.createdAt).getTime()
                         )
-                        .map((file) => (
+                        .map((file: FileData) => (
                           <TableRow
                             key={file.id}
                             className="border-b border-gray-200 last:border-none"
@@ -185,14 +194,14 @@ export default function Dashboard() {
                         ))
                     ) : isLoading ? (
                       <TableRow>
-                        <TableCell colSpan={4} className="text-center">
+                        <TableCell colSpan={5} className="text-center">
                           <Skeleton height={30} count={7} className="my-2 " />
                         </TableCell>
                       </TableRow>
                     ) : (
                       <TableRow>
                         <TableCell
-                          colSpan={4}
+                          colSpan={5}
                           className="text-center text-base text-gray-700"
                         >
                           No uploads yet. Start by adding some content!
