@@ -13,6 +13,10 @@ interface Message {
   text: string;
 }
 
+interface FormattedMessage {
+  role: "user" | "assistant";
+  content: string;
+}
 export const POST = async (req: NextRequest) => {
   // Endpoint for asking a question to a PDF file
   const body = await req.json();
@@ -81,7 +85,7 @@ export const POST = async (req: NextRequest) => {
   
   PREVIOUS CONVERSATION:
   ${formattedPrevMessages
-    .map((message) => {
+    .map((message:FormattedMessage) => {
       if (message.role === "user") return `User: ${message.content}\n`;
       return `Assistant: ${message.content}\n`;
     })
