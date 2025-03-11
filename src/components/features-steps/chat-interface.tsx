@@ -83,7 +83,6 @@ export default function ChatInterface({
             {/* PDF Preview Panel */}
             <div className="w-1/3 border-r bg-gray-50 p-4 flex flex-col">
                 <div className="flex items-center space-x-2 mb-4 text-gray-700">
-                    <FileText className="h-5 w-5" />
                     <span className="font-medium">PDF / Web Page</span>
                 </div>
                 <div className="flex-1 bg-white rounded-lg border shadow-sm p-4">

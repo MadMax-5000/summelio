@@ -5,8 +5,8 @@ import { Upload, Zap, Star, Pause, Play } from "lucide-react"
 import MacWindow from "./mac-window"
 import FileUploader from "./file-uploader"
 import ChatInterface from "./chat-interface"
-import AIGraphic
-  from "./ai-graphic"
+import AIGraphic from "./ai-graphic"
+
 export default function ProgressSteps() {
   const [currentStep, setCurrentStep] = useState(0)
   const [progress, setProgress] = useState(0)
@@ -17,6 +17,23 @@ export default function ProgressSteps() {
   const animationRef = useRef<number | null>(null)
   const startTimeRef = useRef<number | null>(null)
   const pausedTimeRef = useRef<number>(0)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Add event listener for window resize
+    window.addEventListener("resize", checkMobile)
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   // Memoize steps to prevent unnecessary re-renders
   const steps = useMemo(
@@ -24,16 +41,14 @@ export default function ProgressSteps() {
       {
         number: 1,
         title: "Upload Your PDFs or Paste your Web Page link",
-        description:
-          "Simply select your files or drag and drop them into our secure platform. ",
+        description: "Simply select your files or drag and drop them into our secure platform.",
         icon: <Upload className="h-6 w-6 text-indigo-500" />,
         windowTitle: "File Upload",
       },
       {
         number: 2,
         title: "Click Chat with AI",
-        description:
-          "Our advanced AI algorithms automatically process and analyze your data.",
+        description: "Our advanced AI algorithms automatically process and analyze your data.",
         icon: <Zap className="h-6 w-6 text-indigo-500" />,
         windowTitle: "Document Analysis",
       },
@@ -85,79 +100,85 @@ export default function ProgressSteps() {
   }
 
   // Memoize the animate function with useCallback
-  const animate = useCallback((timestamp: number) => {
-    if (isPaused) {
-      // Store the elapsed time when paused
-      if (startTimeRef.current !== null) {
-        pausedTimeRef.current = timestamp - startTimeRef.current
-      }
-      animationRef.current = requestAnimationFrame(animate)
-      return
-    }
-
-    if (startTimeRef.current === null) {
-      // If animation is starting or resuming from pause
-      startTimeRef.current = timestamp - pausedTimeRef.current
-    }
-
-    const elapsed = timestamp - startTimeRef.current
-    const { duration } = animationConfig
-
-    let targetProgress
-    if (currentStep === 0) {
-      targetProgress = Math.min(stepPositions[1], (elapsed / duration) * stepPositions[1])
-      if (elapsed >= duration && !isPaused) {
-        setCurrentStep(1)
-        setProgress(stepPositions[1])
-        startTimeRef.current = null
-        pausedTimeRef.current = 0
+  const animate = useCallback(
+    (timestamp: number) => {
+      if (isPaused) {
+        // Store the elapsed time when paused
+        if (startTimeRef.current !== null) {
+          pausedTimeRef.current = timestamp - startTimeRef.current
+        }
         animationRef.current = requestAnimationFrame(animate)
         return
       }
-    } else if (currentStep === 1) {
-      targetProgress =
-        stepPositions[1] +
-        Math.min(stepPositions[2] - stepPositions[1], (elapsed / duration) * (stepPositions[2] - stepPositions[1]))
-      if (elapsed >= duration && !isPaused) {
-        setCurrentStep(2)
-        setProgress(stepPositions[2])
-        startTimeRef.current = null
-        pausedTimeRef.current = 0
-        animationRef.current = requestAnimationFrame(animate)
-        return
+
+      if (startTimeRef.current === null) {
+        // If animation is starting or resuming from pause
+        startTimeRef.current = timestamp - pausedTimeRef.current
       }
-    } else if (currentStep === 2) {
-      targetProgress =
-        stepPositions[2] + Math.min(100 - stepPositions[2], (elapsed / duration) * (100 - stepPositions[2]))
-      if (elapsed >= duration && !isPaused) {
-        // Reset after delay
-        setTimeout(() => {
-          setProgress(0)
-          setCurrentStep(0)
+
+      const elapsed = timestamp - startTimeRef.current
+      const { duration } = animationConfig
+
+      let targetProgress
+      if (currentStep === 0) {
+        targetProgress = Math.min(stepPositions[1], (elapsed / duration) * stepPositions[1])
+        if (elapsed >= duration && !isPaused) {
+          setCurrentStep(1)
+          setProgress(stepPositions[1])
           startTimeRef.current = null
           pausedTimeRef.current = 0
           animationRef.current = requestAnimationFrame(animate)
-        }, animationConfig.resetDelay)
-        return
+          return
+        }
+      } else if (currentStep === 1) {
+        targetProgress =
+          stepPositions[1] +
+          Math.min(stepPositions[2] - stepPositions[1], (elapsed / duration) * (stepPositions[2] - stepPositions[1]))
+        if (elapsed >= duration && !isPaused) {
+          setCurrentStep(2)
+          setProgress(stepPositions[2])
+          startTimeRef.current = null
+          pausedTimeRef.current = 0
+          animationRef.current = requestAnimationFrame(animate)
+          return
+        }
+      } else if (currentStep === 2) {
+        targetProgress =
+          stepPositions[2] + Math.min(100 - stepPositions[2], (elapsed / duration) * (100 - stepPositions[2]))
+        if (elapsed >= duration && !isPaused) {
+          // Reset after delay
+          setTimeout(() => {
+            setProgress(0)
+            setCurrentStep(0)
+            startTimeRef.current = null
+            pausedTimeRef.current = 0
+            animationRef.current = requestAnimationFrame(animate)
+          }, animationConfig.resetDelay)
+          return
+        }
       }
-    }
 
-    setProgress(targetProgress || 0)
-    animationRef.current = requestAnimationFrame(animate)
-  }, [currentStep, isPaused, animationConfig, stepPositions, setCurrentStep, setProgress]);
+      setProgress(targetProgress || 0)
+      animationRef.current = requestAnimationFrame(animate)
+    },
+    [currentStep, isPaused, animationConfig, stepPositions, setCurrentStep, setProgress],
+  )
 
   useEffect(() => {
-    // Start animation
-    startTimeRef.current = null
-    pausedTimeRef.current = 0
-    animationRef.current = requestAnimationFrame(animate)
+    // Only run animation on desktop
+    if (!isMobile) {
+      // Start animation
+      startTimeRef.current = null
+      pausedTimeRef.current = 0
+      animationRef.current = requestAnimationFrame(animate)
+    }
 
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [currentStep, isPaused, animate]) // Added animate to the dependency array
+  }, [currentStep, isPaused, isMobile, animate]) // Added animate to the dependency array
 
   const handleFileUpload = (file: File) => {
     setUploadedFile(file)
@@ -179,6 +200,97 @@ export default function ProgressSteps() {
     }, 1000) // Faster transition
   }
 
+  // Mobile view - vertical scrolling layout with MacWindow
+  if (isMobile) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6">
+        <div className="text-center">
+          <h2 className="text-base font-semibold text-indigo-600 tracking-wide uppercase">HOW IT WORKS</h2>
+          <h1 className="mt-1 text-3xl font-extrabold text-gray-900 sm:text-4xl">Just 3 steps to get started</h1>
+        </div>
+
+        <div className="mt-12 space-y-16">
+          {/* Step 1 */}
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                <Upload className="h-6 w-6 text-indigo-500" />
+              </div>
+              <div className="ml-4">
+                <h3 className="text-xl font-bold text-gray-700">1. {steps[0].title}</h3>
+                <p className="mt-1 text-base text-gray-700">{steps[0].description}</p>
+              </div>
+            </div>
+
+            <MacWindow title={steps[0].windowTitle}>
+              <div className="p-4 h-[350px] overflow-y-auto">
+                <FileUploader onFileUpload={handleFileUpload} />
+              </div>
+            </MacWindow>
+          </div>
+
+          {/* Step 2 */}
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                <Zap className="h-6 w-6 text-indigo-500" />
+              </div>
+              <div className="ml-4">
+                <h3 className="text-xl font-bold text-gray-700">2. {steps[1].title}</h3>
+                <p className="mt-1 text-base text-gray-700">{steps[1].description}</p>
+              </div>
+            </div>
+
+            <MacWindow title={steps[1].windowTitle}>
+              <div className="h-[350px] flex flex-col">
+                <div className="flex-1">
+                  <AIGraphic />
+                </div>
+
+                <div className="p-4 text-center border-t">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">Analyzing your document</h3>
+                  <p className="text-center text-gray-700 mb-4">
+                    Our AI will process your document and extract valuable insights.
+                  </p>
+                  <button
+                    onClick={handleStartAnalysis}
+                    className="py-2 px-6 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition-colors"
+                  >
+                    Start Analysis
+                  </button>
+                </div>
+              </div>
+            </MacWindow>
+          </div>
+
+          {/* Step 3 */}
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                <Star className="h-6 w-6 text-indigo-500" />
+              </div>
+              <div className="ml-4">
+                <h3 className="text-xl font-bold text-gray-700">3. {steps[2].title}</h3>
+                <p className="mt-1 text-base text-gray-700">{steps[2].description}</p>
+              </div>
+            </div>
+
+            <MacWindow title={steps[2].windowTitle}>
+              <div className="h-[350px]">
+                <ChatInterface
+                  title={steps[2].windowTitle}
+                  initialMessage="Analysis complete! Ask your first question to get started."
+                  showOptions={true}
+                />
+              </div>
+            </MacWindow>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Desktop view - original layout with progress bar
   return (
     <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
       <div className="text-center">
