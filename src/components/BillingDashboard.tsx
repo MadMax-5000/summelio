@@ -7,22 +7,46 @@ import { Loader2, CheckCircle, AlertCircle, CreditCard, CalendarClock, CircleFad
 import { toast } from "sonner";
 import axios from "axios";
 
+// Define the type for subscription data based on getUserSubscription
+interface SubscriptionData {
+  isSubscribed: boolean;
+  plan: string;
+  planType: "pro" | "business" | null;
+  subscriptionEnds: Date | null;
+  priceId: string | null;
+  subscriptionId: string | null;
+  customerId: string | null;
+}
+
+// Define the type for upload stats based on getUserUploadStats
+interface UploadStats {
+  monthlyUploads: number;
+  monthlyUrlUploads: number;
+  lastReset: Date | null;
+}
+
 export default function BillingDashboard() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch user subscription data
-  const { data: subscription, isLoading: isLoadingSubscription } = trpc.getUserSubscription.useQuery();
+  // Fetch user subscription data with explicit type
+  const { data: subscription, isLoading: isLoadingSubscription } = trpc.getUserSubscription.useQuery(
+    undefined,
+    { enabled: true }
+  ) as { data: SubscriptionData | undefined; isLoading: boolean };
 
-  // Fetch user upload stats
-  const { data: uploadStats } = trpc.getUserUploadStats.useQuery();
+  // Fetch user upload stats with explicit type
+  const { data: uploadStats } = trpc.getUserUploadStats.useQuery(
+    undefined,
+    { enabled: true }
+  ) as { data: UploadStats | undefined };
 
   // Function to manage subscription (go to customer portal)
   const manageSubscription = async () => {
     try {
       setIsLoading(true);
       const response = await axios.post("/api/manage-subscription", {
-        subscriptionId: subscription?.subscriptionId
+        subscriptionId: subscription?.subscriptionId,
       });
       window.open(response.data.portalUrl, "_self");
     } catch (error) {
@@ -72,11 +96,12 @@ export default function BillingDashboard() {
                 <div className="flex gap-2 items-center text-gray-600">
                   <CalendarClock className="h-5 w-5" />
                   <span>
-                    Renews on {subscription.subscriptionEnds
-                      ? new Date(subscription.subscriptionEnds).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                    Renews on{" "}
+                    {subscription.subscriptionEnds
+                      ? new Date(subscription.subscriptionEnds).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
                       })
                       : "N/A"}
                   </span>
@@ -207,7 +232,8 @@ export default function BillingDashboard() {
             <p className="text-2xl font-semibold">
               {uploadStats?.monthlyUploads || 0}
               <span className="text-sm text-gray-500 font-normal">
-                / {subscription?.planType === "business"
+                /{" "}
+                {subscription?.planType === "business"
                   ? "1000"
                   : subscription?.planType === "pro"
                     ? "20"
@@ -222,7 +248,8 @@ export default function BillingDashboard() {
             <p className="text-2xl font-semibold">
               {uploadStats?.monthlyUrlUploads || 0}
               <span className="text-sm text-gray-500 font-normal">
-                / {subscription?.planType === "business"
+                /{" "}
+                {subscription?.planType === "business"
                   ? "1000"
                   : subscription?.planType === "pro"
                     ? "30"
@@ -244,4 +271,4 @@ export default function BillingDashboard() {
       </div>
     </div>
   );
-} 
+}
