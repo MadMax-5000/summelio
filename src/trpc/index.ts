@@ -140,21 +140,67 @@ export const appRouter = router({
   saveUrlAsFile: privateProcedure
     .input(
       z.object({
-        url: z.string().url(), // validate if it is a URL
+        url: z.string().url(),
         name: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx;
-      // generate a unique key for the URL
-      const uniqueKey = `url-${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2, 9)}`;
 
-      // Determine a name for the url if not provided
+      // Get user subscription status
+      const user = await db.user.findUnique({
+        where: { id: userId as string },
+        select: {
+          monthlyUrlUploads: true,
+          lemonSqueezyPriceId: true,
+          lemonSqueezyCurrentPeriodEnd: true,
+        },
+      });
+
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+      // Check subscription status
+      const hasActiveSubscription = user.lemonSqueezyCurrentPeriodEnd 
+        ? new Date(user.lemonSqueezyCurrentPeriodEnd) > new Date() 
+        : false;
+
+      if (!hasActiveSubscription) {
+        throw new TRPCError({ 
+          code: "FORBIDDEN",
+          message: "Please subscribe to upload web pages"
+        });
+      }
+
+      // Determine upload limit based on plan
+      const uploadLimit = user.lemonSqueezyPriceId === "716134" // Business plan
+        ? 1000 
+        : user.lemonSqueezyPriceId === "716126" // Pro plan
+          ? 30
+          : 3; // Free plan
+
+      // Check if user has reached their limit
+      if (user.monthlyUrlUploads >= uploadLimit) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `Monthly web page upload limit (${uploadLimit}) reached`
+        });
+      }
+
+      // Generate unique key and create file record
+      const uniqueKey = `url-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       const name = input.name || new URL(input.url).hostname;
 
-      // create a file record for the URL
+      // Increment the URL upload counter
+      await db.user.update({
+        where: { id: userId as string },
+        data: {
+          monthlyUrlUploads: {
+            increment: 1
+          }
+        }
+      });
+
+      // Create the file record
       const urlFile = await db.file.create({
         data: {
           key: uniqueKey,
@@ -165,6 +211,7 @@ export const appRouter = router({
           type: "URL",
         },
       });
+
       return urlFile;
     }),
 
@@ -202,6 +249,26 @@ export const appRouter = router({
       priceId: user.lemonSqueezyPriceId,
       subscriptionId: user.lemonSqueezySubscriptionId,
       customerId: user.lemonSqueezyCustomerId,
+    };
+  }),
+  getUserUploadStats: privateProcedure.query(async ({ ctx }) => {
+    const { userId } = ctx;
+    
+    const user = await db.user.findUnique({
+      where: { id: userId ?? undefined },
+      select: {
+        monthlyPdfUploads: true,
+        monthlyUrlUploads: true,
+        lastUploadReset: true,
+      },
+    });
+    
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+    
+    return {
+      monthlyUploads: user.monthlyPdfUploads,
+      monthlyUrlUploads: user.monthlyUrlUploads,
+      lastReset: user.lastUploadReset,
     };
   }),
 });

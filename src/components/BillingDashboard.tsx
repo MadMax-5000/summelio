@@ -3,17 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/_trpc/client";
-import { Loader2, CheckCircle, AlertCircle, CreditCard, CalendarClock, RefreshCcw } from "lucide-react";
+import { Loader2, CheckCircle, AlertCircle, CreditCard, CalendarClock, CircleFadingArrowUp } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
 export default function BillingDashboard() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Fetch user subscription data
   const { data: subscription, isLoading: isLoadingSubscription } = trpc.getUserSubscription.useQuery();
-  
+
+  // Fetch user upload stats
+  const { data: uploadStats } = trpc.getUserUploadStats.useQuery();
+
   // Function to manage subscription (go to customer portal)
   const manageSubscription = async () => {
     try {
@@ -29,16 +32,16 @@ export default function BillingDashboard() {
       setIsLoading(false);
     }
   };
-  
+
   // Function to upgrade subscription
   const upgradeSubscription = () => {
     router.push("/#pricing");
   };
-  
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Subscription Management</h1>
-      
+
       {isLoadingSubscription ? (
         <div className="flex justify-center items-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
@@ -63,22 +66,22 @@ export default function BillingDashboard() {
                 </p>
               </div>
             </div>
-            
+
             {subscription?.isSubscribed && (
               <div className="space-y-4 mt-6">
                 <div className="flex gap-2 items-center text-gray-600">
                   <CalendarClock className="h-5 w-5" />
                   <span>
-                    Renews on {subscription.subscriptionEnds 
+                    Renews on {subscription.subscriptionEnds
                       ? new Date(subscription.subscriptionEnds).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })
                       : "N/A"}
                   </span>
                 </div>
-                
+
                 <button
                   onClick={manageSubscription}
                   disabled={isLoading}
@@ -89,11 +92,11 @@ export default function BillingDashboard() {
                 </button>
               </div>
             )}
-            
+
             {!subscription?.isSubscribed && (
               <div className="mt-6">
                 <p className="text-gray-600 mb-4">
-                  Upgrade your account to access premium features and increase your limits.
+                  Subscribe to start uploading PDFs and accessing our features.
                 </p>
                 <button
                   onClick={upgradeSubscription}
@@ -103,7 +106,7 @@ export default function BillingDashboard() {
                 </button>
               </div>
             )}
-            
+
             {subscription?.isSubscribed && subscription?.planType !== "business" && (
               <div className="mt-8 pt-6 border-t border-gray-100">
                 <h3 className="font-medium mb-2">Want more features?</h3>
@@ -114,17 +117,17 @@ export default function BillingDashboard() {
                   onClick={upgradeSubscription}
                   className="flex items-center gap-2 text-indigo-600 font-medium hover:text-indigo-800"
                 >
-                  <RefreshCcw className="h-4 w-4" />
+                  <CircleFadingArrowUp className="h-4 w-4" />
                   Upgrade Plan
                 </button>
               </div>
             )}
           </div>
-          
+
           {/* Plan Features Summary */}
           <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
             <h2 className="text-xl font-semibold mb-4">Plan Features</h2>
-            
+
             {subscription?.planType === "pro" && (
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
@@ -149,7 +152,7 @@ export default function BillingDashboard() {
                 </li>
               </ul>
             )}
-            
+
             {subscription?.planType === "business" && (
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
@@ -174,7 +177,7 @@ export default function BillingDashboard() {
                 </li>
               </ul>
             )}
-            
+
             {!subscription?.isSubscribed && (
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
@@ -194,7 +197,7 @@ export default function BillingDashboard() {
           </div>
         </div>
       )}
-      
+
       {/* Usage Statistics (optional) */}
       <div className="mt-12 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h2 className="text-xl font-semibold mb-6">Usage Statistics</h2>
@@ -202,23 +205,37 @@ export default function BillingDashboard() {
           <div className="p-4 bg-gray-50 rounded-lg">
             <h3 className="text-gray-500 text-sm mb-1">PDFs Uploaded</h3>
             <p className="text-2xl font-semibold">
-              {/* This would need to be fetched from your backend */}
-              12 <span className="text-sm text-gray-500 font-normal">/ {subscription?.planType === "business" ? "∞" : "20"}</span>
+              {uploadStats?.monthlyUploads || 0}
+              <span className="text-sm text-gray-500 font-normal">
+                / {subscription?.planType === "business"
+                  ? "1000"
+                  : subscription?.planType === "pro"
+                    ? "20"
+                    : "3"}
+              </span>
             </p>
+            <p className="text-xs text-gray-500 mt-1">Resets monthly</p>
           </div>
-          
+
           <div className="p-4 bg-gray-50 rounded-lg">
             <h3 className="text-gray-500 text-sm mb-1">Web Pages</h3>
             <p className="text-2xl font-semibold">
-              {/* This would need to be fetched from your backend */}
-              8 <span className="text-sm text-gray-500 font-normal">/ {subscription?.planType === "business" ? "∞" : "50"}</span>
+              {uploadStats?.monthlyUrlUploads || 0}
+              <span className="text-sm text-gray-500 font-normal">
+                / {subscription?.planType === "business"
+                  ? "1000"
+                  : subscription?.planType === "pro"
+                    ? "30"
+                    : "3"}
+              </span>
             </p>
+            <p className="text-xs text-gray-500 mt-1">Resets monthly</p>
           </div>
-          
+
           <div className="p-4 bg-gray-50 rounded-lg">
             <h3 className="text-gray-500 text-sm mb-1">Billing Cycle</h3>
             <p className="text-lg font-medium">
-              {subscription?.subscriptionEnds 
+              {subscription?.subscriptionEnds
                 ? `Renews ${new Date(subscription.subscriptionEnds).toLocaleDateString()}`
                 : "No active subscription"}
             </p>

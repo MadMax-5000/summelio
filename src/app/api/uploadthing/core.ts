@@ -14,6 +14,12 @@ const utapi = new UTApi();
 
 const f = createUploadthing();
 
+// Update constants to remove FREE tier
+const UPLOAD_LIMITS = {
+  PRO: 20,
+  BUSINESS: 1000,
+} as const;
+
 export const ourFileRouter = {
   fileuploader: f({
     pdf: {
@@ -25,9 +31,69 @@ export const ourFileRouter = {
       const user = await currentUser();
       if (!user || !user.id) throw new Error("Unauthorized");
 
+      // Get user from database with subscription info
+      const dbUser = await db.user.findUnique({
+        where: { id: user.id },
+        select: {
+          id: true,
+          monthlyPdfUploads: true,
+          lastUploadReset: true,
+          lemonSqueezyPriceId: true,
+          lemonSqueezyCurrentPeriodEnd: true,
+        },
+      });
+
+      if (!dbUser) throw new Error("User not found");
+
+      // Check if user has an active subscription
+      const hasActiveSubscription = dbUser.lemonSqueezyCurrentPeriodEnd 
+        ? new Date(dbUser.lemonSqueezyCurrentPeriodEnd) > new Date() 
+        : false;
+
+      if (!hasActiveSubscription) {
+        throw new Error("Please subscribe to a plan to upload PDFs.");
+      }
+
+      // Check if we need to reset monthly counter
+      const now = new Date();
+      const lastReset = new Date(dbUser.lastUploadReset);
+      if (lastReset.getMonth() !== now.getMonth() || lastReset.getFullYear() !== now.getFullYear()) {
+        await db.user.update({
+          where: { id: user.id },
+          data: {
+            monthlyPdfUploads: 0,
+            lastUploadReset: now,
+          },
+        });
+        dbUser.monthlyPdfUploads = 0;
+      }
+
+      const uploadLimit = dbUser.lemonSqueezyPriceId === "716134" 
+        ? UPLOAD_LIMITS.BUSINESS 
+        : UPLOAD_LIMITS.PRO;
+
+      // Check if user has reached their limit
+      if (dbUser.monthlyPdfUploads >= uploadLimit) {
+        throw new Error(`Monthly PDF upload limit (${uploadLimit}) reached. ${
+          uploadLimit === UPLOAD_LIMITS.PRO 
+            ? "Please upgrade to our Business plan for more uploads or wait until next month." 
+            : "Please wait until next month to upload more PDFs."
+        }`);
+      }
+
       return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
+      // First increment the upload counter
+      await db.user.update({
+        where: { id: metadata.userId },
+        data: {
+          monthlyPdfUploads: {
+            increment: 1
+          }
+        }
+      });
+
       const createdFile = await db.file.create({
         data: {
           key: file.key,

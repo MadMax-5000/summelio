@@ -1,91 +1,60 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { Button } from "./ui/button";
-import { ArrowRightIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { ArrowRightIcon } from "lucide-react";
 
 export function Navbar() {
   return (
-    <div className="sticky top-0 z-50 w-full bg-gray-50/20 backdrop-blur-md shadow-md">
-      <div className="flex justify-between items-center px-6 lg:px-12 border-b border-indigo-200 py-3">
+    <nav className="sticky top-0 z-50 w-full bg-white shadow-sm backdrop-blur-md">
+      <div className="flex justify-between items-center px-8 lg:px-16 py-3">
         {/* Logo */}
-        <Link href="/" passHref legacyBehavior>
-          <a className="flex items-center">
-            <Image
-              alt="Summelio logo"
-              src="/images/SUMMELIO.png"
-              className="h-10 w-auto"
-              width={40}
-              height={40}
-            />
-          </a>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/images/SUMMELIO.png"
+            alt="Logo"
+            width={50}
+            height={50}
+            quality={100}
+          />
         </Link>
 
-        {/* Navigation Menu */}
-        <div className="flex-grow flex justify-center">
-          <NavigationMenu>
-            <NavigationMenuList className="flex gap-8">
-              <NavigationMenuItem>
-                <Link href="#feature-section" passHref legacyBehavior>
-                  <NavigationMenuLink className="font-medium text-base text-gray-700 hover:text-gray-900 px-4">
-                    Features
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="#pricing" passHref legacyBehavior>
-                  <NavigationMenuLink className="font-medium text-base text-gray-700 hover:text-indigo-900 px-4">
-                    Pricing
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/use-cases" passHref legacyBehavior>
-                  <NavigationMenuLink className="font-medium text-base text-gray-700 hover:text-indigo-900 px-4">
-                    Use Cases
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="#faq" passHref legacyBehavior>
-                  <NavigationMenuLink className="font-medium text-base text-gray-700 hover:text-indigo-900 px-4">
-                    FAQ
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+        {/* Nav Links */}
+        <div className="hidden md:flex space-x-10 text-gray-700 font-medium text-base">
+          <Link href="#feature-section" className="hover:text-gray-900">
+            Features
+          </Link>
+          <Link href="#pricing" className="hover:text-gray-900">
+            Pricing
+          </Link>
+          <Link href="/use-cases" className="hover:text-gray-900">
+            Use Cases
+          </Link>
+          <Link href="#faq" className="hover:text-gray-900">
+            FAQ
+          </Link>
         </div>
 
-        {/* Authentication Buttons */}
-        <div className="flex items-center gap-4">
-          <SignInButton >
+        {/* Auth Buttons */}
+        <div className="flex items-center space-x-6">
+          <SignInButton>
             <Button
-              className="text-indigo-700 font-medium py-2 px-4 rounded-md hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-400"
               variant="ghost"
+              className="text-indigo-700 hover:bg-indigo-100 px-4 py-2 text-base"
             >
               Sign In
             </Button>
           </SignInButton>
-          <SignUpButton >
-            <Button className="bg-indigo-700 hover:bg-indigo-900 text-white flex items-center gap-2 font-medium py-2 px-4 rounded-md shadow transition-colors duration-200 focus:ring-2 focus:ring-indigo-400">
-              Sign Up <ArrowRightIcon className="w-4 h-4" />
+          <SignUpButton>
+            <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center gap-3 px-6 py-2 text-base">
+              Sign Up <ArrowRightIcon className="w-5 h-5" />
             </Button>
           </SignUpButton>
         </div>
       </div>
-    </div>
+    </nav>
   );
 }

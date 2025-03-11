@@ -16,6 +16,9 @@ model User {
   lemonSqueezySubscriptionId   String?   @unique @map(name: "lemonSqueezy_subscription_id")
   lemonSqueezyPriceId          String?   @map(name: "lemonSqueezy_price_id")
   lemonSqueezyCurrentPeriodEnd DateTime? @map(name: "lemonSqueezy_current_period_end")
+  monthlyPdfUploads            Int       @default(0)
+  lastUploadReset             DateTime  @default(now())
+  monthlyUrlUploads           Int       @default(0)
 }
 
 enum UploadStatus {

@@ -14,7 +14,7 @@ interface PageProps {
 }
 
 const Page = async ({ params }: PageProps) => {
-  // retrieve the file Id
+  // Await the params before using its properties
   const { fileid } = await params;
   const user = await currentUser();
   if (!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid}`);
