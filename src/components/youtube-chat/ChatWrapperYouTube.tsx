@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react";
 import PMessages from "../chat/PMessages";
 import PChatInput from "../chat/PChatInput";

@@ -1,3 +1,5 @@
+"use client"
+
 import { trpc } from "@/_trpc/client";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { useMutation } from "@tanstack/react-query";

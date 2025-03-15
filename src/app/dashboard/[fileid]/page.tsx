@@ -2,6 +2,8 @@ import ChatWrapperPDF from "@/components/chat/ChatWrapperPDF";
 import ChatWrapperURL from "@/components/ChatWrapperURL";
 import PDFRenderer from "@/components/PDFRenderer";
 import WebsiteRenderer from "@/components/WebsiteRenderer";
+import ChatWrapperYouTube from "@/components/youtube-chat/ChatWrapperYouTube";
+import YouTubeRenderer from "@/components/youtube-chat/YouTubeRenderer";
 import { db } from "@/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
@@ -38,6 +40,8 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
               <PDFRenderer url={`https://utfs.io/f/${file.key}`} />
             ) : file.type === "URL" ? (
               <WebsiteRenderer url={file.url} />
+            ) : file.type === "Youtube Video" ? (
+              <YouTubeRenderer url={file.url} />
             ) : (
               <p>Unsupported content type</p>
             )}
@@ -46,10 +50,12 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
         <div className="shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
           {file.type === "pdf" ? (
             <ChatWrapperPDF fileId={file.id} />
-          ) : file.type === "URL" ? (
+          ) : file.type === "Web Page" ? (
             <ChatWrapperURL url={file.url} />
+          ) : file.type === "Youtube Video" ? (
+            <ChatWrapperYouTube fileId={file.id} />
           ) : (
-            <p>Unsupported content type</p>
+            <p>Unsupported type</p>
           )}
         </div>
       </div>
