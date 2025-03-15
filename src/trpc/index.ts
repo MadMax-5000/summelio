@@ -137,7 +137,7 @@ export const appRouter = router({
       return file;
     }),
 
-  saveUrlAsFile: privateProcedure
+    saveUrlAsFile: privateProcedure
     .input(
       z.object({
         url: z.string().url(),
@@ -146,7 +146,7 @@ export const appRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx;
-
+  
       // Get user subscription status
       const user = await db.user.findUnique({
         where: { id: userId as string },
@@ -156,26 +156,26 @@ export const appRouter = router({
           lemonSqueezyCurrentPeriodEnd: true,
         },
       });
-
+  
       if (!user) throw new TRPCError({ code: "NOT_FOUND" });
-
+  
       // Check subscription status
       const hasActiveSubscription = user.lemonSqueezyCurrentPeriodEnd 
         ? new Date(user.lemonSqueezyCurrentPeriodEnd) > new Date() 
         : false;
-
+  
       if (!hasActiveSubscription) {
         throw new TRPCError({ 
           code: "FORBIDDEN",
           message: "Please subscribe to upload web pages"
         });
       }
-
+  
       // Determine upload limit based on plan
       const uploadLimit = user.lemonSqueezyPriceId === "716134" // Business plan
       ? 1000 
       : 50; // Pro plan default
-
+  
       // Check if user has reached their limit
       if (user.monthlyUrlUploads >= uploadLimit) {
         throw new TRPCError({
@@ -183,11 +183,30 @@ export const appRouter = router({
           message: `Monthly web page upload limit (${uploadLimit}) reached`
         });
       }
-
-      // Generate unique key and create file record
+  
+      // Parse the URL
+      const urlObj = new URL(input.url);
+      const hostname = urlObj.hostname;
+      
+      // Detect URL type
+      let fileType = "Web Page"; // Default type for non-YouTube URLs
+      let nameURL = input.name || hostname;
+      
+      // YouTube URL detection patterns
+      const youtubePatterns = [
+        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+/,
+        /^(https?:\/\/)?(www\.)?youtube\.com\/watch\?v=.+/,
+        /^(https?:\/\/)?(www\.)?youtu\.be\/.+/
+      ];
+      
+      // Check if URL is a YouTube link
+      if (youtubePatterns.some(pattern => pattern.test(input.url))) {
+        fileType = "Youtube Video";
+      }
+  
+      // Generate unique key
       const uniqueKey = `url-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-      const name = input.name || new URL(input.url).hostname;
-
+  
       // Increment the URL upload counter
       await db.user.update({
         where: { id: userId as string },
@@ -197,22 +216,21 @@ export const appRouter = router({
           }
         }
       });
-
-      // Create the file record
+  
+      // Create the file record with explicit type
       const urlFile = await db.file.create({
         data: {
           key: uniqueKey,
-          name: name,
+          name: nameURL,
           userId: userId,
           url: input.url,
           uploadStatus: "PROCESSING",
-          type: "URL",
+          type: fileType, // Explicitly set to "Youtube Video" or "Web Page"
         },
       });
-
+  
       return urlFile;
     }),
-
   getUserSubscription: privateProcedure.query(async ({ ctx }) => {
     const { userId } = ctx;
     

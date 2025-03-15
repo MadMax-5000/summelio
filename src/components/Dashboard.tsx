@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { AppSidebar } from "./app-sidebar";
-import { Globe, File, Loader2 } from "lucide-react";
+import { Globe, File, Loader2, Youtube } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Skeleton from "react-loading-skeleton";
 import UploadDropZone from "./UploadDropZone";
@@ -129,7 +129,7 @@ export default function Dashboard() {
                               {truncateName(file.name)}
                             </TableCell>
                             <TableCell className="text-base text-gray-700">
-                              {file.type === "URL" ? (
+                              {file.type === "Web Page" ? (
                                 <div className="flex items-center gap-1">
                                   <Globe className="h-4 w-4" />
                                   <span>{file.type}</span>
@@ -137,6 +137,11 @@ export default function Dashboard() {
                               ) : file.type === "pdf" ? (
                                 <div className="flex items-center gap-1">
                                   <File className="h-4 w-4" />
+                                  <span>{file.type}</span>
+                                </div>
+                              ) : file.type === "Youtube Video" ? (
+                                <div className="flex items-center gap-1">
+                                  <Youtube className="h-4 w-4" />
                                   <span>{file.type}</span>
                                 </div>
                               ) : (

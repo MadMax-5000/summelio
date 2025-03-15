@@ -84,7 +84,7 @@ const UploadDropZone = () => {
     }
     try {
       // Basic URL Validation
-      new URL(urlInput); // This will throw if invalid
+      const url = new URL(urlInput); // This will throw if invalid
 
       // Reset file upload state if any
       setIsUploading(false);
@@ -98,7 +98,7 @@ const UploadDropZone = () => {
       // Submit the URL to backend
       saveUrl({
         url: urlInput,
-        name: new URL(urlInput).hostname,
+        name: url.hostname,
       });
 
       // Let the progress finish to 100%

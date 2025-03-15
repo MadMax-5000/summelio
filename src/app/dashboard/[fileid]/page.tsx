@@ -1,60 +1,60 @@
-import ChatWrapperPDF from "@/components/chat/ChatWrapperPDF";
-import ChatWrapperURL from "@/components/ChatWrapperURL";
-import PDFRenderer from "@/components/PDFRenderer";
-import WebsiteRenderer from "@/components/WebsiteRenderer";
-import { db } from "@/db";
-import { currentUser } from "@clerk/nextjs/server";
-import { notFound, redirect } from "next/navigation";
-import React from "react";
+"use client";
 
-interface PageProps {
-  params: {
-    fileid: string;
-  };
-}
+import { useRouter, useSearchParams } from "next/navigation";
+import { trpc } from "@/_trpc/client";
+import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
 
-const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
-  // Await the params before using its properties
-  const { fileid } = await params;
-  const user = await currentUser();
-  if (!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid}`);
+const AuthCallback = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const origin = searchParams.get("origin");
 
-  // make database call
-  const file = await db.file.findFirst({
-    where: {
-      id: fileid,
-      userId: user.id,
+  // Use TRPC to check auth status
+  const { data: authData, error, isLoading } = trpc.authCallback.useQuery(undefined, {
+    onSuccess: async ({ success }) => {
+      if (success) {
+        // Use TRPC query to get subscription status
+        const { data: subscription } = await trpc.getUserSubscription.useQuery();
+        if (subscription && !subscription.isSubscribed) {
+          // Redirect to pricing if not subscribed
+          router.push("/#pricing");
+        } else if (origin) {
+          router.push(`/${origin}`);
+        } else {
+          router.push("/dashboard");
+        }
+      }
     },
+    onError: (err) => {
+      console.error("Auth callback error:", err);
+      if (err.data?.code === "UNAUTHORIZED") {
+        router.push("/sign-in");
+      }
+    },
+    retry: true,
+    retryDelay: 500,
   });
 
-  if (!file) notFound();
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
-    <div className="flex-1 justify-between flex flex-col h-[calc(100vh-3.5rem)]">
-      <div className="mx-auto w-full max-w-8xl grow lg:flex xl:px-2">
-        {/** left side rendering */}
-        <div className="flex-1 xl:flex ">
-          <div className="px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6">
-            {file.type === "pdf" ? (
-              <PDFRenderer url={`https://utfs.io/f/${file.key}`} />
-            ) : file.type === "URL" ? (
-              <WebsiteRenderer url={file.url} />
-            ) : (
-              <p>Unsupported content type</p>
-            )}
-          </div>
-        </div>
-        <div className="shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
-          {file.type === "pdf" ? (
-            <ChatWrapperPDF fileId={file.id} />
-          ) : file.type === "URL" ? (
-            <ChatWrapperURL url={file.url} />
-          ) : (
-            <p>Unsupported content type</p>
-          )}
-        </div>
+    <div className="w-full mt-24 flex justify-center">
+      <div className="flex flex-col items-center gap-2">
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-800" />
+        <h3 className="font-semibold text-xl">Setting up your account...</h3>
+        <p>You will be redirected automatically.</p>
       </div>
     </div>
   );
 };
+
+const Page = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <AuthCallback />
+  </Suspense>
+);
 
 export default Page;

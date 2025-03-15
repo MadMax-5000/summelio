@@ -10,28 +10,20 @@ const AuthCallback = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const origin = searchParams.get("origin");
+  const utils = trpc.useContext();
 
+  // Use TRPC to check auth status
   const { data, error, isLoading } = trpc.authCallback.useQuery(undefined, {
     onSuccess: async ({ success }) => {
       if (success) {
-        // Check user subscription status after authentication
-        try {
-          const subscriptionResponse = await fetch('/api/check-subscription-status');
-          const subscriptionData = await subscriptionResponse.json();
-
-          if (!subscriptionData.isSubscribed) {
-            // If no active subscription, redirect to pricing section
-            router.push("/#pricing");
-          } else if (origin) {
-            // If there's an origin, redirect there
-            router.push(`/${origin}`);
-          } else {
-            // Otherwise go to dashboard
-            router.push("/dashboard");
-          }
-        } catch (err) {
-          // If subscription check fails, redirect to pricing to be safe
+        // Use the TRPC context to fetch the subscription status
+        const subscription = await utils.getUserSubscription.fetch();
+        if (!subscription.isSubscribed) {
           router.push("/#pricing");
+        } else if (origin) {
+          router.push(`/${origin}`);
+        } else {
+          router.push("/dashboard");
         }
       }
     },
