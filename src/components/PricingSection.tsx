@@ -10,7 +10,7 @@ import {
 } from "./ui/tooltip";
 import { toast } from "sonner";
 import axios from "axios";
-import { RedirectToSignIn, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { trpc } from "@/_trpc/client";
 
 // Updated FeatureTooltip component to accept plan type for styling
@@ -54,9 +54,6 @@ export default function PricingSection() {
     productId: string;
   } | null>(null);
 
-  // Track when we need to show the sign-in UI
-  const [showSignIn, setShowSignIn] = useState(false);
-
   // Track when a purchase flow is in progress
   const [isPurchasing, setIsPurchasing] = useState(false);
 
@@ -79,14 +76,26 @@ export default function PricingSection() {
   const proAnnualPrice = Math.round(proMonthlyPrice * 12 * (1 - annualDiscount)) / 12;
   const businessAnnualPrice = Math.round(businessMonthlyPrice * 12 * (1 - annualDiscount)) / 12;
 
+  // Effect to check if user needs to be redirected to the pricing section
+  useEffect(() => {
+    if (isLoaded && isSignedIn && subscription && !subscription.isSubscribed) {
+      // User is logged in but has no active subscription
+      // URL check to avoid redirect loops
+      if (window.location.pathname === "/dashboard" && !window.location.hash.includes("pricing")) {
+        window.location.href = "/#pricing";
+      }
+    }
+  }, [isLoaded, isSignedIn, subscription]);
+
   // Handle plan selection and redirection flow
   const handlePlanSelection = async (planType: "pro" | "business", productId: string) => {
     // Store which plan was selected
     setSelectedPlan({ type: planType, productId });
 
-    // If not signed in, show sign-in UI
+    // If not signed in, redirect to sign-in with redirect URL
     if (!isSignedIn) {
-      setShowSignIn(true);
+      const redirectUrl = `/initiate-checkout?productId=${productId}`;
+      window.location.href = `/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`;
       return;
     }
 
@@ -123,18 +132,6 @@ export default function PricingSection() {
       setIsPurchasing(false);
     }
   };
-
-  // Effect to handle returning from sign-in
-  useEffect(() => {
-    // Only run when auth is loaded and user has been authenticated
-    if (isLoaded && isSignedIn && selectedPlan && showSignIn) {
-      // Reset sign-in flag
-      setShowSignIn(false);
-
-      // Start purchase with the previously selected plan
-      initiatePurchase(selectedPlan.productId);
-    }
-  }, [isLoaded, isSignedIn, selectedPlan, showSignIn]);
 
   // Price animation effect - calculate based on annual vs monthly
   useEffect(() => {
@@ -369,19 +366,16 @@ export default function PricingSection() {
       </div>
 
       {/* Current subscription information */}
-      {isSignedIn && subscription && !isLoadingSubscription && (
+      {isSignedIn && subscription && !isLoadingSubscription && subscription.isSubscribed && (
         <div className="mt-8 text-center">
           <p className="text-gray-700">
             Your current plan: <span className="font-bold">{subscription.plan}</span>
-            {subscription.subscriptionEnds && subscription.isSubscribed && (
+            {subscription.subscriptionEnds && (
               <span> (renews on {new Date(subscription.subscriptionEnds).toLocaleDateString()})</span>
             )}
           </p>
         </div>
       )}
-
-      {/* Show sign-in UI when needed */}
-      {showSignIn && <RedirectToSignIn />}
     </section>
   );
 }

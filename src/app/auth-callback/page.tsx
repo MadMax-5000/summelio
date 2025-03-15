@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "@/_trpc/client";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
+import { toast } from "sonner";
 
 const AuthCallback = () => {
   const router = useRouter();
@@ -11,9 +12,27 @@ const AuthCallback = () => {
   const origin = searchParams.get("origin");
 
   const { data, error, isLoading } = trpc.authCallback.useQuery(undefined, {
-    onSuccess: ({ success }) => {
+    onSuccess: async ({ success }) => {
       if (success) {
-        router.push(origin ? `/${origin}` : "/dashboard");
+        // Check user subscription status after authentication
+        try {
+          const subscriptionResponse = await fetch('/api/check-subscription-status');
+          const subscriptionData = await subscriptionResponse.json();
+
+          if (!subscriptionData.isSubscribed) {
+            // If no active subscription, redirect to pricing section
+            router.push("/#pricing");
+          } else if (origin) {
+            // If there's an origin, redirect there
+            router.push(`/${origin}`);
+          } else {
+            // Otherwise go to dashboard
+            router.push("/dashboard");
+          }
+        } catch (err) {
+          // If subscription check fails, redirect to pricing to be safe
+          router.push("/#pricing");
+        }
       }
     },
     onError: (err) => {

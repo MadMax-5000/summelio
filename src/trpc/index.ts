@@ -173,10 +173,8 @@ export const appRouter = router({
 
       // Determine upload limit based on plan
       const uploadLimit = user.lemonSqueezyPriceId === "716134" // Business plan
-        ? 1000 
-        : user.lemonSqueezyPriceId === "716126" // Pro plan
-          ? 30
-          : 3; // Free plan
+      ? 1000 
+      : 50; // Pro plan default
 
       // Check if user has reached their limit
       if (user.monthlyUrlUploads >= uploadLimit) {

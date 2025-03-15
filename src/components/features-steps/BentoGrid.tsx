@@ -203,7 +203,7 @@ export default function ProgressSteps() {
   // Mobile view - vertical scrolling layout with MacWindow
   if (isMobile) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6">
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 bg-gray-50">
         <div className="text-center">
           <h2 className="text-base font-semibold text-indigo-600 tracking-wide uppercase">HOW IT WORKS</h2>
           <h1 className="mt-1 text-3xl font-extrabold text-gray-900 sm:text-4xl">Just 3 steps to get started</h1>
@@ -292,7 +292,7 @@ export default function ProgressSteps() {
 
   // Desktop view - original layout with progress bar
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 bg-gray-50">
       <div className="text-center">
         <h2 className="text-base font-semibold text-indigo-600 tracking-wide uppercase">HOW IT WORKS</h2>
         <h1 className="mt-1 text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
