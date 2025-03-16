@@ -4,11 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import { ArrowRightIcon, Menu, X } from "lucide-react";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isSignedIn } = useUser();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -46,22 +47,32 @@ export function Navbar() {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-6">
-          <SignInButton>
-            <Button
-              variant="ghost"
-              className="text-indigo-700 hover:bg-indigo-100 px-4 py-2 text-base"
-            >
-              Sign In
-            </Button>
-          </SignInButton>
-          <SignUpButton>
-            <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center gap-3 px-6 py-2 text-base">
-              Sign Up <ArrowRightIcon className="w-5 h-5" />
-            </Button>
-          </SignUpButton>
+          {isSignedIn ? (
+            <Link href="/dashboard">
+              <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center gap-3 px-6 py-2 text-base">
+                Dashboard <ArrowRightIcon className="w-5 h-5" />
+              </Button>
+            </Link>
+          ) : (
+            <>
+              <SignInButton>
+                <Button
+                  variant="ghost"
+                  className="text-indigo-700 hover:bg-indigo-100 px-4 py-2 text-base"
+                >
+                  Sign In
+                </Button>
+              </SignInButton>
+              <SignUpButton>
+                <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center gap-3 px-6 py-2 text-base">
+                  Sign Up <ArrowRightIcon className="w-5 h-5" />
+                </Button>
+              </SignUpButton>
+            </>
+          )}
         </div>
 
-        {/* Mobile Menu Button - ONLY ONE */}
+        {/* Mobile Menu Button */}
         <button
           className="md:hidden text-gray-700 focus:outline-none"
           onClick={toggleMenu}
@@ -109,19 +120,29 @@ export function Navbar() {
             </Link>
 
             <div className="flex flex-col space-y-3 pt-2">
-              <SignInButton>
-                <Button
-                  variant="ghost"
-                  className="text-indigo-700 hover:bg-indigo-100 w-full justify-start px-4 py-2 text-base"
-                >
-                  Sign In
-                </Button>
-              </SignInButton>
-              <SignUpButton>
-                <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center justify-center gap-3 px-6 py-2 text-base w-full">
-                  Sign Up <ArrowRightIcon className="w-5 h-5" />
-                </Button>
-              </SignUpButton>
+              {isSignedIn ? (
+                <Link href="/dashboard">
+                  <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center justify-center gap-3 px-6 py-2 text-base w-full">
+                    Dashboard <ArrowRightIcon className="w-5 h-5" />
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <SignInButton>
+                    <Button
+                      variant="ghost"
+                      className="text-indigo-700 hover:bg-indigo-100 w-full justify-start px-4 py-2 text-base"
+                    >
+                      Sign In
+                    </Button>
+                  </SignInButton>
+                  <SignUpButton>
+                    <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center justify-center gap-3 px-6 py-2 text-base w-full">
+                      Sign Up <ArrowRightIcon className="w-5 h-5" />
+                    </Button>
+                  </SignUpButton>
+                </>
+              )}
             </div>
           </div>
         </div>

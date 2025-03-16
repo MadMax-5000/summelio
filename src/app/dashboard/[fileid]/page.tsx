@@ -38,7 +38,7 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
           <div className="px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6">
             {file.type === "pdf" ? (
               <PDFRenderer url={`https://utfs.io/f/${file.key}`} />
-            ) : file.type === "URL" ? (
+            ) : file.type === "Web Page" ? (
               <WebsiteRenderer url={file.url} />
             ) : file.type === "Youtube Video" ? (
               <YouTubeRenderer url={file.url} />
