@@ -105,6 +105,14 @@ export default function PricingSection() {
       return;
     }
 
+    // * Check if the user is attempting to downgrade
+    if (subscription?.isSubscribed && planType === "pro" && subscription.plan === "Business") {
+      toast.warning(
+        "Downgrading to the Pro plan requires canceling your current Business subscription first. Please contact support or visit your account settings."
+      );
+      return;
+    }
+
     // Start purchase flow
     await initiatePurchase(productId);
   };
