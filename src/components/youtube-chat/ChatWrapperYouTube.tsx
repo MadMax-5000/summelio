@@ -1,8 +1,8 @@
 "use client"
 
 import React from "react";
-import PMessages from "../chat/PMessages";
-import PChatInput from "../chat/PChatInput";
+import YMessages from "./YMessages";
+import YChatInput from "./YChatInput";
 import { ChatContextProvider } from "./YChatcontext";
 
 interface ChatWrapperYouTubeProps {
@@ -14,9 +14,9 @@ const ChatWrapperYouTube = ({ fileId }: ChatWrapperYouTubeProps) => {
         <ChatContextProvider fileId={fileId}>
             <div className="relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
                 <div className="flex-1 justify-between flex flex-col mb-28">
-                    <PMessages fileId={fileId} />
+                    <YMessages fileId={fileId} />
                 </div>
-                <PChatInput />
+                <YChatInput />
             </div>
         </ChatContextProvider>
     );

@@ -147,9 +147,10 @@ const UploadDropZone = () => {
         {...getRootProps()}
         className="border-2 border-dashed rounded-xl p-10 transition-colors duration-200 ease-in-out bg-gray-50"
         style={{
-          borderWidth: "4px",
+          borderWidth: "2px",
           borderStyle: "dashed",
-          borderSpacing: "20x",
+          borderSpacing: "10x",
+          borderColor: "gray"
         }}
       >
         {/* Hidden input element with getInputProps() */}
