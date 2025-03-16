@@ -3,7 +3,7 @@
 import React from "react";
 import PMessages from "../chat/PMessages";
 import PChatInput from "../chat/PChatInput";
-import { ChatContextProvider } from "../chat/PChatContext";
+import { ChatContextProvider } from "./YChatcontext";
 
 interface ChatWrapperYouTubeProps {
     fileId: string;

@@ -20,7 +20,7 @@ const PChatInput = ({ isDisabled }: PChatInputProps) => {
             <div className="relative ">
               <Textarea
                 ref={textareRef}
-                placeholder="Ask questions about your PDF"
+                placeholder="Ask your first question ..."
                 rows={1}
                 maxRows={4}
                 autoFocus

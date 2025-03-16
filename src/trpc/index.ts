@@ -187,10 +187,10 @@ export const appRouter = router({
       // Parse the URL
       const urlObj = new URL(input.url);
       const hostname = urlObj.hostname;
-      
+       
       // Detect URL type
       let fileType = "Web Page"; // Default type for non-YouTube URLs
-      let nameURL = input.name || hostname;
+      const nameURL = input.name || hostname;
       
       // YouTube URL detection patterns
       const youtubePatterns = [
