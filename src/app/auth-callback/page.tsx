@@ -4,7 +4,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "@/_trpc/client";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
-import { toast } from "sonner";
 
 const AuthCallback = () => {
   const router = useRouter();

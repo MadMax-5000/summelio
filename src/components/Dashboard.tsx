@@ -87,7 +87,7 @@ export default function Dashboard() {
       <div className="container mx-auto p-6 max-w-5xl">
         <Card className="w-full overflow-hidden border-gray-200 shadow-md">
           <CardHeader className="border-b border-gray-200 bg-white">
-            <CardTitle className="text-2xl font-semibold text-gray-800">
+            <CardTitle className="text-2xl font-bold text-gray-800">
               Content Dashboard
             </CardTitle>
           </CardHeader>
@@ -96,13 +96,13 @@ export default function Dashboard() {
           </CardContent>
           <CardFooter className="bg-white px-6 py-8">
             <div className="w-full">
-              <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+              <h3 className="text-xl font-semibold mb-4 text-gray-800">
                 Recent Uploads
               </h3>
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-gray-50 text-base">
+                    <TableRow className="bg-gray-50 text-[15px] font-normal text-gray-800">
                       <TableHead className="text-gray-700">File name</TableHead>
                       <TableHead className="text-gray-700">Type</TableHead>
                       <TableHead className="text-gray-700">Status</TableHead>
@@ -207,7 +207,7 @@ export default function Dashboard() {
                       <TableRow>
                         <TableCell
                           colSpan={5}
-                          className="text-center text-base text-gray-700"
+                          className="text-center text-[15px] font-normal text-gray-800"
                         >
                           No uploads yet. Start by adding some content!
                         </TableCell>

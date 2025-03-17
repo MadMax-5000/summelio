@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy to server
       run: |
-        ssh root@your_server_ip << 'EOF'
+        ssh root@69.62.106.240 << 'EOF'
           cd /var/www/nextjs/summelio
           git pull origin main  
           pnpm install 

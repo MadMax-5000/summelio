@@ -150,7 +150,6 @@ const UploadDropZone = () => {
           borderWidth: "2px",
           borderStyle: "dashed",
           borderSpacing: "10x",
-          borderColor: "gray"
         }}
       >
         {/* Hidden input element with getInputProps() */}
@@ -170,7 +169,7 @@ const UploadDropZone = () => {
             </p>
             <p className="text-gray-700 text-sm">Maximum file size 16MB.</p>
             <div className="mt-6 w-full">
-              <p className="text-base text-gray-600 text-center">or</p>
+              <p className="text-sm text-gray-600 text-center mb-4">or</p>
               <form className="flex mt-2 w-full" onSubmit={handleUrlSubmit}>
                 <div className="flex-1 min-w-0 mr-2">
                   <Input
