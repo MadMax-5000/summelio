@@ -23,7 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { trpc } from "@/_trpc/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 
@@ -44,6 +44,21 @@ export default function Dashboard() {
   const [loadingFileId, setLoadingFileId] = useState<string | null>(null);
   const utils = trpc.useContext();
   const { data: files, isLoading } = trpc.getUserFiles.useQuery();
+  const { data: subscription, isLoading: isLoadingSubscription } = trpc.getUserSubscription.useQuery();
+
+  // Check subscription and redirect if necessary
+  useEffect(() => {
+    const checkSubscription = async () => {
+      if (!isLoadingSubscription && subscription) {
+        if (!subscription.isSubscribed) {
+          router.push("/#pricing");
+        }
+      }
+    };
+
+    checkSubscription();
+  }, [subscription, isLoadingSubscription, router]);
+
   const { mutate: deleteFile } = trpc.deleteFile.useMutation({
     onSuccess: () => {
       utils.getUserFiles.invalidate();
@@ -80,6 +95,11 @@ export default function Dashboard() {
         return "bg-orange-100 text-orange-900";
     }
   };
+
+  // If not subscribed, don't render the dashboard content
+  if (!isLoadingSubscription && subscription && !subscription.isSubscribed) {
+    return null; // Will be redirected by the useEffect
+  }
 
   return (
     <SidebarProvider>

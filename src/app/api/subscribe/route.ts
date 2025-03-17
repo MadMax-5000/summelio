@@ -14,11 +14,15 @@ export async function POST(req: Request) {
     if (!reqData.userId)
       return Response.json({ message: "userId is required" }, { status: 400 });
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://summelio.com";
+
     const response = await lemonSqueezyApiInstance.post("/checkouts", {
       data: {
         type: "checkouts",
         attributes: {
           checkout_data: {
+            success_url: `${baseUrl}/thank-you`,
+            cancel_url: `${baseUrl}/pricing`,
             custom: {
               user_id: reqData.userId.toString(),
             },

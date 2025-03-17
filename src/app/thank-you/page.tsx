@@ -1,45 +1,26 @@
-import { redirect } from "next/navigation";
-import { getAuth } from "@clerk/nextjs/server";
-import { lemonSqueezyApiInstance } from "@/utils/axios";
-import { db } from "@/db";
-import { NextRequest } from "next/server";
+"use client";
 
-export default async function ThankYouPage({ searchParams }: { searchParams: { subscription_id?: string } }) {
-    const { userId } = getAuth({} as NextRequest);
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-    if (!userId) {
-        redirect("/sign-in");
-    }
+export default function ThankYou() {
+    const router = useRouter();
 
-    const subscriptionId = searchParams.subscription_id;
-    if (!subscriptionId) {
-        redirect("/");
-    }
+    useEffect(() => {
+        // Redirect to the dashboard after 5 seconds
+        const timer = setTimeout(() => {
+            router.push("/dashboard");
+        }, 5000);
 
-    try {
-        const response = await lemonSqueezyApiInstance.get(`/subscriptions/${subscriptionId}`);
-        const subscription = response.data.data;
+        return () => clearTimeout(timer);
+    }, [router]);
 
-        const customData = subscription.attributes.custom_data;
-        const subscriptionUserId = customData?.user_id;
-
-        if (subscriptionUserId !== userId) {
-            throw new Error("User ID mismatch");
-        }
-
-        await db.user.update({
-            where: { id: userId },
-            data: {
-                lemonSqueezySubscriptionId: subscription.id,
-                lemonSqueezyCustomerId: subscription.attributes.customer_id.toString(),
-                lemonSqueezyCurrentPeriodEnd: new Date(subscription.attributes.renews_at),
-                lemonSqueezyPriceId: subscription.attributes.variant_id.toString(),
-            },
-        });
-
-        redirect("/dashboard");
-    } catch (error) {
-        console.error("Thank-you processing error:", error);
-        redirect("/error");
-    }
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+            <h1 className="text-3xl font-bold mb-4">Thank You for Your Purchase!</h1>
+            <p className="text-lg">
+                Your subscription was successful. You will be redirected to your dashboard shortly.
+            </p>
+        </div>
+    );
 }
