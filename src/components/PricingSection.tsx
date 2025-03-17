@@ -129,7 +129,7 @@ export default function PricingSection() {
   };
 
   const proFeatures = [
-    { feature: "20 PDFs", tooltip: "Upload up to 20 PDF documents per month" },
+    { feature: "20 PDFs", tooltip: "Upload up to 20 PDF documents per month." },
     { feature: "50 Pages per PDF", tooltip: "Each PDF can include up to 50 pages." },
     { feature: "50 Web Pages", tooltip: "Upload up to 50 web pages every month." },
     { feature: "Instant AI Chat", tooltip: "Chat with your documents in real time and get instant, accurate answers." },
