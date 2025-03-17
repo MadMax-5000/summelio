@@ -16,13 +16,18 @@ jobs:
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Add server to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H 69.62.106.240 >> ~/.ssh/known_hosts
 
     - name: Deploy to server
       run: |
         ssh root@69.62.106.240 << 'EOF'
           cd /var/www/nextjs/summelio
-          git pull origin main  
-          pnpm install 
-          pm2 restart nextjs  
+          git pull origin main
+          pnpm install
+          pm2 restart nextjs
         EOF
