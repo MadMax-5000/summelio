@@ -15,18 +15,17 @@ interface ChatWrapperPDFProps {
 
 const ChatWrapperPDF = ({ fileId }: ChatWrapperPDFProps) => {
   const { data, isLoading } = trpc.getFileUploadStatus.useQuery(
-    {
-      fileId,
-    },
+    { fileId },
     {
       refetchInterval: (data) =>
         data?.status === "SUCCESS" || data?.status === "FAILED" ? false : 500,
     }
   );
+
   if (isLoading)
     return (
-      <div className="relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
-        <div className="flex-1 flex justify-center items-center flex-col mb-28">
+      <div className="relative h-full bg-white flex flex-col">
+        <div className="flex-1 flex justify-center items-center">
           <div className="flex flex-col items-center gap-2">
             <Loader2 className="h-8 w-8 text-gray-900 animate-spin" />
             <h3 className="font-semibold text-xl text-gray-800">Loading...</h3>
@@ -35,14 +34,16 @@ const ChatWrapperPDF = ({ fileId }: ChatWrapperPDFProps) => {
             </p>
           </div>
         </div>
-        <PChatInput isDisabled />
+        <div className="p-4">
+          <PChatInput isDisabled />
+        </div>
       </div>
     );
 
   if (data?.status === "PROCESSING")
     return (
-      <div className="relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
-        <div className="flex-1 flex justify-center items-center flex-col mb-28">
+      <div className="relative h-full bg-white flex flex-col">
+        <div className="flex-1 flex justify-center items-center">
           <div className="flex flex-col items-center gap-2">
             <Loader2 className="h-8 w-8 text-gray-900 animate-spin" />
             <h3 className="font-semibold text-xl text-gray-800">
@@ -53,15 +54,18 @@ const ChatWrapperPDF = ({ fileId }: ChatWrapperPDFProps) => {
             </p>
           </div>
         </div>
-        <PChatInput isDisabled />
+        <div className="p-4">
+          <PChatInput isDisabled />
+        </div>
       </div>
     );
+
   if (data?.status === "FAILED")
     return (
-      <div className="relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
-        <div className="flex-1 flex justify-center items-center flex-col mb-28">
+      <div className="relative h-full bg-white flex flex-col">
+        <div className="flex-1 flex justify-center items-center">
           <div className="flex flex-col items-center gap-2">
-            <XCircle className="h-8 w-8 text-red-600 " />
+            <XCircle className="h-8 w-8 text-red-600" />
             <h3 className="font-semibold text-xl text-gray-800">
               Too many pages in PDF.
             </h3>
@@ -76,20 +80,27 @@ const ChatWrapperPDF = ({ fileId }: ChatWrapperPDFProps) => {
                 className: "mt-4",
               })}
             >
-              <ChevronLeft className="size-3 mr-1.5" /> Back to{" "}
+              <ChevronLeft className="size-3 mr-1.5" /> Back to
             </Link>
           </div>
         </div>
-        <PChatInput isDisabled />
+        <div className="p-4">
+          <PChatInput isDisabled />
+        </div>
       </div>
     );
+
   return (
     <ChatContextProvider fileId={fileId}>
-      <div className="relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
-        <div className="flex-1 justify-between flex flex-col mb-28">
+      <div className="relative h-full bg-white flex flex-col">
+        {/* Messages area with scroll */}
+        <div className="flex-1 overflow-y-auto">
           <PMessages fileId={fileId} />
         </div>
-        <PChatInput />
+        {/* Chat input stays fixed at the bottom */}
+        <div className="p-4">
+          <PChatInput />
+        </div>
       </div>
     </ChatContextProvider>
   );

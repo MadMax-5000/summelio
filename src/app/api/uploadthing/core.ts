@@ -46,8 +46,8 @@ export const ourFileRouter = {
       if (!dbUser) throw new Error("User not found");
 
       // Check if user has an active subscription
-      const hasActiveSubscription = dbUser.lemonSqueezyCurrentPeriodEnd 
-        ? new Date(dbUser.lemonSqueezyCurrentPeriodEnd) > new Date() 
+      const hasActiveSubscription = dbUser.lemonSqueezyCurrentPeriodEnd
+        ? new Date(dbUser.lemonSqueezyCurrentPeriodEnd) > new Date()
         : false;
 
       if (!hasActiveSubscription) {
@@ -68,17 +68,16 @@ export const ourFileRouter = {
         dbUser.monthlyPdfUploads = 0;
       }
 
-      const uploadLimit = dbUser.lemonSqueezyPriceId === "716134" 
-        ? UPLOAD_LIMITS.BUSINESS 
+      const uploadLimit = dbUser.lemonSqueezyPriceId === "729862"
+        ? UPLOAD_LIMITS.BUSINESS
         : UPLOAD_LIMITS.PRO;
 
       // Check if user has reached their limit
       if (dbUser.monthlyPdfUploads >= uploadLimit) {
-        throw new Error(`Monthly PDF upload limit (${uploadLimit}) reached. ${
-          uploadLimit === UPLOAD_LIMITS.PRO 
-            ? "Please upgrade to our Business plan for more uploads or wait until next month." 
+        throw new Error(`Monthly PDF upload limit (${uploadLimit}) reached. ${uploadLimit === UPLOAD_LIMITS.PRO
+            ? "Please upgrade to our Business plan for more uploads or wait until next month."
             : "Please wait until next month to upload more PDFs."
-        }`);
+          }`);
       }
 
       return { userId: user.id };

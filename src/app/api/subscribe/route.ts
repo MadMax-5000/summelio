@@ -21,8 +21,6 @@ export async function POST(req: Request) {
         type: "checkouts",
         attributes: {
           checkout_data: {
-            success_url: `${baseUrl}/thank-you`,
-            cancel_url: `${baseUrl}/pricing`,
             custom: {
               user_id: reqData.userId.toString(),
             },

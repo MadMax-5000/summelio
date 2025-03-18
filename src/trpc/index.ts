@@ -137,7 +137,7 @@ export const appRouter = router({
       return file;
     }),
 
-    saveUrlAsFile: privateProcedure
+  saveUrlAsFile: privateProcedure
     .input(
       z.object({
         url: z.string().url(),
@@ -146,7 +146,7 @@ export const appRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx;
-  
+
       // Get user subscription status
       const user = await db.user.findUnique({
         where: { id: userId as string },
@@ -156,26 +156,26 @@ export const appRouter = router({
           lemonSqueezyCurrentPeriodEnd: true,
         },
       });
-  
+
       if (!user) throw new TRPCError({ code: "NOT_FOUND" });
-  
+
       // Check subscription status
-      const hasActiveSubscription = user.lemonSqueezyCurrentPeriodEnd 
-        ? new Date(user.lemonSqueezyCurrentPeriodEnd) > new Date() 
+      const hasActiveSubscription = user.lemonSqueezyCurrentPeriodEnd
+        ? new Date(user.lemonSqueezyCurrentPeriodEnd) > new Date()
         : false;
-  
+
       if (!hasActiveSubscription) {
-        throw new TRPCError({ 
+        throw new TRPCError({
           code: "FORBIDDEN",
           message: "Please subscribe to upload web pages"
         });
       }
-  
+
       // Determine upload limit based on plan
-      const uploadLimit = user.lemonSqueezyPriceId === "716134" // Business plan
-      ? 1000 
-      : 50; // Pro plan default
-  
+      const uploadLimit = user.lemonSqueezyPriceId === "729862" // Business plan
+        ? 1000
+        : 50; // Pro plan default
+
       // Check if user has reached their limit
       if (user.monthlyUrlUploads >= uploadLimit) {
         throw new TRPCError({
@@ -183,30 +183,30 @@ export const appRouter = router({
           message: `Monthly web page upload limit (${uploadLimit}) reached`
         });
       }
-  
+
       // Parse the URL
       const urlObj = new URL(input.url);
       const hostname = urlObj.hostname;
-       
+
       // Detect URL type
       let fileType = "Web Page"; // Default type for non-YouTube URLs
       const nameURL = input.name || hostname;
-      
+
       // YouTube URL detection patterns
       const youtubePatterns = [
         /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+/,
         /^(https?:\/\/)?(www\.)?youtube\.com\/watch\?v=.+/,
         /^(https?:\/\/)?(www\.)?youtu\.be\/.+/
       ];
-      
+
       // Check if URL is a YouTube link
       if (youtubePatterns.some(pattern => pattern.test(input.url))) {
         fileType = "Youtube Video";
       }
-  
+
       // Generate unique key
       const uniqueKey = `url-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-  
+
       // Increment the URL upload counter
       await db.user.update({
         where: { id: userId as string },
@@ -216,7 +216,7 @@ export const appRouter = router({
           }
         }
       });
-  
+
       // Create the file record with explicit type
       const urlFile = await db.file.create({
         data: {
@@ -228,14 +228,14 @@ export const appRouter = router({
           type: fileType, // Explicitly set to "Youtube Video" or "Web Page"
         },
       });
-  
+
       return urlFile;
     }),
   getUserSubscription: privateProcedure.query(async ({ ctx }) => {
     const { userId } = ctx;
-    
+
     const user = await db.user.findUnique({
-      where: { id: userId ?? undefined},
+      where: { id: userId ?? undefined },
       select: {
         lemonSqueezyCustomerId: true,
         lemonSqueezySubscriptionId: true,
@@ -243,20 +243,20 @@ export const appRouter = router({
         lemonSqueezyCurrentPeriodEnd: true,
       },
     });
-    
+
     if (!user) throw new TRPCError({ code: "NOT_FOUND" });
-    
-    const hasActiveSubscription = user.lemonSqueezyCurrentPeriodEnd 
-      ? new Date(user.lemonSqueezyCurrentPeriodEnd) > new Date() 
+
+    const hasActiveSubscription = user.lemonSqueezyCurrentPeriodEnd
+      ? new Date(user.lemonSqueezyCurrentPeriodEnd) > new Date()
       : false;
-      
-    const planMap: Record<string, {name: string, type: "pro" | "business"}> = {
-      "716126": {name: "Pro Plan", type: "pro"},
-      "716134": {name: "Business Plan", type: "business"},
+
+    const planMap: Record<string, { name: string, type: "pro" | "business" }> = {
+      "729861": { name: "Pro Plan", type: "pro" },
+      "729862": { name: "Business Plan", type: "business" },
     };
-    
+
     const planInfo = user.lemonSqueezyPriceId ? planMap[user.lemonSqueezyPriceId] : null;
-    
+
     return {
       isSubscribed: hasActiveSubscription,
       plan: hasActiveSubscription && planInfo ? planInfo.name : "Free",
@@ -269,7 +269,7 @@ export const appRouter = router({
   }),
   getUserUploadStats: privateProcedure.query(async ({ ctx }) => {
     const { userId } = ctx;
-    
+
     const user = await db.user.findUnique({
       where: { id: userId ?? undefined },
       select: {
@@ -278,9 +278,9 @@ export const appRouter = router({
         lastUploadReset: true,
       },
     });
-    
+
     if (!user) throw new TRPCError({ code: "NOT_FOUND" });
-    
+
     return {
       monthlyUploads: user.monthlyPdfUploads,
       monthlyUrlUploads: user.monthlyUrlUploads,

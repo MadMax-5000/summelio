@@ -24,7 +24,6 @@ const YChatInput = ({ isDisabled }: YChatInputProps) => {
                                 ref={textareaRef}
                                 placeholder="Ask about this YouTube video..."
                                 rows={1}
-                                maxRows={4}
                                 autoFocus
                                 onChange={handleInputChange}
                                 value={message}

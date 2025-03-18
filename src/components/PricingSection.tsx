@@ -68,8 +68,8 @@ export default function PricingSection() {
 
   const getCurrentPlan = () => {
     if (!subscription?.isSubscribed) return null;
-    if (subscription.priceId === "716126") return "Pro";
-    if (subscription.priceId === "716134") return "Business";
+    if (subscription.priceId === "729861") return "Pro";
+    if (subscription.priceId === "729862") return "Business";
     return subscription.plan; // Fallback
   };
 
@@ -170,13 +170,13 @@ export default function PricingSection() {
                 <span className="text-gray-500">monthly</span>
               </div>
               <button
-                onClick={() => handlePlanSelection("pro", "716126")}
+                onClick={() => handlePlanSelection("pro", "729861")}
                 disabled={isPurchasing}
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-11 font-medium mt-4 rounded-md disabled:opacity-70"
               >
                 {isPurchasing
                   ? "Processing..."
-                  : isPlanActive("716126")
+                  : isPlanActive("729861")
                     ? "Current Plan"
                     : getCurrentPlan() === "Business"
                       ? "Downgrade"
@@ -211,13 +211,13 @@ export default function PricingSection() {
                 <span className="text-indigo-100">monthly</span>
               </div>
               <button
-                onClick={() => handlePlanSelection("business", "716134")}
+                onClick={() => handlePlanSelection("business", "729862")}
                 disabled={isPurchasing}
                 className="w-full bg-white hover:bg-indigo-50 text-indigo-700 h-11 font-medium mt-4 rounded-md disabled:opacity-70"
               >
                 {isPurchasing
                   ? "Processing..."
-                  : isPlanActive("716134")
+                  : isPlanActive("729862")
                     ? "Current Plan"
                     : getCurrentPlan() === "Pro"
                       ? "Upgrade"
