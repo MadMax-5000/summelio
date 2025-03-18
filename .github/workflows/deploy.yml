@@ -3,39 +3,36 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main 
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
+    
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
+    
     - name: Add server to known hosts
       run: |
         mkdir -p ~/.ssh
         ssh-keyscan -H 69.62.106.240 >> ~/.ssh/known_hosts
-
+    
     - name: Deploy to server
       run: |
         ssh root@69.62.106.240 << 'EOF'
-          # Set PATH to include pnpm global bin
-          export PATH=$PATH:/root/.local/share/pnpm/global/5/bin
-          
-          # Set PATH to common locations where PM2 might be installed
-          export PATH=$PATH:/usr/local/bin:/usr/bin:/root/.local/share/pnpm/global/5/node_modules/.bin:/root/.npm-global/bin
+          # Set PATH to include pnpm global bin and PM2
+          export PATH=$PATH:/root/.local/share/pnpm/global/5/bin:/root/.local/share/pnpm
           
           cd /var/www/nextjs/summelio
           git pull origin main
           pnpm install
           
-          # Use full path to PM2 if regular command fails
-          pm2 restart nextjs || /root/.local/share/pnpm/global/5/node_modules/.bin/pm2 restart nextjs
+          # Use the full path to PM2
+          /root/.local/share/pnpm/pm2 restart nextjs || /root/.local/share/pnpm/pm2 start npm --name "nextjs" -- start
         EOF
