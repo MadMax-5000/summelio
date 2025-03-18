@@ -198,7 +198,7 @@ export default function PricingSection() {
           {/* Business Plan */}
           <div className="bg-indigo-400 rounded-2xl shadow-sm p-8 border-2 border-indigo-500 relative transition-colors duration-200 hover:border-indigo-700">
             <div className="absolute top-0 right-0 bg-indigo-600 text-white text-sm font-medium px-3 py-1 rounded-bl-lg rounded-tr-xl">
-              MOST POPULAR
+              MOST POPULAR !
             </div>
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4 text-white">Business</h2>
