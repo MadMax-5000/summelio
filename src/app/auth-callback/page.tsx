@@ -18,13 +18,13 @@ const AuthCallback = () => {
         const subscription = await utils.getUserSubscription.fetch();
         if (!subscription.isSubscribed) {
           toast.error("You need to purchase a subscription to continue.");
-          setTimeout(() => router.push("/#pricing"), 3000); // Delay for animation
+          setTimeout(() => router.push("/#pricing"), 3000);
         } else if (origin) {
           toast.message("You will be redirected soon.");
-          setTimeout(() => router.push(`/${origin}`), 3000); // Delay for animation
+          setTimeout(() => router.push(`/${origin}`), 3000);
         } else {
           toast.message("Redirecting to your dashboard...");
-          setTimeout(() => router.push("/dashboard"), 3000); // Delay for animation
+          setTimeout(() => router.push("/dashboard"), 3000);
         }
       }
     },
@@ -51,7 +51,8 @@ const AuthCallback = () => {
 
   return (
     <div className="w-full mt-24 flex justify-center">
-      <Toaster position="top-center" />
+      {/* Either remove this if a global Toaster exists, or set to bottom-right */}
+      <Toaster position="bottom-right" />
       <div className="flex flex-col items-center gap-2 animate-pulse">
         <Loader2 className="h-8 w-8 animate-spin text-zinc-800" />
         <h3 className="font-semibold text-xl">Setting up your account...</h3>

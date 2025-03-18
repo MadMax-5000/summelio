@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { ArrowRightIcon, Menu, X } from "lucide-react";
 
 export function Navbar() {
@@ -21,7 +21,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
-            src="/images/SUMMELIO.png"
+            src="/images/logo-summelio.png"
             alt="Logo"
             width={50}
             height={50}
@@ -48,11 +48,18 @@ export function Navbar() {
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-6">
           {isSignedIn ? (
-            <Link href="/dashboard">
-              <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center gap-3 px-6 py-2 text-base">
-                Dashboard <ArrowRightIcon className="w-5 h-5" />
-              </Button>
-            </Link>
+            <>
+              <SignOutButton>
+                <Button variant="ghost" className="text-indigo-700 hover:bg-indigo-100 px-4 py-2 text-base">
+                  Logout
+                </Button>
+              </SignOutButton>
+              <Link href="/dashboard">
+                <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center gap-3 px-6 py-2 text-base">
+                  Dashboard <ArrowRightIcon className="w-5 h-5" />
+                </Button>
+              </Link>
+            </>
           ) : (
             <>
               <SignInButton>
@@ -121,11 +128,18 @@ export function Navbar() {
 
             <div className="flex flex-col space-y-3 pt-2">
               {isSignedIn ? (
-                <Link href="/dashboard">
-                  <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center justify-center gap-3 px-6 py-2 text-base w-full">
-                    Dashboard <ArrowRightIcon className="w-5 h-5" />
-                  </Button>
-                </Link>
+                <>
+                  <SignOutButton>
+                    <Button variant="ghost" className="text-indigo-700 hover:bg-indigo-100 px-4 py-2 text-base w-full">
+                      Logout
+                    </Button>
+                  </SignOutButton>
+                  <Link href="/dashboard">
+                    <Button className="bg-indigo-700 text-white hover:bg-indigo-900 flex items-center justify-center gap-3 px-6 py-2 text-base w-full">
+                      Dashboard <ArrowRightIcon className="w-5 h-5" />
+                    </Button>
+                  </Link>
+                </>
               ) : (
                 <>
                   <SignInButton>

@@ -4,19 +4,11 @@ import { NextRequest, NextResponse, NextFetchEvent } from "next/server";
 const clerkMW = clerkMiddleware();
 
 export async function middleware(req: NextRequest, event: NextFetchEvent) {
-  // Pass both 'req' and 'event' to the clerk middleware.
+  // Let Clerk handle session management
   const response = await clerkMW(req, event);
 
-  // Ensure we have a NextResponse to work with for cookie operations.
-  const nextResponse =
-    response instanceof NextResponse ? response : NextResponse.next();
-
-  // Custom cookie logic: set "sessionId" if it does not exist.
-  if (!req.cookies.get("sessionId")) {
-    nextResponse.cookies.set("sessionId", crypto.randomUUID());
-  }
-
-  return nextResponse;
+  // Return the response from Clerk (or a default NextResponse)
+  return response instanceof NextResponse ? response : NextResponse.next();
 }
 
 export const config = {
