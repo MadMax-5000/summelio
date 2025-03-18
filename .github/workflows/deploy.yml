@@ -26,6 +26,7 @@ jobs:
     - name: Deploy to server
       run: |
         ssh root@69.62.106.240 << 'EOF'
+          export PATH=$PATH:/root/.local/share/pnpm/global/5/bin
           cd /var/www/nextjs/summelio
           git pull origin main
           pnpm install
