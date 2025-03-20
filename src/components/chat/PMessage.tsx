@@ -1,9 +1,14 @@
 import { cn } from "@/lib/utils";
 import { ExtendedMessage } from "@/types/Pmessage";
-import { Icons } from "../Icons";
 import ReactMarkdown from "react-markdown";
-import { format } from "date-fns";
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
+import { Copy, Check } from "lucide-react"; // Import icons
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"; // Import Tooltip components from shadcn
 
 interface PMessageProps {
   message: ExtendedMessage;
@@ -12,44 +17,51 @@ interface PMessageProps {
 
 const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
   ({ message, isNextMesageSamePerson }, ref) => {
+    const [copied, setCopied] = useState(false);
+
+    const copyToClipboard = (text: string) => {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1500); // Reset after 1.5 seconds
+        })
+        .catch((err) => {
+          console.error("Failed to copy text: ", err);
+        });
+    };
+
     return (
       <div
         ref={ref}
-        className={cn("flex items-end", {
+        className={cn("flex items-start space-x-2", {
           "justify-end": message.isUserMessage,
+          "justify-start": !message.isUserMessage,
         })}
       >
+        {!message.isUserMessage && (
+          <img
+            src="/images/summelio-black-gray.png"
+            alt="Profile"
+            className="w-8 h-8 rounded-full"
+          />
+        )}
         <div
-          className={cn(
-            "relative flex h-6 aspect-square items-center justify-center ",
-            {
-              "order-2 bg-indigo-600 rounded-sm": message.isUserMessage,
-              "order-1 bg-gray-800 rounded-sm": !message.isUserMessage,
-              invisible: isNextMesageSamePerson,
-            }
-          )}
-        >
-          {message.isUserMessage ? (
-            <Icons.user className="fill-gray-200 text-gray-200 h-3/4 w-3/4" />
-          ) : (
-            <Icons.logo className="fill-gray-300 h-3/4 w-3/4" />
-          )}
-        </div>
-        <div
-          className={cn("flex flex-col space-y-2 text-base max-w-md mx-2", {
-            "order-1 items-end": message.isUserMessage,
-            "order-2 items-start": !message.isUserMessage,
+          className={cn("flex flex-col space-y-1 text-base max-w-md", {
+            "items-end": message.isUserMessage,
+            "items-start": !message.isUserMessage,
           })}
         >
           <div
-            className={cn("px-4 py-2 rounded-lg inline-block", {
-              "bg-indigo-600 text-gray-100": message.isUserMessage,
-              "bg-gray-300 text-gray-900": !message.isUserMessage,
+            className={cn("relative px-4 py-2 rounded-lg inline-block", {
+              "bg-gray-200 text-black": message.isUserMessage,
+              "bg-white text-gray-900": !message.isUserMessage,
               "rounded-br-none":
                 !isNextMesageSamePerson && message.isUserMessage,
               "rounded-bl-none":
                 !isNextMesageSamePerson && !message.isUserMessage,
             })}
+            style={{ fontSize: "15px" }}
           >
             {typeof message.text === "string" ? (
               <ReactMarkdown
@@ -58,7 +70,7 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
                     <p
                       {...props}
                       className={cn("prose", {
-                        "text-zinc-50": message.isUserMessage,
+                        "text-black": message.isUserMessage,
                       })}
                     >
                       {children}
@@ -71,17 +83,29 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
             ) : (
               message.text
             )}
-            {message.id !== "loading-message" ? (
-              <div
-                className={cn("text-xs select-none mt-2 w-full text-right", {
-                  "text-gray-500": !message.isUserMessage,
-                  "text-indigo-300": message.isUserMessage,
-                })}
-              >
-                {format(new Date(message.createdAt), "HH:mm")}
-              </div>
-            ) : null}
           </div>
+          {/* Only render the copy button if it's not a user message and if the message is complete */}
+          {!message.isUserMessage &&
+            (message.isComplete === undefined || message.isComplete) && (
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => copyToClipboard(message.text as string)}
+                      className="bg-white text-gray-600 hover:bg-gray-100 p-2 rounded flex items-center justify-center transition-all duration-200 ml-4 mt-1"
+                    >
+                      {copied ? (
+                        <Check className="w-4 h-4 text-green-500 transition-all duration-200" />
+                      ) : (
+                        <Copy className="w-4 h-4 transition-all duration-200" />
+                      )}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>{copied ? "Copied!" : "Copy"}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+
         </div>
       </div>
     );

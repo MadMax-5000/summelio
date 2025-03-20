@@ -19,7 +19,7 @@ export const ChatWrapperURLWrapper = ({
   return (
     <div className="relative min-h-full bg-white flex flex-col justify-between gap-2">
       <div className="flex-1 text-black justify-between flex flex-col bg-gray-white">
-        <Messages messages={messages} />
+        <Messages messages={messages} setInput={setInput} />
       </div>
       <ChatInput
         input={input}

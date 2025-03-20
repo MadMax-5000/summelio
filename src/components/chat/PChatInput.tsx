@@ -39,7 +39,7 @@ const PChatInput = ({ isDisabled }: PChatInputProps) => {
       <PromptInputTextarea
         placeholder="Ask your first question..."
         ref={textareRef}
-      // Removed the onKeyDown handler to avoid double submission
+      // Removed the onKeyDown handler to avoid 
       />
       <PromptInputActions className="justify-end pt-2">
         <PromptInputAction tooltip={isLoading ? "Stop generation" : "Send message"}>

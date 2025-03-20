@@ -5,6 +5,14 @@ import { z } from "zod";
 import { currentUser } from "@clerk/nextjs/server";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 
+function extractYoutubeVideoId(url: string): string | null {
+  // Regular expression to match YouTube URLs
+  const regex =
+    /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
+}
+
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
@@ -189,8 +197,8 @@ export const appRouter = router({
       const hostname = urlObj.hostname;
 
       // Detect URL type
-      let fileType = "Web Page"; // Default type for non-YouTube URLs
-      const nameURL = input.name || hostname;
+      let fileType = "Web Page";
+      let nameURL = input.name || hostname;
 
       // YouTube URL detection patterns
       const youtubePatterns = [
@@ -202,6 +210,29 @@ export const appRouter = router({
       // Check if URL is a YouTube link
       if (youtubePatterns.some(pattern => pattern.test(input.url))) {
         fileType = "Youtube Video";
+        // Try to extract the video ID
+        const videoId = extractYoutubeVideoId(input.url);
+        if (videoId) {
+          try {
+            // Call the YouTube Data API to get the video details
+            const apiKey = process.env.YOUTUBE_API_KEY;
+            if (!apiKey) {
+              throw new Error("Missing YouTube API key");
+            }
+            const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`;
+            const response = await fetch(apiUrl);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.items && data.items.length > 0) {
+                nameURL = data.items[0].snippet.title
+              }
+            } else {
+              console.error("YouTube API error:", response.statusText);
+            }
+          } catch (error) {
+            console.error("Error fetching YouTube video data:", error);
+          }
+        }
       }
 
       // Generate unique key
@@ -225,7 +256,7 @@ export const appRouter = router({
           userId: userId,
           url: input.url,
           uploadStatus: "PROCESSING",
-          type: fileType, // Explicitly set to "Youtube Video" or "Web Page"
+          type: fileType,
         },
       });
 

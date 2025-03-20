@@ -10,6 +10,8 @@ type OmitText = Omit<Messages[number], "text">;
 
 type ExtendedText = {
   text: string | React.JSX.Element;
+  isComplete?: boolean;
+
 };
 
 export type ExtendedMessage = OmitText & ExtendedText;

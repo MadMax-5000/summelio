@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { useResizeDetector } from "react-resize-detector";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,12 +46,19 @@ const PDFRenderer = ({ url }: PDFRendererProps) => {
   const [rotation, setRotation] = useState<number>(0);
   const [renderedScale, setRenderedScale] = useState<number | null>(null);
   const isLoading = renderedScale !== scale;
+
+  const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
   const CustomPageValidator = z.object({
     page: z
       .string()
       .refine((num) => Number(num) > 0 && Number(num) <= numPages!),
   });
+
   type TCustomPageValidator = z.infer<typeof CustomPageValidator>;
+
   const {
     register,
     handleSubmit,
@@ -63,22 +70,81 @@ const PDFRenderer = ({ url }: PDFRendererProps) => {
     },
     resolver: zodResolver(CustomPageValidator),
   });
+
+  // Setup intersection observer to track current page
+  useEffect(() => {
+    if (!numPages || !pageRefs.current.length) return;
+    if (!containerRef.current) return;
+
+    const options = {
+      root: containerRef.current,
+      rootMargin: "0px",
+      threshold: 0.5,
+    };
+
+    const callback: IntersectionObserverCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const pageId = entry.target.id;
+          const pageNumber = parseInt(pageId.split("-")[1]);
+          setCurrPage(pageNumber);
+          setValue("page", String(pageNumber), { shouldValidate: false });
+        }
+      });
+    };
+
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+    observerRef.current = new IntersectionObserver(callback, options);
+    pageRefs.current.forEach((pageRef) => {
+      if (pageRef) {
+        observerRef.current?.observe(pageRef);
+      }
+    });
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [numPages, setValue, containerRef.current]);
+
   const handlePageSubmit = ({ page }: TCustomPageValidator) => {
-    setCurrPage(Number(page));
-    setValue("page", String(page));
+    const pageNumber = Number(page);
+    goToPage(pageNumber);
+  };
+
+  const goToPage = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= (numPages || 1)) {
+      setCurrPage(pageNumber);
+      setValue("page", String(pageNumber), { shouldValidate: false });
+      if (pageRefs.current[pageNumber - 1]) {
+        pageRefs.current[pageNumber - 1]?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  };
+
+  // Explicitly define the ref callback to return void.
+  const setContainerRef = (el: HTMLDivElement | null): void => {
+    containerRef.current = el;
+    return;
   };
 
   return (
     <div className="w-full bg-white rounded-md shadow flex flex-col items-center">
       <div className="h-14 w-full border-b border-gray-200 flex items-center justify-between px-2">
-        <div className="flex items-center gap-1.5 ">
+        <div className="flex items-center gap-1.5">
           <Button
             disabled={currPage <= 1}
             aria-label="previous page"
             variant="ghost"
             onClick={() => {
-              setCurrPage((prev) => (prev - 1 > 1 ? prev - 1 : 1));
-              setValue("page", String(currPage - 1));
+              const newPage = currPage - 1 > 1 ? currPage - 1 : 1;
+              goToPage(newPage);
             }}
           >
             <ChevronLeftIcon className="size-4" />
@@ -106,10 +172,9 @@ const PDFRenderer = ({ url }: PDFRendererProps) => {
             aria-label="next page"
             variant="ghost"
             onClick={() => {
-              setCurrPage((prev) =>
-                prev + 1 > numPages! ? numPages! : prev + 1
-              );
-              setValue("page", String(currPage + 1));
+              const newPage =
+                currPage + 1 > (numPages || 1) ? (numPages || 1) : currPage + 1;
+              goToPage(newPage);
             }}
           >
             <ChevronRightIcon className="size-4" />
@@ -120,37 +185,21 @@ const PDFRenderer = ({ url }: PDFRendererProps) => {
             <DropdownMenuTrigger asChild>
               <Button className="gap-1.5" aria-label="zoom" variant="ghost">
                 <Maximize2 className="size-4" />
-                {scale * 100}
+                {scale * 100}%
                 <ChevronDownIcon className="size-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem
-                onSelect={() => {
-                  setScale(1);
-                }}
-              >
+              <DropdownMenuItem onSelect={() => setScale(1)}>
                 100%
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => {
-                  setScale(1.5);
-                }}
-              >
+              <DropdownMenuItem onSelect={() => setScale(1.5)}>
                 150%
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => {
-                  setScale(2);
-                }}
-              >
+              <DropdownMenuItem onSelect={() => setScale(2)}>
                 200%
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => {
-                  setScale(2.5);
-                }}
-              >
+              <DropdownMenuItem onSelect={() => setScale(2.5)}>
                 250%
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -166,7 +215,13 @@ const PDFRenderer = ({ url }: PDFRendererProps) => {
         </div>
       </div>
       <div className="flex-1 w-full max-h-screen">
-        <SimpleBar autoHide={false} className="max-h-[calc(100vh-10rem)]">
+        <SimpleBar
+          autoHide={false}
+          className="max-h-[calc(100vh-10rem)]"
+          scrollableNodeProps={{
+            ref: setContainerRef as React.Ref<HTMLDivElement>
+          }}
+        >
           <div ref={ref}>
             <Document
               loading={
@@ -178,34 +233,62 @@ const PDFRenderer = ({ url }: PDFRendererProps) => {
                 toast("Error Loading PDF");
               }}
               file={url}
-              className="max-h-full "
+              className="max-h-full"
               onLoadSuccess={({ numPages }) => {
                 setNumPages(numPages);
+                pageRefs.current = Array(numPages).fill(null);
               }}
             >
-              {isLoading && renderedScale ? (
-                <Page
-                  width={width ? width : 1}
-                  pageNumber={currPage}
-                  scale={scale}
-                  rotate={rotation}
-                  key={"@" + renderedScale}
-                />
-              ) : null}
-              <Page
-                className={cn(isLoading ? "hidden" : "")}
-                width={width ? width : 1}
-                pageNumber={currPage}
-                scale={scale}
-                rotate={rotation}
-                key={"@" + scale}
-                loading={
-                  <div className="flex justify-center">
-                    <Loader2 className="my-24 size-6 animate-spin" />
+              {numPages &&
+                Array.from(new Array(numPages), (_, index) => (
+                  <div
+                    key={`page_${index + 1}`}
+                    className={cn(
+                      "mb-8",
+                      currPage === index + 1 ? "scroll-mt-4" : ""
+                    )}
+                    ref={(el) => { pageRefs.current[index] = el; }}
+                    id={`page-${index + 1}`}
+                  >
+                    <div className="relative">
+                      <div
+                        className={cn(
+                          "absolute left-2 top-2 bg-gray-800 text-white px-2 py-1 rounded-md text-xs opacity-75",
+                          currPage === index + 1
+                            ? "bg-indigo-600"
+                            : "bg-gray-800"
+                        )}
+                      >
+                        Page {index + 1}
+                      </div>
+                      {isLoading && renderedScale ? (
+                        <Page
+                          width={width ? width : 1}
+                          pageNumber={index + 1}
+                          scale={scale}
+                          rotate={rotation}
+                          key={`loading_${index + 1}_${renderedScale}`}
+                        />
+                      ) : null}
+                      <Page
+                        className={cn(isLoading ? "hidden" : "")}
+                        width={width ? width : 1}
+                        pageNumber={index + 1}
+                        scale={scale}
+                        rotate={rotation}
+                        key={`page_${index + 1}_${scale}`}
+                        loading={
+                          <div className="flex justify-center">
+                            <Loader2 className="my-24 size-6 animate-spin" />
+                          </div>
+                        }
+                        onRenderSuccess={() => {
+                          if (index === 0) setRenderedScale(scale);
+                        }}
+                      />
+                    </div>
                   </div>
-                }
-                onRenderSuccess={() => setRenderedScale(scale)}
-              />
+                ))}
             </Document>
           </div>
         </SimpleBar>

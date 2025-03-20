@@ -35,6 +35,7 @@ import {
 import Skeleton from "react-loading-skeleton";
 import { SignOutButton } from "@clerk/nextjs"; // Import SignOutButton
 import Link from "next/link";
+import Image from "next/image";
 
 const items = [
   { title: "Home", url: "/dashboard", icon: Home },
@@ -62,10 +63,12 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="offcanvas">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xl mb-4 text-indigo-600 mt-2">
+
+          <SidebarGroupLabel className="text-xl mb-4 text-gray-800 mt-2 gap-2">
+            <Image src="/images/summelio-black.png" alt="summelio log" height={30} width={30} />
             Summelio
           </SidebarGroupLabel>
           <SidebarGroupContent>

@@ -1,9 +1,15 @@
 "use client";
 
-import { Send } from "lucide-react";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
-import { type useChat } from "ai/react";
+import {
+  PromptInput,
+  PromptInputAction,
+  PromptInputActions,
+  PromptInputTextarea,
+} from "./ui/prompt-input";
+import { Button } from "@/components/ui/button";
+import { ArrowUp, Square } from "lucide-react";
+import { useRef } from "react";
+import type { useChat } from "ai/react";
 
 type HandleInputChange = ReturnType<typeof useChat>["handleInputChange"];
 type HandleSubmit = ReturnType<typeof useChat>["handleSubmit"];
@@ -14,45 +20,56 @@ interface ChatInputProps {
   handleInputChange: HandleInputChange;
   handleSubmit: HandleSubmit;
   setInput: SetInput;
+  // Optionally, add isLoading if available: isLoading?: boolean;
 }
 
 const ChatInput = ({
+  input,
   handleInputChange,
   handleSubmit,
-  input,
   setInput,
 }: ChatInputProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const onSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!input.trim()) return;
+    handleSubmit(e as React.FormEvent<HTMLFormElement>);
+    setInput(""); // clear the input after submission
+    textareaRef.current?.focus();
+  };
+
   return (
-    <div className="absolute bottom-0 left-0 w-full">
-      <div className="mx-2 flex flex-row gap-3 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-        <div className="relative flex h-full flex-1 items-stretch md:flex-col">
-          <div className="relative flex flex-col w-full flex-grow p-4">
-            <form onSubmit={handleSubmit} className="relative">
-              <Textarea
-                placeholder="Ask Anything..."
-                minLength={4}
-                onChange={handleInputChange}
-                value={input}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit(
-                      e as unknown as React.FormEvent<HTMLFormElement>
-                    );
-                    setInput("");
-                  }
-                }}
-                autoFocus
-                className="resize-none pr-12 text-base py-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
-              />
-              <Button type="submit" className="absolute bottom-1.5 right-[8px]">
-                <Send className="size-4" />
-              </Button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <PromptInput
+      value={input}
+      onValueChange={(value) =>
+        handleInputChange({
+          target: { value },
+        } as React.ChangeEvent<HTMLTextAreaElement>)
+      }
+      isLoading={false} // update if you have an isLoading state to pass
+      onSubmit={onSubmit}
+      className="w-full max-w-[--breakpoint-md]"
+    >
+      <PromptInputTextarea
+        placeholder="Ask your first question..."
+        ref={textareaRef}
+      />
+      <PromptInputActions className="justify-end pt-2">
+        <PromptInputAction tooltip="Send message">
+          <Button
+            variant="default"
+            size="icon"
+            className="h-8 w-8 rounded-full"
+            onClick={onSubmit}
+            disabled={!input.trim()}
+          >
+            {/* Optionally, you can conditionally show a loading icon if needed */}
+            <ArrowUp className="size-5" />
+          </Button>
+        </PromptInputAction>
+      </PromptInputActions>
+    </PromptInput>
   );
 };
 
