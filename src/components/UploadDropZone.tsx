@@ -161,7 +161,7 @@ const UploadDropZone = () => {
               {/* Clicking this label will trigger the hidden input */}
               <label
                 htmlFor="upload-input"
-                className="font-semibold underline cursor-pointer"
+                className="font-semibold underline cursor-pointer text-indigo-500 hover:text-indigo-600"
               >
                 Click to upload
               </label>{" "}
@@ -175,11 +175,16 @@ const UploadDropZone = () => {
                   <Input
                     type="text"
                     placeholder="Paste Your Web Page URL here"
-                    className="w-full border-gray-200 focus:ring-gray-600 text-base"
+                    className="w-full border-gray-200 text-base focus:outline-none focus:ring-0"
+                    style={{
+                      outline: 'none !important',
+                      boxShadow: 'none !important',
+                    }}
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
                     disabled={isUploading || isUrlUploading}
                   />
+
                 </div>
                 <Button
                   type="submit"

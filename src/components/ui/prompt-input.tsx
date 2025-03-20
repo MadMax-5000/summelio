@@ -28,7 +28,7 @@ type PromptInputContextType = {
 const PromptInputContext = createContext<PromptInputContextType>({
   isLoading: false,
   value: "",
-  setValue: () => {},
+  setValue: () => { },
   maxHeight: 240,
   onSubmit: undefined,
   disabled: false,
@@ -81,7 +81,7 @@ function PromptInput({
       >
         <div
           className={cn(
-            "border-zinc-200 bg-white rounded-3xl border p-2 shadow-xs dark:border-zinc-800 dark:bg-zinc-950",
+            "border-zinc-300 bg-white rounded-3xl border p-2 shadow-xs dark:border-zinc-800 dark:bg-zinc-950",
             className
           )}
         >

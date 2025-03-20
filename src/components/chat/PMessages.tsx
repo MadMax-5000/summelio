@@ -3,7 +3,7 @@ import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { MessageSquare } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import PMessage from "./PMessage";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { ChatContext } from "./PChatContext";
 import { useIntersection } from "@mantine/hooks";
 import { Loader } from "../ui/loader";
@@ -29,7 +29,7 @@ const PMessages = ({ fileId }: PMessagesProps) => {
     }
   );
 
-  // Reverse messages so that older messages are rendered at the top.
+  // Reverse messages so older messages are at the top
   const messages = data?.pages.flatMap((page) => page.messages).reverse() || [];
 
   const loadingMessage = {
@@ -45,7 +45,7 @@ const PMessages = ({ fileId }: PMessagesProps) => {
 
   const combinedMessages = [...messages, ...(isAiThinking ? [loadingMessage] : [])];
 
-  // Infinite scroll for older messages (triggered when the top of the list is visible)
+  // Infinite scroll for older messages
   const { ref, entry } = useIntersection({
     root: messagesContainerRef.current,
     threshold: 1,
@@ -56,7 +56,7 @@ const PMessages = ({ fileId }: PMessagesProps) => {
     }
   }, [entry, fetchNextPage]);
 
-  // Scroll the last message into view when new messages arrive
+  // Scroll to the last message when new messages are added
   useEffect(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
@@ -66,7 +66,8 @@ const PMessages = ({ fileId }: PMessagesProps) => {
   return (
     <div
       ref={messagesContainerRef}
-      className="flex flex-col gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
+      className="flex flex-col gap-2 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2"
+      style={{ maxHeight: "400px" }} // Fixed height matching placeholders
     >
       {combinedMessages && combinedMessages.length > 0 ? (
         combinedMessages.map((message, i) => {

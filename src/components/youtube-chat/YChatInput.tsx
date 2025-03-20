@@ -1,58 +1,64 @@
+"use client"
 
-import { Send } from "lucide-react";
-import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
-import { useContext, useRef } from "react";
-import { ChatContext } from "./YChatcontext";
+import {
+    PromptInput,
+    PromptInputAction,
+    PromptInputActions,
+    PromptInputTextarea,
+} from "../ui/prompt-input"
+import { Button } from "@/components/ui/button"
+import { ArrowUp, Square } from "lucide-react"
+import { useContext, useRef } from "react"
+import { ChatContext } from "./YChatcontext"
 
-interface YChatInputProps {
-    isDisabled?: boolean;
+interface PChatInputProps {
+    isDisabled?: boolean
 }
 
-const YChatInput = ({ isDisabled }: YChatInputProps) => {
+const PChatInput = ({ isDisabled }: PChatInputProps) => {
     const { addMessage, handleInputChange, isLoading, message } =
-        useContext(ChatContext);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+        useContext(ChatContext)
+    const textareRef = useRef<HTMLTextAreaElement>(null)
+
+    const handleSubmit = () => {
+        if (!message.trim()) return
+        addMessage()
+        textareRef.current?.focus()
+    }
 
     return (
-        <div className="absolute bottom-0 left-0 w-full">
-            <div className="mx-2 flex flex-row gap-3 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-                <div className="flex h-full relative flex-1 items-stretch md:flex-col">
-                    <div className="relative flex flex-col w-full flex-grow p-4">
-                        <div className="relative ">
-                            <Textarea
-                                ref={textareaRef}
-                                placeholder="Ask about this YouTube video..."
-                                rows={1}
-                                autoFocus
-                                onChange={handleInputChange}
-                                value={message}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter" && !e.shiftKey) {
-                                        e.preventDefault();
-                                        addMessage();
-                                        textareaRef.current?.focus();
-                                    }
-                                }}
-                                className="resize-none pr-12 text-base py-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
-                            />
-                            <Button
-                                disabled={isLoading || isDisabled}
-                                onClick={() => {
-                                    addMessage();
-                                    textareaRef.current?.focus();
-                                }}
-                                aria-label="send message"
-                                className="absolute bottom-1.5 right-[8px]"
-                            >
-                                <Send className="size-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
+        <PromptInput
+            value={message}
+            onValueChange={(value) =>
+                handleInputChange({ target: { value } } as React.ChangeEvent<HTMLTextAreaElement>)
+            }
+            isLoading={isLoading}
+            onSubmit={handleSubmit}
+            className="w-full max-w-[--breakpoint-md]"
+        >
+            <PromptInputTextarea
+                placeholder="Ask your first question..."
+                ref={textareRef}
+            />
+            <PromptInputActions className="justify-end pt-2">
+                <PromptInputAction tooltip={isLoading ? "Stop generation" : "Send message"}>
+                    <Button
+                        variant="default"
+                        size="icon"
+                        className="h-8 w-8 rounded-full"
+                        onClick={handleSubmit}
+                        disabled={isLoading || isDisabled || !message.trim()}
+                    >
+                        {isLoading ? (
+                            <Square className="size-5 fill-current" />
+                        ) : (
+                            <ArrowUp className="size-5" />
+                        )}
+                    </Button>
+                </PromptInputAction>
+            </PromptInputActions>
+        </PromptInput>
+    )
+}
 
-export default YChatInput;
+export default PChatInput

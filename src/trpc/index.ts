@@ -207,6 +207,7 @@ export const appRouter = router({
         /^(https?:\/\/)?(www\.)?youtu\.be\/.+/
       ];
 
+      let youtubeSuccess = false;
       // Check if URL is a YouTube link
       if (youtubePatterns.some(pattern => pattern.test(input.url))) {
         fileType = "Youtube Video";
@@ -224,7 +225,8 @@ export const appRouter = router({
             if (response.ok) {
               const data = await response.json();
               if (data.items && data.items.length > 0) {
-                nameURL = data.items[0].snippet.title
+                nameURL = data.items[0].snippet.title;
+                youtubeSuccess = true;
               }
             } else {
               console.error("YouTube API error:", response.statusText);
@@ -255,7 +257,7 @@ export const appRouter = router({
           name: nameURL,
           userId: userId,
           url: input.url,
-          uploadStatus: "PROCESSING",
+          uploadStatus: fileType === "Youtube Video" && youtubeSuccess ? "SUCCESS" : "PROCESSING",
           type: fileType,
         },
       });

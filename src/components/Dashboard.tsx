@@ -1,6 +1,6 @@
 "use client"
 import { AppSidebar } from "./app-sidebar"
-import { Globe, File, Loader2, Youtube, MoreHorizontal, ExternalLink } from "lucide-react"
+import { Globe, File, Loader2, Youtube, MoreHorizontal, ExternalLink, ArrowRight } from "lucide-react"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import UploadDropZone from "./UploadDropZone"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -181,8 +181,9 @@ export default function Dashboard() {
                                     </div>
                                   ) : (
                                     <div className="flex items-center gap-1.5">
-                                      <ExternalLink className="h-3 w-3" />
+
                                       <span>Chat with AI</span>
+                                      <ArrowRight className="h-4 w-4" />
                                     </div>
                                   )}
                                 </Button>
@@ -200,7 +201,7 @@ export default function Dashboard() {
                                       disabled={currentlyDeletingFile === file.id}
                                     >
                                       {currentlyDeletingFile === file.id ? (
-                                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                       ) : (
                                         <span>Delete</span>
                                       )}

@@ -1,11 +1,5 @@
 import { type Message as TMessage } from "ai/react";
 import { Message } from "./Message";
-import { MessageSquare } from "lucide-react";
-import {
-  PromptInput,
-  PromptInputActions,
-  PromptInputTextarea,
-} from "./ui/prompt-input";
 import { PromptSuggestion } from "./ui/prompt-suggestion";
 
 interface MessagesProps {

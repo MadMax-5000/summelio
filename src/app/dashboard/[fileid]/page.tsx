@@ -36,10 +36,10 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
   return (
     <SidebarProvider defaultOpen={false}>
       <AppSidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col h-screen overflow-auto">
         {/* Header container for trigger and navbar */}
         <div className="flex flex-col mt-4">
-          <nav className="flex items-center bg-white text-black px-4 py-2 space-x-2">
+          <nav className="flex items-center bg-white text-black px-4 py-2 space-x-2 relative">
             <SidebarTrigger className="text-gray-600 mr-4" />
             <a href="/dashboard" className="text-sm font-medium hover:underline">
               Dashboard
