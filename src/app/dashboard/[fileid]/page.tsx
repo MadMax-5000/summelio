@@ -61,7 +61,7 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
               ) : file.type === "Youtube Video" ? (
                 <YouTubeRenderer url={file.url} />
               ) : (
-                <p>Unsupported content type</p>
+                <p>Unsupported content type. Please Upload another file</p>
               )}
             </div>
           </div>
