@@ -2,7 +2,7 @@ import { trpc } from "@/_trpc/client";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import Skeleton from "react-loading-skeleton";
 import PMessage from "../chat/PMessage";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { ChatContext } from "./YChatcontext";
 import { useIntersection } from "@mantine/hooks";
 import { Loader } from "../ui/loader";
@@ -54,7 +54,10 @@ const PMessages = ({ fileId }: PMessagesProps) => {
         ),
     };
 
-    const combinedMessages = [...messages, ...(isAiThinking ? [loadingMessage] : [])];
+    const combinedMessages = useMemo(() => {
+        return [...messages, ...(isAiThinking ? [loadingMessage] : [])];
+    }, [messages, isAiThinking]);
+
 
     // Infinite scroll for older messages
     const { ref, entry } = useIntersection({

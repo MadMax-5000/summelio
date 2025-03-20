@@ -3,7 +3,7 @@ import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { MessageSquare } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import PMessage from "./PMessage";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { ChatContext } from "./PChatContext";
 import { useIntersection } from "@mantine/hooks";
 import { Loader } from "../ui/loader";
@@ -43,7 +43,10 @@ const PMessages = ({ fileId }: PMessagesProps) => {
     ),
   };
 
-  const combinedMessages = [...messages, ...(isAiThinking ? [loadingMessage] : [])];
+  const combinedMessages = useMemo(() => {
+    return [...messages, ...(isAiThinking ? [loadingMessage] : [])];
+  }, [messages, isAiThinking]);
+
 
   // Infinite scroll for older messages
   const { ref, entry } = useIntersection({
@@ -94,7 +97,7 @@ const PMessages = ({ fileId }: PMessagesProps) => {
       ) : (
         <div className="flex-1 flex flex-col items-center justify-center gap-2">
           <MessageSquare className="size-8 text-indigo-500" />
-          <h3 className="font-semibold text-xl">You're all Set!</h3>
+          <h3 className="font-semibold text-xl">You&apos;re all Set!</h3>
           <p className="text-gray-500 text-sm">
             Ask your first question to get started.
           </p>

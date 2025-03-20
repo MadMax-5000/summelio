@@ -11,6 +11,7 @@ import React from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 interface PageProps {
   params: {
@@ -41,9 +42,9 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
         <div className="flex flex-col mt-4">
           <nav className="flex items-center bg-white text-black px-4 py-2 space-x-2 relative">
             <SidebarTrigger className="text-gray-600 mr-4" />
-            <a href="/dashboard" className="text-sm font-medium hover:underline">
+            <Link href="/dashboard" className="text-sm font-medium hover:underline">
               Dashboard
-            </a>
+            </Link>
             <ChevronRight className="h-4 w-4" />
             <span className="text-sm font-medium">{file.name || "File"}</span>
           </nav>

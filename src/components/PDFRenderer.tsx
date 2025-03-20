@@ -74,7 +74,6 @@ const PDFRenderer = ({ url }: PDFRendererProps) => {
   // Setup intersection observer to track current page
   useEffect(() => {
     if (!numPages || !pageRefs.current.length) return;
-    if (!containerRef.current) return;
 
     const options = {
       root: containerRef.current,
