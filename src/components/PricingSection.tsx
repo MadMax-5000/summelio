@@ -149,7 +149,7 @@ export default function PricingSection() {
 
   return (
     <section id="pricing">
-      <div className="w-full max-w-7xl mx-auto px-6 py-24">
+      <div className="w-full max-w-7xl mx-auto px-6 py-24 bg-gray-50">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-16 max-w-6xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
             Plans & Pricing
@@ -237,17 +237,6 @@ export default function PricingSection() {
           </div>
         </div>
       </div>
-
-      {isSignedIn && subscription && !isLoadingSubscription && subscription.isSubscribed && (
-        <div className="mt-8 text-center">
-          <p className="text-gray-700">
-            Your current plan: <span className="font-bold">{subscription.plan}</span>
-            {subscription.subscriptionEnds && (
-              <span> (renews on {new Date(subscription.subscriptionEnds).toLocaleDateString()})</span>
-            )}
-          </p>
-        </div>
-      )}
     </section>
   );
 }
