@@ -2,7 +2,7 @@ import { Facebook, Twitter, Linkedin, Github } from "lucide-react";
 
 const FooterSection = () => {
   return (
-    <footer className="bg-gray-100 text-gray-700 py-12 px-6 md:px-16">
+    <footer className="bg-gray-50 text-gray-700 py-12 px-6 md:px-16">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         {/* Brand & Social Icons */}
         <div className="text-center md:text-left">

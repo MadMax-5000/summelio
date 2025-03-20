@@ -64,7 +64,7 @@ const FAQSection = () => {
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className={`rounded-xl p-6 mb-4 transition ${activeIndex === index ? "bg-indigo-200" : "bg-indigo-100"
+              className={`rounded-xl p-6 mb-4 transition ${activeIndex === index ? "bg-indigo-100" : "bg-gray-100"
                 }`}
             >
               <button
