@@ -82,24 +82,13 @@ export async function POST(req: Request) {
       }
 
       try {
-        const existingUser = await db.user.findFirst({
-          where: { lemonSqueezyCustomerId: customerId },
+        // IMPORTANT CHANGE: First check if the specific user exists
+        const specificUser = await db.user.findUnique({
+          where: { id: userId },
         });
 
-        console.log("[Webhook] Existing user check result:", existingUser);
-
-        if (existingUser) {
-          console.log(`[Webhook] Updating existing subscription for customer ${customerId}`);
-          await db.user.update({
-            where: { lemonSqueezyCustomerId: customerId },
-            data: {
-              lemonSqueezySubscriptionId: subscriptionId,
-              lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
-              lemonSqueezyPriceId: variantId,
-            },
-          });
-        } else {
-          console.log(`[Webhook] Creating new subscription record for user ${userId}`);
+        if (specificUser) {
+          console.log(`[Webhook] Updating subscription for specified user ${userId}`);
           await db.user.update({
             where: { id: userId },
             data: {
@@ -109,6 +98,29 @@ export async function POST(req: Request) {
               lemonSqueezyPriceId: variantId,
             },
           });
+        } else {
+          // Fallback to checking by customer ID if needed
+          const existingUser = await db.user.findFirst({
+            where: { lemonSqueezyCustomerId: customerId },
+          });
+
+          console.log("[Webhook] Existing user check result:", existingUser);
+
+          if (existingUser) {
+            console.log(`[Webhook] Warning: User ID ${userId} not found, but customer ID ${customerId} exists. Consider investigating.`);
+            console.log(`[Webhook] Updating existing subscription for customer ${customerId}`);
+            await db.user.update({
+              where: { lemonSqueezyCustomerId: customerId },
+              data: {
+                lemonSqueezySubscriptionId: subscriptionId,
+                lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
+                lemonSqueezyPriceId: variantId,
+              },
+            });
+          } else {
+            console.log(`[Webhook] Error: User ${userId} not found in database`);
+            return Response.json({ message: "User not found" }, { status: 404 });
+          }
         }
         console.log(`[Webhook] Subscription ${subscriptionId} processed successfully`);
       } catch (dbError) {
@@ -119,11 +131,13 @@ export async function POST(req: Request) {
       const subscriptionId = body.data?.id.toString();
       const renewsAt = body.data?.attributes?.renews_at;
       const variantId = body.data?.attributes?.variant_id.toString();
+      const userId = body.meta?.custom_data?.user_id;
 
       console.log("[Webhook] subscription_updated event data:", {
         subscriptionId,
         renewsAt,
         variantId,
+        userId
       });
 
       if (!subscriptionId || !renewsAt || !variantId) {
@@ -132,7 +146,28 @@ export async function POST(req: Request) {
       }
 
       try {
-        // Check if user exists before attempting update
+        // First try to update by user ID if available
+        if (userId) {
+          const userByUserId = await db.user.findUnique({
+            where: { id: userId }
+          });
+
+          if (userByUserId) {
+            console.log(`[Webhook] Found user by user_id: ${userId}. Updating subscription information.`);
+            const updateResult = await db.user.update({
+              where: { id: userId },
+              data: {
+                lemonSqueezySubscriptionId: subscriptionId,
+                lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
+                lemonSqueezyPriceId: variantId,
+              },
+            });
+            console.log(`[Webhook] User updated via user_id successfully:`, updateResult);
+            return Response.json({ message: "Webhook processed successfully" });
+          }
+        }
+
+        // Fall back to subscription ID if user ID approach didn't work
         const userExists = await db.user.findUnique({
           where: { lemonSqueezySubscriptionId: subscriptionId }
         });
@@ -140,31 +175,7 @@ export async function POST(req: Request) {
         console.log(`[Webhook] Found user to update:`, !!userExists);
 
         if (!userExists) {
-          console.log(`[Webhook] No user found with subscription ID ${subscriptionId}. Searching by user_id instead.`);
-
-          // Try to find user by the user_id in custom_data if available
-          const userId = body.meta?.custom_data?.user_id;
-          if (userId) {
-            const userByCustomId = await db.user.findUnique({
-              where: { id: userId }
-            });
-
-            if (userByCustomId) {
-              console.log(`[Webhook] Found user by user_id: ${userId}. Updating subscription information.`);
-              const updateResult = await db.user.update({
-                where: { id: userId },
-                data: {
-                  lemonSqueezySubscriptionId: subscriptionId,
-                  lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
-                  lemonSqueezyPriceId: variantId,
-                },
-              });
-              console.log(`[Webhook] User updated via user_id successfully:`, updateResult);
-              return Response.json({ message: "Webhook processed successfully" });
-            }
-          }
-
-          console.log(`[Webhook] Could not find a user to update`);
+          console.log(`[Webhook] No user found with subscription ID ${subscriptionId} or user_id ${userId || 'not provided'}`);
           return Response.json({ message: "User not found" }, { status: 404 });
         }
 
@@ -183,9 +194,11 @@ export async function POST(req: Request) {
       }
     } else if (eventType === "subscription_cancelled") {
       const subscriptionId = body.data?.id.toString();
+      const userId = body.meta?.custom_data?.user_id;
 
       console.log("[Webhook] subscription_cancelled event data:", {
         subscriptionId,
+        userId
       });
 
       if (!subscriptionId) {
@@ -194,7 +207,26 @@ export async function POST(req: Request) {
       }
 
       try {
-        // Check if user exists before attempting update
+        // First try to find by user ID if available
+        if (userId) {
+          const userByUserId = await db.user.findUnique({
+            where: { id: userId }
+          });
+
+          if (userByUserId) {
+            console.log(`[Webhook] Found user by user_id: ${userId}. Cancelling subscription.`);
+            const updateResult = await db.user.update({
+              where: { id: userId },
+              data: {
+                lemonSqueezyCurrentPeriodEnd: new Date(),
+              },
+            });
+            console.log(`[Webhook] User subscription cancelled via user_id successfully:`, updateResult);
+            return Response.json({ message: "Webhook processed successfully" });
+          }
+        }
+
+        // Fall back to subscription ID if user ID approach didn't work
         const userExists = await db.user.findUnique({
           where: { lemonSqueezySubscriptionId: subscriptionId }
         });
@@ -202,7 +234,7 @@ export async function POST(req: Request) {
         console.log(`[Webhook] Found user to cancel:`, !!userExists);
 
         if (!userExists) {
-          console.log(`[Webhook] No user found with subscription ID ${subscriptionId}`);
+          console.log(`[Webhook] No user found with subscription ID ${subscriptionId} or user_id ${userId || 'not provided'}`);
           return Response.json({ message: "User not found" }, { status: 404 });
         }
 
