@@ -1,10 +1,11 @@
 import crypto from "crypto";
-import { db } from "@/db";
+import { db } from "@/db"; // Assuming Prisma or similar DB client
 
 export async function POST(req: Request) {
   try {
     console.log("[Webhook] Received a request");
 
+    // Read the raw body text for signature verification
     const rawBody = await req.text();
     if (!rawBody) {
       console.error("[Webhook] Empty request body received");
@@ -23,6 +24,7 @@ export async function POST(req: Request) {
       return new Response("Invalid JSON body", { status: 400 });
     }
 
+    // Signature verification (skip in development)
     if (process.env.NODE_ENV !== "development") {
       const secret = process.env.LEMON_SQUEEZY_WEBHOOK_SIGNATURE;
       if (!secret) {
@@ -46,6 +48,7 @@ export async function POST(req: Request) {
       }
     }
 
+    // Handle different event types
     switch (eventType) {
       case "subscription_created":
         await handleSubscriptionCreated(body);
@@ -71,7 +74,8 @@ export async function POST(req: Request) {
   }
 }
 
-async function handleSubscriptionCreated(body) {
+// Handler for subscription_created event
+async function handleSubscriptionCreated(body: any) {
   const {
     meta: { custom_data: { user_id: userId } = {} } = {},
     data: {
@@ -80,108 +84,114 @@ async function handleSubscriptionCreated(body) {
     } = {},
   } = body;
 
-  if (!userId || !subscriptionId || !customerId || !renewsAt || !variantId) {
-    console.error("[Webhook] Missing required subscription data");
+  if (!userId || !subscriptionId || !customerId || !variantId) {
+    console.error("[Webhook] Missing required subscription data:", { userId, subscriptionId, customerId, variantId });
     throw new Error("Missing required subscription data");
   }
 
   const existingUser = await db.user.findUnique({ where: { id: userId } });
 
   if (existingUser) {
-    console.log(`[Webhook] Updating subscription for user ${userId}`);
-    await db.user.update({
-      where: { id: userId },
-      data: {
-        lemonSqueezySubscriptionId: subscriptionId,
-        lemonSqueezyCustomerId: String(customerId),
-        lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
-        lemonSqueezyPriceId: String(variantId),
-      },
-    });
-  } else {
-    const customerUser = await db.user.findFirst({
-      where: { lemonSqueezyCustomerId: String(customerId) }
-    });
+    try {
+      // Check if another user already has the same customerId
+      const conflictingUser = await db.user.findUnique({
+        where: { lemonSqueezyCustomerId: String(customerId) },
+      });
 
-    if (customerUser) {
-      console.warn(
-        `[Webhook] User ID ${userId} not found, but customer ID ${customerId} exists. Updating customer.`
-      );
+      if (conflictingUser && conflictingUser.id !== userId) {
+        console.error(
+          `[Webhook] Conflict: Customer ID ${customerId} is already associated with another user (${conflictingUser.id})`
+        );
+        throw new Error("Customer ID conflict");
+      }
+
       await db.user.update({
-        where: { id: customerUser.id },
+        where: { id: userId },
         data: {
-          lemonSqueezySubscriptionId: subscriptionId,
-          lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
+          lemonSqueezySubscriptionId: String(subscriptionId),
+          lemonSqueezyCustomerId: String(customerId),
           lemonSqueezyPriceId: String(variantId),
+          lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
         },
       });
-    } else {
-      console.error(`[Webhook] User ${userId} not found in database`);
-      throw new Error("User not found");
+      console.log(`[Webhook] Updated user ${userId} with subscription ${subscriptionId}`);
+    } catch (error) {
+      console.error(`[Webhook] Update failed: ${(error as Error).message}`);
+      throw error;
     }
+  } else {
+    console.error(`[Webhook] User ${userId} not found`);
+    throw new Error("User not found");
   }
-
-  console.log(`[Webhook] Subscription ${subscriptionId} processed successfully`);
 }
 
-async function handleSubscriptionUpdated(body) {
+// Handler for subscription_updated event
+async function handleSubscriptionUpdated(body: any) {
   const {
     meta: { custom_data: { user_id: userId } = {} } = {},
     data: {
       id: subscriptionId,
-      attributes: { renews_at: renewsAt, variant_id: variantId } = {},
+      attributes: { customer_id: customerId, renews_at: renewsAt, variant_id: variantId } = {},
     } = {},
   } = body;
 
-  if (!subscriptionId || !renewsAt || !variantId) {
-    console.error("[Webhook] Missing required subscription update data");
-    throw new Error("Missing required data");
+  if (!userId || !subscriptionId || !customerId || !variantId) {
+    console.error("[Webhook] Missing required subscription update data:", { userId, subscriptionId, customerId, variantId });
+    throw new Error("Missing required subscription update data");
   }
 
-  const user = userId
-    ? await db.user.findUnique({ where: { id: userId } })
-    : await db.user.findUnique({ where: { lemonSqueezySubscriptionId: subscriptionId } });
-
+  const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) {
-    console.error(`[Webhook] No user found with subscription ID ${subscriptionId}`);
+    console.error(`[Webhook] User ${userId} not found for update`);
     throw new Error("User not found");
   }
 
-  console.log(`[Webhook] Updating subscription ${subscriptionId}`);
-  await db.user.update({
-    where: { id: user.id },
-    data: {
-      lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
-      lemonSqueezyPriceId: String(variantId),
-    },
-  });
+  try {
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        lemonSqueezySubscriptionId: String(subscriptionId),
+        lemonSqueezyCustomerId: String(customerId),
+        lemonSqueezyPriceId: String(variantId),
+        lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
+      },
+    });
+    console.log(`[Webhook] Updated subscription ${subscriptionId} for user ${userId}`);
+  } catch (error) {
+    console.error(`[Webhook] Update failed: ${(error as Error).message}`);
+    throw error;
+  }
 }
 
-async function handleSubscriptionCancelled(body) {
+// Handler for subscription_cancelled event
+async function handleSubscriptionCancelled(body: any) {
   const {
     meta: { custom_data: { user_id: userId } = {} } = {},
     data: { id: subscriptionId } = {},
   } = body;
 
-  if (!subscriptionId) {
-    console.error("[Webhook] Missing subscription ID in cancellation");
-    throw new Error("Missing subscription ID");
+  if (!userId || !subscriptionId) {
+    console.error("[Webhook] Missing required subscription cancellation data:", { userId, subscriptionId });
+    throw new Error("Missing required subscription cancellation data");
   }
 
-  const user = userId
-    ? await db.user.findUnique({ where: { id: userId } })
-    : await db.user.findUnique({ where: { lemonSqueezySubscriptionId: subscriptionId } });
-
+  const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) {
-    console.error(`[Webhook] No user found with subscription ID ${subscriptionId}`);
+    console.error(`[Webhook] User ${userId} not found for cancellation`);
     throw new Error("User not found");
   }
 
-  console.log(`[Webhook] Cancelling subscription ${subscriptionId}`);
-  await db.user.update({
-    where: { id: user.id },
-    data: {
-      lemonSqueezyCurrentPeriodEnd: new Date(),
-    },
-  });
+  try {
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        lemonSqueezySubscriptionId: null, // Or set to a cancelled state
+        lemonSqueezyCurrentPeriodEnd: new Date(), // Optionally set to current time
+      },
+    });
+    console.log(`[Webhook] Cancelled subscription ${subscriptionId} for user ${userId}`);
+  } catch (error) {
+    console.error(`[Webhook] Cancellation update failed: ${(error as Error).message}`);
+    throw error;
+  }
 }
