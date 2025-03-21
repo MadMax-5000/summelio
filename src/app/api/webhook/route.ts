@@ -5,7 +5,6 @@ export async function POST(req: Request) {
   try {
     console.log("[Webhook] Received a request");
 
-    // Read the raw body text for signature verification
     const rawBody = await req.text();
     if (!rawBody) {
       console.error("[Webhook] Empty request body received");
@@ -94,24 +93,26 @@ async function handleSubscriptionCreated(body) {
       where: { id: userId },
       data: {
         lemonSqueezySubscriptionId: subscriptionId,
-        lemonSqueezyCustomerId: customerId,
+        lemonSqueezyCustomerId: String(customerId),
         lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
-        lemonSqueezyPriceId: variantId,
+        lemonSqueezyPriceId: String(variantId),
       },
     });
   } else {
-    const customerUser = await db.user.findFirst({ where: { lemonSqueezyCustomerId: customerId } });
+    const customerUser = await db.user.findFirst({
+      where: { lemonSqueezyCustomerId: String(customerId) }
+    });
 
     if (customerUser) {
       console.warn(
         `[Webhook] User ID ${userId} not found, but customer ID ${customerId} exists. Updating customer.`
       );
       await db.user.update({
-        where: { lemonSqueezyCustomerId: customerId },
+        where: { id: customerUser.id },
         data: {
           lemonSqueezySubscriptionId: subscriptionId,
           lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
-          lemonSqueezyPriceId: variantId,
+          lemonSqueezyPriceId: String(variantId),
         },
       });
     } else {
@@ -148,10 +149,10 @@ async function handleSubscriptionUpdated(body) {
 
   console.log(`[Webhook] Updating subscription ${subscriptionId}`);
   await db.user.update({
-    where: { lemonSqueezySubscriptionId: subscriptionId },
+    where: { id: user.id },
     data: {
       lemonSqueezyCurrentPeriodEnd: new Date(renewsAt),
-      lemonSqueezyPriceId: variantId,
+      lemonSqueezyPriceId: String(variantId),
     },
   });
 }
@@ -178,7 +179,7 @@ async function handleSubscriptionCancelled(body) {
 
   console.log(`[Webhook] Cancelling subscription ${subscriptionId}`);
   await db.user.update({
-    where: { lemonSqueezySubscriptionId: subscriptionId },
+    where: { id: user.id },
     data: {
       lemonSqueezyCurrentPeriodEnd: new Date(),
     },
