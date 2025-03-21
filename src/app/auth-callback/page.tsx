@@ -62,13 +62,13 @@ const AuthCallback = () => {
     return (
       <div className="w-full mt-24 flex flex-col items-center">
         <Toaster position="bottom-right" />
-        <h3 className="font-semibold text-xl mb-4">Subscription Required</h3>
-        <p className="text-sm text-zinc-600 mb-4">
+        <h3 className="font-semibold text-3xl mb-4">Subscription Required</h3>
+        <p className="text-lg text-zinc-600 mb-4">
           You need to purchase a subscription to continue.
         </p>
         <button
           onClick={() => router.push("/#pricing")}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
         >
           Go to Pricing
         </button>
