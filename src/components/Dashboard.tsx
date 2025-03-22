@@ -62,7 +62,7 @@ export default function Dashboard() {
   }
 
   const truncateName = (name: string) =>
-    name.split(/\s+/).length > 7 ? name.split(/\s+/).slice(0, 7).join(" ") + "..." : name
+    name.split(/\s+/).length > 4 ? name.split(/\s+/).slice(0, 4).join(" ") + "..." : name
 
   // Helper function to determine styling based on upload status
   const getStatusBadgeVariant = (status: string) => {
@@ -88,16 +88,16 @@ export default function Dashboard() {
     <SidebarProvider>
       <AppSidebar />
       <div className="flex flex-col min-h-screen w-full bg-background">
-        <header className="sticky top-0 z-10 flex h-14 items-center border-b bg-background px-4 sm:px-6">
+        <header className="top-0 z-10 flex h-14 items-center border-b bg-background px-4 sm:px-6">
           <div className="flex flex-1 items-center">
-            <h1 className="text-[16px] font-medium">Content Dashboard</h1>
+            <h1 className="text-[15px] font-medium">Content Dashboard</h1>
           </div>
         </header>
         <main className="flex-1 p-4 space-y-4 max-w-full">
           <div className="grid gap-4 w-full">
             <Card className="border-border shadow-sm w-full">
               <CardHeader className="px-4 py-3 border-b">
-                <CardTitle className="text-[16px] font-medium">Upload Content</CardTitle>
+                <CardTitle className="text-[15px] font-medium">Upload Content</CardTitle>
               </CardHeader>
               <CardContent className="p-4">
                 <UploadDropZone />
@@ -106,7 +106,7 @@ export default function Dashboard() {
 
             <Card className="border-border shadow-sm">
               <CardHeader className="px-4 py-3 border-b">
-                <CardTitle className="text-[16px] font-medium">Recent Uploads</CardTitle>
+                <CardTitle className="text-[15px] font-medium">Recent Uploads</CardTitle>
               </CardHeader>
               <div className="overflow-hidden">
                 <Table>
@@ -134,8 +134,8 @@ export default function Dashboard() {
                         )
                         .map((file: FileData) => (
                           <TableRow key={file.id} className="hover:bg-muted/40 border-b border-border last:border-none">
-                            <TableCell className="font-medium text-[16px]">{truncateName(file.name)}</TableCell>
-                            <TableCell className="text-[16px] text-muted-foreground">
+                            <TableCell className="font-medium text-[15px]">{truncateName(file.name)}</TableCell>
+                            <TableCell className="text-[15px] text-muted-foreground">
                               {file.type === "Web Page" ? (
                                 <div className="flex items-center gap-1.5">
                                   <Globe className="h-3.5 w-3.5" />
@@ -163,14 +163,14 @@ export default function Dashboard() {
                                 {file.uploadStatus}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-[16px] text-muted-foreground">
+                            <TableCell className="text-[15px] text-muted-foreground">
                               {format(new Date(file.createdAt), "MMM dd, yyyy")}
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex items-center justify-end gap-2">
                                 <Button
                                   size="sm"
-                                  className="h-8 px-3 text-[16px] font-medium"
+                                  className="h-8 px-3 text-[15px] font-medium"
                                   onClick={() => handleChatWithAI(file.id)}
                                   disabled={loadingFileId === file.id}
                                 >
@@ -236,7 +236,7 @@ export default function Dashboard() {
                         ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={5} className="h-24 text-center text-[16px] text-muted-foreground">
+                        <TableCell colSpan={5} className="h-24 text-center text-[15px] text-muted-foreground">
                           No uploads yet. Start by adding some content!
                         </TableCell>
                       </TableRow>

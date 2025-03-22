@@ -39,8 +39,8 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
       <AppSidebar />
       <div className="flex-1 flex flex-col h-screen overflow-auto">
         {/* Header container for trigger and navbar */}
-        <div className="flex flex-col mt-4">
-          <nav className="flex items-center bg-white text-black px-4 py-2 space-x-2 relative">
+        <div className="flex flex-col mt-2">
+          <nav className="flex items-center bg-white text-black px-4 py-3 space-x-2 relative border-b border-gray-300">
             <SidebarTrigger className="text-gray-600 mr-4" />
             <Link href="/dashboard" className="text-sm font-medium hover:underline">
               Dashboard
@@ -48,6 +48,7 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
             <ChevronRight className="h-4 w-4" />
             <span className="text-sm font-medium">{file.name || "File"}</span>
           </nav>
+
         </div>
 
         {/* Main content */}

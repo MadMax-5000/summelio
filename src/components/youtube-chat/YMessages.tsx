@@ -81,7 +81,7 @@ const PMessages = ({ fileId }: PMessagesProps) => {
         <div
             ref={messagesContainerRef}
             className="flex flex-col gap-2 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2"
-            style={{ maxHeight: "400px" }} // Fixed height matching placeholders
+
         >
             {combinedMessages && combinedMessages.length > 0 ? (
                 combinedMessages.map((message, i) => {

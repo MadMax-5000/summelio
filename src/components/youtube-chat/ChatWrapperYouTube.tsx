@@ -22,7 +22,6 @@ const ChatWrapperPDF = ({ fileId }: ChatWrapperPDFProps) => {
         }
     );
 
-    // Decide what to render in the main content area
     let content: React.ReactNode;
     if (isLoading) {
         content = (
@@ -30,7 +29,7 @@ const ChatWrapperPDF = ({ fileId }: ChatWrapperPDFProps) => {
                 <Loader2 className="h-8 w-8 text-gray-900 animate-spin" />
                 <h3 className="font-semibold text-xl text-gray-800">Loading...</h3>
                 <p className="text-base text-zinc-500">
-                    We&apos;re preparing your PDF.
+                    We're preparing your PDF.
                 </p>
             </div>
         );
@@ -42,7 +41,7 @@ const ChatWrapperPDF = ({ fileId }: ChatWrapperPDFProps) => {
                     Processing PDF...
                 </h3>
                 <p className="text-base text-zinc-500">
-                    This won&apos;t take long, please be patient.
+                    This won't take long, please be patient.
                 </p>
             </div>
         );
@@ -69,18 +68,16 @@ const ChatWrapperPDF = ({ fileId }: ChatWrapperPDFProps) => {
             </div>
         );
     } else {
-        // File is ready: show chat content
         content = <PMessages fileId={fileId} />;
     }
 
-    // Final render
     return (
         <ChatContextProvider fileId={fileId}>
-            <div className="relative h-full bg-white flex flex-col">
+            <div className="relative h-[calc(100vh-4rem)] bg-white flex flex-col">
                 <div className="flex-1 overflow-y-auto relative">{content}</div>
 
-                {/* CHAT INPUT AT BOTTOM */}
-                <div className="p-4 sticky bottom-0 bg-white shadow-md">
+                {/* Chat Input at Bottom */}
+                <div className="p-4 sticky bottom-0 bg-white border-t">
                     <PChatInput
                         isDisabled={
                             isLoading ||

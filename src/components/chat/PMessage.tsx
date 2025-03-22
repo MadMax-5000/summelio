@@ -1,36 +1,22 @@
 import { cn } from "@/lib/utils";
 import { ExtendedMessage } from "@/types/Pmessage";
 import ReactMarkdown from "react-markdown";
-import { forwardRef, useState } from "react";
-import { Copy, Check } from "lucide-react"; // Import icons
-import {
-  Tooltip,
-  TooltipProvider,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"; // Import Tooltip components from shadcn
+import { forwardRef } from "react";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import "katex/dist/katex.min.css";
 
+// Define the props interface
 interface PMessageProps {
   message: ExtendedMessage;
   isNextMesageSamePerson: boolean;
 }
 
+// Define the component with forwardRef
 const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
   ({ message, isNextMesageSamePerson }, ref) => {
-    const [copied, setCopied] = useState(false);
-
-    const copyToClipboard = (text: string) => {
-      navigator.clipboard
-        .writeText(text)
-        .then(() => {
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1500); // Reset after 1.5 seconds
-        })
-        .catch((err) => {
-          console.error("Failed to copy text: ", err);
-        });
-    };
-
     return (
       <div
         ref={ref}
@@ -39,13 +25,6 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
           "justify-start": !message.isUserMessage,
         })}
       >
-        {!message.isUserMessage && (
-          <img
-            src="/images/summelio-black-gray.png"
-            alt="Profile"
-            className="w-8 h-8 rounded-full"
-          />
-        )}
         <div
           className={cn("flex flex-col space-y-1 text-base max-w-md", {
             "items-end": message.isUserMessage,
@@ -65,6 +44,8 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
           >
             {typeof message.text === "string" ? (
               <ReactMarkdown
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
                 components={{
                   p: ({ node, children, ...props }) => (
                     <p
@@ -76,6 +57,29 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
                       {children}
                     </p>
                   ),
+                  code({ node, inline, className, children, ...props }: {
+                    node?: any;
+                    inline?: boolean;
+                    className?: string;
+                    children?: React.ReactNode;
+                    [key: string]: any
+                  }) {
+                    const match = /language-(\w+)/.exec(className || '');
+                    return !inline && match ? (
+                      <SyntaxHighlighter
+                        style={dark}
+                        language={match[1]}
+                        PreTag="div"
+                        {...props}
+                      >
+                        {String(children).replace(/\n$/, '')}
+                      </SyntaxHighlighter>
+                    ) : (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  },
                 }}
               >
                 {message.text}
@@ -84,28 +88,6 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
               message.text
             )}
           </div>
-          {/* Only render the copy button if it's not a user message and if the message is complete */}
-          {!message.isUserMessage &&
-            (message.isComplete === undefined || message.isComplete) && (
-              <TooltipProvider delayDuration={100}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => copyToClipboard(message.text as string)}
-                      className="bg-white text-gray-600 hover:bg-gray-100 p-2 rounded flex items-center justify-center transition-all duration-200 ml-4 mt-1"
-                    >
-                      {copied ? (
-                        <Check className="w-4 h-4 text-green-500 transition-all duration-200" />
-                      ) : (
-                        <Copy className="w-4 h-4 transition-all duration-200" />
-                      )}
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>{copied ? "Copied!" : "Copy"}</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-
         </div>
       </div>
     );
@@ -113,5 +95,4 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
 );
 
 PMessage.displayName = "PMessage";
-
 export default PMessage;
