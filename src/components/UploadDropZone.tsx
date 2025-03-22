@@ -130,11 +130,11 @@ const UploadDropZone = () => {
   }, []);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-2">
       {/* Dropzone Container */}
       <div
         {...getRootProps()}
-        className="border border-gray-200 dark:border-gray-700 rounded-2xl p-12 bg-white dark:bg-gray-900 shadow-lg hover:shadow-xl transition-shadow duration-200"
+        className="border border-gray-200 dark:border-gray-700 rounded-2xl p-6 bg-white dark:bg-gray-900 shadow-lg hover:shadow-xl transition-shadow duration-200"
       >
         <input {...getInputProps()} id="upload-input" className="hidden" />
         <div className="flex flex-col items-center justify-center">
@@ -179,11 +179,11 @@ const UploadDropZone = () => {
       {/* File Upload Progress Card */}
       {isUploading && acceptedFiles && acceptedFiles[0] && (
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
-          <div className="p-8">
+          <div className="p-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                  <File className="h-7 w-7 text-gray-600 dark:text-gray-300" />
+              <div className="flex items-center gap-2">
+                <div className="p-3 dark:bg-gray-800 rounded-lg">
+                  <File className="h-4 w-7 text-gray-600 dark:text-gray-300" />
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
@@ -223,11 +223,11 @@ const UploadDropZone = () => {
       {/* URL Upload Progress Card */}
       {isUrlUploading && processingUrl && (
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
-          <div className="p-8">
+          <div className="p-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                  <LinkIcon className="h-7 w-7 text-gray-600 dark:text-gray-300" />
+              <div className="flex items-center gap-2">
+                <div className="p-3 dark:bg-gray-800 rounded-lg">
+                  <LinkIcon className="h-4 w-4 text-gray-900 dark:text-gray-300" />
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
