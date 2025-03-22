@@ -34,13 +34,16 @@ importers:
         version: 2.5.3(@babel/core@7.26.9)(next@15.1.6(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@langchain/community':
         specifier: ^0.3.33
-        version: 0.3.33(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(cheerio@1.0.0)(crypto-js@4.2.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)
+        version: 0.3.33(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@pinecone-database/pinecone@5.1.1)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(cheerio@1.0.0)(crypto-js@4.2.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)
       '@langchain/core':
         specifier: ^0.3.42
         version: 0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))
       '@langchain/openai':
         specifier: ^0.4.4
         version: 0.4.4(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(ws@8.18.1)
+      '@langchain/pinecone':
+        specifier: ^0.2.0
+        version: 0.2.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@pinecone-database/pinecone@5.1.1)
       '@lemonsqueezy/lemonsqueezy.js':
         specifier: ^4.0.0
         version: 4.0.0
@@ -50,6 +53,9 @@ importers:
       '@mantine/hooks':
         specifier: ^7.17.1
         version: 7.17.1(react@18.3.1)
+      '@pinecone-database/pinecone':
+        specifier: ^5.1.1
+        version: 5.1.1
       '@prisma/client':
         specifier: 6.2.1
         version: 6.2.1(prisma@6.2.1)
@@ -121,7 +127,7 @@ importers:
         version: 7.3.0(next@15.1.6(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(uploadthing@7.5.2(next@15.1.6(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@20.17.16)(typescript@5.7.3))))
       '@upstash/rag-chat':
         specifier: ^2.0.3
-        version: 2.0.3(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/openai@0.4.4(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(ws@8.18.1))(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(crypto-js@4.2.0)(fast-xml-parser@4.5.3)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(playwright@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(solid-js@1.9.5)(sswr@2.1.0(svelte@5.20.4))(svelte@5.20.4)(vue@3.5.13(typescript@5.7.3))(ws@8.18.1)(zod@3.24.1)
+        version: 2.0.3(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/openai@0.4.4(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(ws@8.18.1))(@pinecone-database/pinecone@5.1.1)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(crypto-js@4.2.0)(fast-xml-parser@4.5.3)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(playwright@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(solid-js@1.9.5)(sswr@2.1.0(svelte@5.20.4))(svelte@5.20.4)(vue@3.5.13(typescript@5.7.3))(ws@8.18.1)(zod@3.24.1)
       '@upstash/redis':
         specifier: ^1.34.4
         version: 1.34.4
@@ -1611,6 +1617,13 @@ packages:
     peerDependencies:
       '@langchain/core': '>=0.3.39 <0.4.0'
 
+  '@langchain/pinecone@0.2.0':
+    resolution: {integrity: sha512-O3tWSCIbm1uDLh0J4R0ETmYeRFtQAI2qcSAMC/VW1+xBb+o/IJ5VMyJhGKc4RsmyWE0wG4kOuwfIcCP+XV0clw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@langchain/core': '>=0.2.21 <0.4.0'
+      '@pinecone-database/pinecone': ^5.0.2
+
   '@langchain/textsplitters@0.0.3':
     resolution: {integrity: sha512-cXWgKE3sdWLSqAa8ykbCcUsUF1Kyr5J3HOWYGuobhPEycXW4WI++d5DhzdpL238mzoEXTi90VqfSCra37l5YqA==}
     engines: {node: '>=18'}
@@ -1726,6 +1739,10 @@ packages:
 
   '@pdf-lib/upng@1.0.1':
     resolution: {integrity: sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ==}
+
+  '@pinecone-database/pinecone@5.1.1':
+    resolution: {integrity: sha512-2JwnY28qb2AQi3fLlBfiXhV6e4ZEF0/0HNLdoFWoSPcty6Eu7+354M8mo/Hj0Hi7y3TCDkSCXq2dgmbcDSmCFQ==}
+    engines: {node: '>=18.0.0'}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -7046,7 +7063,7 @@ snapshots:
       - encoding
       - openai
 
-  '@langchain/community@0.3.33(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/core@0.2.36(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(cheerio@1.0.0)(crypto-js@4.2.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)':
+  '@langchain/community@0.3.33(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/core@0.2.36(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@pinecone-database/pinecone@5.1.1)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(cheerio@1.0.0)(crypto-js@4.2.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)':
     dependencies:
       '@browserbasehq/stagehand': 1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1)
       '@ibm-cloud/watsonx-ai': 1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))
@@ -7065,6 +7082,7 @@ snapshots:
       zod-to-json-schema: 3.24.3(zod@3.24.1)
     optionalDependencies:
       '@browserbasehq/sdk': 2.3.0
+      '@pinecone-database/pinecone': 5.1.1
       '@upstash/ratelimit': 2.0.5(@upstash/redis@1.34.4)
       '@upstash/redis': 1.34.4
       '@upstash/vector': 1.2.0
@@ -7097,7 +7115,7 @@ snapshots:
       - handlebars
       - peggy
 
-  '@langchain/community@0.3.33(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(cheerio@1.0.0)(crypto-js@4.2.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)':
+  '@langchain/community@0.3.33(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@pinecone-database/pinecone@5.1.1)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(cheerio@1.0.0)(crypto-js@4.2.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)':
     dependencies:
       '@browserbasehq/stagehand': 1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1)
       '@ibm-cloud/watsonx-ai': 1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))
@@ -7116,6 +7134,7 @@ snapshots:
       zod-to-json-schema: 3.24.3(zod@3.24.1)
     optionalDependencies:
       '@browserbasehq/sdk': 2.3.0
+      '@pinecone-database/pinecone': 5.1.1
       '@upstash/ratelimit': 2.0.5(@upstash/redis@1.34.4)
       '@upstash/redis': 1.34.4
       '@upstash/vector': 1.2.0
@@ -7224,6 +7243,13 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - ws
+
+  '@langchain/pinecone@0.2.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@pinecone-database/pinecone@5.1.1)':
+    dependencies:
+      '@langchain/core': 0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))
+      '@pinecone-database/pinecone': 5.1.1
+      flat: 5.0.2
+      uuid: 10.0.0
 
   '@langchain/textsplitters@0.0.3(openai@4.86.1(ws@8.18.1)(zod@3.24.1))':
     dependencies:
@@ -7341,6 +7367,8 @@ snapshots:
   '@pdf-lib/upng@1.0.1':
     dependencies:
       pako: 1.0.11
+
+  '@pinecone-database/pinecone@5.1.1': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -8329,11 +8357,11 @@ snapshots:
     dependencies:
       '@upstash/redis': 1.34.4
 
-  '@upstash/rag-chat@2.0.3(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/openai@0.4.4(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(ws@8.18.1))(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(crypto-js@4.2.0)(fast-xml-parser@4.5.3)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(playwright@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(solid-js@1.9.5)(sswr@2.1.0(svelte@5.20.4))(svelte@5.20.4)(vue@3.5.13(typescript@5.7.3))(ws@8.18.1)(zod@3.24.1)':
+  '@upstash/rag-chat@2.0.3(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/openai@0.4.4(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(ws@8.18.1))(@pinecone-database/pinecone@5.1.1)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(crypto-js@4.2.0)(fast-xml-parser@4.5.3)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(playwright@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(solid-js@1.9.5)(sswr@2.1.0(svelte@5.20.4))(svelte@5.20.4)(vue@3.5.13(typescript@5.7.3))(ws@8.18.1)(zod@3.24.1)':
     dependencies:
       '@ai-sdk/openai': 0.0.44(zod@3.24.1)
       '@langchain/anthropic': 0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1))
-      '@langchain/community': 0.3.33(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/core@0.2.36(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(cheerio@1.0.0)(crypto-js@4.2.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)
+      '@langchain/community': 0.3.33(@browserbasehq/sdk@2.3.0)(@browserbasehq/stagehand@1.13.1(@playwright/test@1.50.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(zod@3.24.1))(@ibm-cloud/watsonx-ai@1.5.0(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1))))(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/core@0.2.36(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@pinecone-database/pinecone@5.1.1)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@upstash/vector@1.2.0)(axios@1.8.2)(cheerio@1.0.0)(crypto-js@4.2.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ibm-cloud-sdk-core@5.1.3)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)
       '@langchain/core': 0.2.36(openai@4.86.1(ws@8.18.1)(zod@3.24.1))
       '@langchain/mistralai': 0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1))
       '@langchain/openai': 0.4.4(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(ws@8.18.1)
@@ -8344,7 +8372,7 @@ snapshots:
       cheerio: 1.0.0
       d3-dsv: 3.0.1
       html-to-text: 9.0.5
-      langchain: 0.2.20(@browserbasehq/sdk@2.3.0)(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(axios@1.8.2)(cheerio@1.0.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ignore@5.3.2)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)
+      langchain: 0.2.20(@browserbasehq/sdk@2.3.0)(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@pinecone-database/pinecone@5.1.1)(axios@1.8.2)(cheerio@1.0.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ignore@5.3.2)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1)
       langsmith: 0.1.68(openai@4.86.1(ws@8.18.1)(zod@3.24.1))
       nanoid: 5.1.2
       pdf-parse: 1.1.1
@@ -10091,7 +10119,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  langchain@0.2.20(@browserbasehq/sdk@2.3.0)(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(axios@1.8.2)(cheerio@1.0.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ignore@5.3.2)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1):
+  langchain@0.2.20(@browserbasehq/sdk@2.3.0)(@langchain/anthropic@0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@langchain/mistralai@0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1)))(@pinecone-database/pinecone@5.1.1)(axios@1.8.2)(cheerio@1.0.0)(d3-dsv@3.0.1)(fast-xml-parser@4.5.3)(html-to-text@9.0.5)(ignore@5.3.2)(openai@4.86.1(ws@8.18.1)(zod@3.24.1))(pdf-parse@1.1.1)(playwright@1.50.1)(ws@8.18.1):
     dependencies:
       '@langchain/core': 0.2.36(openai@4.86.1(ws@8.18.1)(zod@3.24.1))
       '@langchain/openai': 0.2.11(ws@8.18.1)
@@ -10111,6 +10139,7 @@ snapshots:
       '@browserbasehq/sdk': 2.3.0
       '@langchain/anthropic': 0.2.18(openai@4.86.1(ws@8.18.1)(zod@3.24.1))
       '@langchain/mistralai': 0.0.28(openai@4.86.1(ws@8.18.1)(zod@3.24.1))
+      '@pinecone-database/pinecone': 5.1.1
       axios: 1.8.2
       cheerio: 1.0.0
       d3-dsv: 3.0.1

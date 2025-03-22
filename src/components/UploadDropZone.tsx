@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { Upload, File, X, LinkIcon } from "lucide-react";
+import { Upload, File, X, LinkIcon, CloudUpload } from "lucide-react";
 import { Progress } from "./ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
 import { toast } from "sonner";
@@ -19,7 +19,7 @@ const UploadDropZone = () => {
   const [processingUrl, setProcessingUrl] = useState<string>("");
   const { startUpload } = useUploadThing("fileuploader");
 
-  // Add the trpc mutation for file fetching
+  // Mutation for file fetching
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: (file) => {
       router.push(`/dashboard/${file.id}`);
@@ -28,7 +28,7 @@ const UploadDropZone = () => {
     retryDelay: 500,
   });
 
-  // Add trpc mutation for URL saving
+  // Mutation for URL saving
   const { mutate: saveUrl } = trpc.saveUrlAsFile.useMutation({
     onSuccess: (file) => {
       router.push(`/dashboard/${file.id}`);
@@ -78,36 +78,26 @@ const UploadDropZone = () => {
 
   const handleUrlSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Basic validation
     if (!urlInput.trim()) {
       return toast("Please enter a URL");
     }
     try {
-      // Basic URL Validation
-      const url = new URL(urlInput); // This will throw if invalid
-
-      // Reset file upload state if any
+      const url = new URL(urlInput);
       setIsUploading(false);
       setUploadProgress(0);
-
-      // Set URL upload state
       setIsUrlUploading(true);
       setProcessingUrl(urlInput);
       const progressInterval = startSimulatedProgress(setUrlUploadProgress);
 
-      // Submit the URL to backend
       saveUrl({
         url: urlInput,
         name: url.hostname,
       });
 
-      // Let the progress finish to 100%
       setTimeout(() => {
         clearInterval(progressInterval);
         setUrlUploadProgress(100);
       }, 1500);
-
-      // Clear the input
       setUrlInput("");
     } catch (error) {
       toast("Please enter a valid URL");
@@ -116,13 +106,11 @@ const UploadDropZone = () => {
     }
   };
 
-  // Disable the default click-to-upload behavior on the dropzone container
-  const { getRootProps, getInputProps, acceptedFiles, isDragActive } =
-    useDropzone({
-      onDrop,
-      multiple: false,
-      noClick: true,
-    });
+  const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
+    onDrop,
+    multiple: false,
+    noClick: true,
+  });
 
   const handleRemoveFile = useCallback(() => {
     const fileInput = document.querySelector('input[type="file"]');
@@ -142,152 +130,135 @@ const UploadDropZone = () => {
   }, []);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-10">
+      {/* Dropzone Container */}
       <div
         {...getRootProps()}
-        className="border-2 border-dashed rounded-xl p-10 transition-colors duration-200 ease-in-out bg-gray-50"
-        style={{
-          borderWidth: "2px",
-          borderStyle: "dashed",
-          borderSpacing: "10x",
-        }}
+        className="border border-gray-200 dark:border-gray-700 rounded-2xl p-12 bg-white dark:bg-gray-900 shadow-lg hover:shadow-xl transition-shadow duration-200"
       >
-        {/* Hidden input element with getInputProps() */}
         <input {...getInputProps()} id="upload-input" className="hidden" />
-        <div className="flex flex-col items-center justify-center w-full">
-          <div className="flex flex-col items-center justify-center w-full pt-5 pb-6">
-            <Upload className="h-8 w-8 text-gray-700 mb-2" />
-            <p className="mb-2 text-base text-gray-700">
-              {/* Clicking this label will trigger the hidden input */}
-              <label
-                htmlFor="upload-input"
-                className="font-semibold underline cursor-pointer text-indigo-500 hover:text-indigo-600"
-              >
-                Click to upload
-              </label>{" "}
-              or drag and drop your PDF
+        <div className="flex flex-col items-center justify-center">
+          <CloudUpload className="h-8 w-8 text-gray-900 dark:text-gray-400 mb-4" />
+          <p className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-200">
+            Drop your PDF here
+          </p>
+          <p className="text-base text-gray-600 dark:text-gray-400">
+            Or{"   "}
+            <label
+              htmlFor="upload-input"
+              className="text-black hover:underline cursor-pointer underline font-medium"
+            >
+              click to upload
+            </label>
+          </p>
+          <div className="w-full mt-8">
+            <p className="text-center text-base text-gray-600 dark:text-gray-400">
+              OR
             </p>
-            <p className="text-gray-700 text-sm">Maximum file size 16MB.</p>
-            <div className="mt-6 w-full">
-              <p className="text-sm text-gray-600 text-center mb-4">or</p>
-              <form className="flex mt-2 w-full" onSubmit={handleUrlSubmit}>
-                <div className="flex-1 min-w-0 mr-2">
-                  <Input
-                    type="text"
-                    placeholder="Paste Your Web Page URL here"
-                    className="w-full border-gray-200 text-base focus:outline-none focus:ring-0"
-                    style={{
-                      outline: 'none !important',
-                      boxShadow: 'none !important',
-                    }}
-                    value={urlInput}
-                    onChange={(e) => setUrlInput(e.target.value)}
-                    disabled={isUploading || isUrlUploading}
-                  />
-
-                </div>
-                <Button
-                  type="submit"
-                  className="text-white text-sm whitespace-nowrap flex-shrink-0 bg-indigo-500 hover:bg-indigo-600"
-                  disabled={isUploading || isUrlUploading}
-                >
-                  <LinkIcon className="mr-2 h-4 w-4" /> Add URL
-                </Button>
-              </form>
-            </div>
+            <form className="mt-4 flex gap-4" onSubmit={handleUrlSubmit}>
+              <Input
+                type="text"
+                placeholder="Enter a URL or YouTube Video link here"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                disabled={isUploading || isUrlUploading}
+                className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-0"
+              />
+              <Button
+                type="submit"
+                disabled={isUploading || isUrlUploading}
+                className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-lg text-base"
+              >
+                <LinkIcon className="h-5 w-5" /> Add URL
+              </Button>
+            </form>
           </div>
         </div>
       </div>
 
-      {/* File upload progress card */}
+      {/* File Upload Progress Card */}
       {isUploading && acceptedFiles && acceptedFiles[0] && (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <div className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <File className="h-6 w-6 text-gray-700" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {acceptedFiles[0].name}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {(acceptedFiles[0].size / (1024 * 1024)).toFixed(2)} MB
-                    </p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRemoveFile();
-                    }}
-                    className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <X className="h-5 w-5 text-gray-500" />
-                  </button>
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
+          <div className="p-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                  <File className="h-7 w-7 text-gray-600 dark:text-gray-300" />
                 </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <div className="flex-1">
-                    <Progress
-                      indicatorColor={
-                        uploadProgress === 100 ? "bg-green-500" : "bg-black"
-                      }
-                      value={uploadProgress}
-                      className="h-1 w-full bg-gray-100"
-                    />
-                  </div>
-                  <span className="text-sm text-gray-500 min-w-[40px] text-right">
-                    {uploadProgress}%
-                  </span>
+                <div>
+                  <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    {acceptedFiles[0].name}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {(acceptedFiles[0].size / (1024 * 1024)).toFixed(2)} MB
+                  </p>
                 </div>
               </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFile();
+                }}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                <X className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+              </button>
+            </div>
+            <div className="mt-6 flex items-center">
+              <Progress
+                indicatorColor={
+                  uploadProgress === 100 ? "bg-green-500" : "bg-black"
+                }
+                value={uploadProgress}
+                className="h-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full"
+              />
+              <span className="ml-4 text-sm text-gray-500 dark:text-gray-400">
+                {uploadProgress}%
+              </span>
             </div>
           </div>
         </div>
       )}
 
-      {/* URL upload progress card */}
+      {/* URL Upload Progress Card */}
       {isUrlUploading && processingUrl && (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <div className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <LinkIcon className="h-6 w-6 text-gray-700" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {processingUrl}
-                    </p>
-                    <p className="text-sm text-gray-500">URL</p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRemoveUrl();
-                    }}
-                    className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <X className="h-5 w-5 text-gray-500" />
-                  </button>
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
+          <div className="p-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                  <LinkIcon className="h-7 w-7 text-gray-600 dark:text-gray-300" />
                 </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <div className="flex-1">
-                    <Progress
-                      indicatorColor={
-                        urlUploadProgress === 100 ? "bg-green-500" : "bg-black"
-                      }
-                      value={urlUploadProgress}
-                      className="h-1 w-full bg-gray-100"
-                    />
-                  </div>
-                  <span className="text-sm text-gray-500 min-w-[40px] text-right">
-                    {urlUploadProgress}%
-                  </span>
+                <div>
+                  <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    {processingUrl}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    URL
+                  </p>
                 </div>
               </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveUrl();
+                }}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                <X className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+              </button>
+            </div>
+            <div className="mt-6 flex items-center">
+              <Progress
+                indicatorColor={
+                  urlUploadProgress === 100 ? "bg-green-500" : "bg-black"
+                }
+                value={urlUploadProgress}
+                className="h-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full"
+              />
+              <span className="ml-4 text-sm text-gray-500 dark:text-gray-400">
+                {urlUploadProgress}%
+              </span>
             </div>
           </div>
         </div>
