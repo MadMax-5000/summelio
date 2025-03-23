@@ -8,6 +8,7 @@ import { Loader2, XCircle, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 import { ChatContextProvider } from "./PChatContext";
+import { Loader } from "../ui/loader";
 
 interface ChatWrapperPDFProps {
   fileId: string;
@@ -26,7 +27,7 @@ const ChatWrapperPDF = ({ fileId }: ChatWrapperPDFProps) => {
   if (isLoading) {
     content = (
       <div className="h-full flex flex-col items-center justify-center gap-2">
-        <Loader2 className="h-8 w-8 text-gray-900 animate-spin" />
+        <Loader variant="bars" size="lg" />
         <h3 className="font-semibold text-xl text-gray-800">Loading...</h3>
         <p className="text-base text-zinc-500">
           We're preparing your PDF.

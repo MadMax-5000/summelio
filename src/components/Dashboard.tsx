@@ -1,6 +1,6 @@
 "use client"
 import { AppSidebar } from "./app-sidebar"
-import { Globe, File, Loader2, Youtube, MoreHorizontal, ExternalLink, ArrowRight } from "lucide-react"
+import { Globe, File, Loader2, Youtube, MoreHorizontal, ArrowRight } from "lucide-react"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import UploadDropZone from "./UploadDropZone"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,6 +13,7 @@ import { format } from "date-fns"
 import { useRouter } from "next/navigation"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
+import { Loader } from "./ui/loader"
 
 // Define interfaces for your data structures
 interface FileData {
@@ -176,7 +177,7 @@ export default function Dashboard() {
                                 >
                                   {loadingFileId === file.id ? (
                                     <div className="flex items-center gap-1.5">
-                                      <Loader2 className="h-3 w-3 animate-spin" />
+                                      <Loader className="w-4 h-4" variant="classic" />
                                       <span>Loading...</span>
                                     </div>
                                   ) : (

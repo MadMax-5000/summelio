@@ -1,19 +1,19 @@
 import { trpc } from "@/_trpc/client";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
-import { MessageSquare } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
-import PMessage from "./PMessage";
+import PMessage from "../chat/PMessage";
 import { useContext, useEffect, useMemo, useRef } from "react";
 import { ChatContext } from "./PChatContext";
 import { useIntersection } from "@mantine/hooks";
 import { Loader } from "../ui/loader";
+import { PromptSuggestion } from "../ui/prompt-suggestion";
 
 interface PMessagesProps {
   fileId: string;
 }
 
 const PMessages = ({ fileId }: PMessagesProps) => {
-  const { isLoading: isAiThinking } = useContext(ChatContext);
+  const { isLoading: isAiThinking, handleInputChange, message } = useContext(ChatContext);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
@@ -29,6 +29,18 @@ const PMessages = ({ fileId }: PMessagesProps) => {
     }
   );
 
+  // Function to handle suggestion clicks
+  const handleSuggestionClick = (suggestion: string) => {
+    // Create a synthetic event to mimic the behavior of input change
+    const syntheticEvent = {
+      target: { value: suggestion }
+    } as React.ChangeEvent<HTMLTextAreaElement>;
+
+    // Update the message in the ChatContext
+    handleInputChange(syntheticEvent);
+  };
+
+  // Reverse messages so older messages are at the top
   const messages = data?.pages.flatMap((page) => page.messages).reverse() || [];
 
   const loadingMessage = {
@@ -46,6 +58,8 @@ const PMessages = ({ fileId }: PMessagesProps) => {
     return [...messages, ...(isAiThinking ? [loadingMessage] : [])];
   }, [messages, isAiThinking]);
 
+
+  // Infinite scroll for older messages
   const { ref, entry } = useIntersection({
     root: messagesContainerRef.current,
     threshold: 1,
@@ -56,6 +70,7 @@ const PMessages = ({ fileId }: PMessagesProps) => {
     }
   }, [entry, fetchNextPage]);
 
+  // Scroll to the last message when new messages are added
   useEffect(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
@@ -66,6 +81,7 @@ const PMessages = ({ fileId }: PMessagesProps) => {
     <div
       ref={messagesContainerRef}
       className="flex flex-col gap-2 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2"
+
     >
       {combinedMessages && combinedMessages.length > 0 ? (
         combinedMessages.map((message, i) => {
@@ -90,12 +106,28 @@ const PMessages = ({ fileId }: PMessagesProps) => {
           <Skeleton className="h-16" />
         </div>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center gap-2">
-          <MessageSquare className="size-8 text-indigo-500" />
-          <h3 className="font-semibold text-xl">You're all Set!</h3>
-          <p className="text-gray-500 text-sm">
-            Ask your first question to get started.
-          </p>
+        <div className="mb-5 items-center">
+          <div className="mt-80 flex flex-wrap justify-center gap-2 max-w-xl">
+            <PromptSuggestion
+              onClick={() => handleSuggestionClick("Summarize this PDF")}>
+              Summarize this PDF
+            </PromptSuggestion>
+
+            <PromptSuggestion
+              onClick={() => handleSuggestionClick("List key points for exams")}>
+              List key points for exams
+            </PromptSuggestion>
+
+            <PromptSuggestion
+              onClick={() => handleSuggestionClick("Make a study outline")}>
+              Make a study outline
+            </PromptSuggestion>
+
+            <PromptSuggestion
+              onClick={() => handleSuggestionClick("Generate a quiz based on this PDF")}>
+              Generate a quiz based on this PDF
+            </PromptSuggestion>
+          </div>
         </div>
       )}
     </div>

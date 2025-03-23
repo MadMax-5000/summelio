@@ -39,10 +39,10 @@ import Image from "next/image";
 
 const items = [
   { title: "Home", url: "/dashboard", icon: Home },
-  { title: "Feedback", url: "#", icon: ThumbsUp },
-  { title: "Quick Guide", url: "#", icon: BookCheck },
-  { title: "All Files", url: "#", icon: FolderOpen },
-  { title: "Feature Updates", url: "#", icon: BellPlus },
+  // { title: "Feedback", url: "#", icon: ThumbsUp },
+  // { title: "Quick Guide", url: "#", icon: BookCheck },
+  { title: "All Files", url: "/dashboard/files", icon: FolderOpen },
+  { title: "Release Notes", url: "/dashboard/feature-update", icon: BellPlus },
 ];
 
 export function AppSidebar() {

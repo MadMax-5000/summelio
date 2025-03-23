@@ -2,13 +2,33 @@ import { cn } from "@/lib/utils";
 import { ExtendedMessage } from "@/types/Pmessage";
 import ReactMarkdown from "react-markdown";
 import { forwardRef, useState } from "react";
-import { Copy, Check } from "lucide-react"; // Import icons
+import { Copy, Check } from "lucide-react";
 import {
   Tooltip,
   TooltipProvider,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"; // Import Tooltip components from shadcn
+} from "@/components/ui/tooltip";
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import rehypeHighlight from 'rehype-highlight';
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import python from 'highlight.js/lib/languages/python';
+import cpp from 'highlight.js/lib/languages/cpp';
+import java from "highlight.js/lib/languages/java";
+
+
+
+// Register languages
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('cpp', cpp);
+hljs.registerLanguage('java', java);
+
+// Import CSS for styling
+import 'katex/dist/katex.min.css';
+import 'highlight.js/styles/default.css'; // Or choose another theme like 'github.css'
 
 interface PMessageProps {
   message: ExtendedMessage;
@@ -65,8 +85,10 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
           >
             {typeof message.text === "string" ? (
               <ReactMarkdown
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex, rehypeHighlight]}
                 components={{
-                  p: ({ node, children, ...props }) => (
+                  p: ({ children, ...props }) => (
                     <p
                       {...props}
                       className={cn("prose", {
@@ -84,7 +106,6 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
               message.text
             )}
           </div>
-          {/* Only render the copy button if it's not a user message and if the message is complete */}
           {!message.isUserMessage &&
             (message.isComplete === undefined || message.isComplete) && (
               <TooltipProvider delayDuration={100}>
@@ -105,7 +126,6 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
                 </Tooltip>
               </TooltipProvider>
             )}
-
         </div>
       </div>
     );

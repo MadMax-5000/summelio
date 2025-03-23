@@ -107,25 +107,25 @@ const PMessages = ({ fileId }: PMessagesProps) => {
                 </div>
             ) : (
                 <div className="mb-5 items-center">
-                    <div className="flex flex-wrap justify-center gap-2 max-w-xl">
+                    <div className="mt-80 flex flex-wrap justify-center gap-2 max-w-xl">
                         <PromptSuggestion
-                            onClick={() => handleSuggestionClick("Summarize this URL for me")}>
-                            Summarize this WEB Page for me
+                            onClick={() => handleSuggestionClick("Summarize this Youtube Video")}>
+                            Summarize this Youtube Video
                         </PromptSuggestion>
 
                         <PromptSuggestion
-                            onClick={() => handleSuggestionClick("What are the key points in this article?")}>
-                            What are the key points?
+                            onClick={() => handleSuggestionClick("List key points for exams")}>
+                            List key points for exams
                         </PromptSuggestion>
 
                         <PromptSuggestion
-                            onClick={() => handleSuggestionClick("Generate questions about this content")}>
-                            Generate questions about this
+                            onClick={() => handleSuggestionClick("Make a study outline")}>
+                            Make a study outline
                         </PromptSuggestion>
 
                         <PromptSuggestion
-                            onClick={() => handleSuggestionClick("Extract all data tables from this URL")}>
-                            Extract data tables
+                            onClick={() => handleSuggestionClick("Generate a quiz based on this Video")}>
+                            Generate a quiz based on this Video
                         </PromptSuggestion>
                     </div>
                 </div>

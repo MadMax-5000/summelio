@@ -37,16 +37,16 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
   return (
     <SidebarProvider defaultOpen={false}>
       <AppSidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-auto">
+      <div className="flex-1 flex flex-col h-screen overflow-auto bg-gray-100">
         {/* Header container for trigger and navbar */}
-        <div className="flex flex-col mt-2">
-          <nav className="flex items-center bg-white text-black px-4 py-3 space-x-2 relative border-b border-gray-300">
+        <div className="flex flex-col bg-white ">
+          <nav className="flex items-center text-black px-6 py-3 space-x-2 relative border-b-4 border-gray-200 ">
             <SidebarTrigger className="text-gray-600 mr-4" />
-            <Link href="/dashboard" className="text-sm font-medium hover:underline">
+            <Link href="/dashboard" className="text-base font-medium hover:underline">
               Dashboard
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="text-sm font-medium">{file.name || "File"}</span>
+            <span className="text-base font-medium">{file.name || "File"}</span>
           </nav>
 
         </div>
@@ -66,7 +66,7 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
               )}
             </div>
           </div>
-          <div className="shrink-0 flex-[0.75] h-full border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
+          <div className="shrink-0 flex-[0.75] h-full border-t-3 border-gray-200 lg:w-96 lg:border-l-4 lg:border-t-0">
             {file.type === "pdf" ? (
               <ChatWrapperPDF fileId={file.id} />
             ) : file.type === "Web Page" ? (

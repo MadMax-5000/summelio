@@ -138,15 +138,15 @@ const UploadDropZone = () => {
       >
         <input {...getInputProps()} id="upload-input" className="hidden" />
         <div className="flex flex-col items-center justify-center">
-          <CloudUpload className="h-8 w-8 text-gray-900 dark:text-gray-400 mb-4" />
-          <p className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-200">
+          <CloudUpload className="h-8 w-8 text-black dark:text-gray-400 mb-4" />
+          <p className="mb-2 text-2xl font-bold text-black dark:text-gray-200">
             Drop your PDF here
           </p>
           <p className="text-base text-gray-600 dark:text-gray-400">
-            Or{"   "}
+            OR  {"   "}
             <label
               htmlFor="upload-input"
-              className="text-black hover:underline cursor-pointer underline font-medium"
+              className="text-indigo-500 hover:text-indigo-700 hover:underline cursor-pointer underline font-medium"
             >
               click to upload
             </label>
@@ -167,9 +167,9 @@ const UploadDropZone = () => {
               <Button
                 type="submit"
                 disabled={isUploading || isUrlUploading}
-                className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-lg text-base"
+                className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-base"
               >
-                <LinkIcon className="h-5 w-5" /> Add URL
+                <LinkIcon className="h-4 w-4" /> Add URL
               </Button>
             </form>
           </div>
@@ -179,14 +179,14 @@ const UploadDropZone = () => {
       {/* File Upload Progress Card */}
       {isUploading && acceptedFiles && acceptedFiles[0] && (
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
-          <div className="p-2">
+          <div className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-3 dark:bg-gray-800 rounded-lg">
-                  <File className="h-4 w-7 text-gray-600 dark:text-gray-300" />
+                  <File className="h-6 w-6 text-black dark:text-gray-300" />
                 </div>
                 <div>
-                  <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                  <p className="text-[15px] font-semibold text-black">
                     {acceptedFiles[0].name}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -204,7 +204,7 @@ const UploadDropZone = () => {
                 <X className="h-6 w-6 text-gray-600 dark:text-gray-300" />
               </button>
             </div>
-            <div className="mt-6 flex items-center">
+            <div className="mt-2 flex items-center">
               <Progress
                 indicatorColor={
                   uploadProgress === 100 ? "bg-green-500" : "bg-black"
@@ -223,14 +223,14 @@ const UploadDropZone = () => {
       {/* URL Upload Progress Card */}
       {isUrlUploading && processingUrl && (
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
-          <div className="p-3">
+          <div className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-3 dark:bg-gray-800 rounded-lg">
-                  <LinkIcon className="h-4 w-4 text-gray-900 dark:text-gray-300" />
+                  <LinkIcon className="h-6 w-6 text-black dark:text-gray-300" />
                 </div>
                 <div>
-                  <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                  <p className="text-[15px] font-semibold text-black dark:text-gray-200">
                     {processingUrl}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -248,7 +248,7 @@ const UploadDropZone = () => {
                 <X className="h-6 w-6 text-gray-600 dark:text-gray-300" />
               </button>
             </div>
-            <div className="mt-6 flex items-center">
+            <div className="mt-2 flex items-center">
               <Progress
                 indicatorColor={
                   urlUploadProgress === 100 ? "bg-green-500" : "bg-black"
