@@ -6,14 +6,12 @@ interface YouTubeRendererProps {
 
 const YouTubeRenderer = ({ url }: YouTubeRendererProps) => {
     // Extract the video ID from the URL
-    const videoId = url.split("v=")[1]?.split("&")[0]; // Extract the part after "v=" and before any other parameters
+    const videoId = url.split("v=")[1]?.split("&")[0];
 
-    // If the videoId is missing, return a message or placeholder
     if (!videoId) {
         return <div>Invalid YouTube URL</div>;
     }
 
-    // Build the embed URL
     const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 
     console.log("this is the youtube embed URL", embedUrl);

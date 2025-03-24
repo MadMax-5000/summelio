@@ -28,7 +28,7 @@ hljs.registerLanguage('java', java);
 
 // Import CSS for styling
 import 'katex/dist/katex.min.css';
-import 'highlight.js/styles/default.css'; // Or choose another theme like 'github.css'
+import 'highlight.js/styles/default.css';
 
 interface PMessageProps {
   message: ExtendedMessage;
@@ -44,7 +44,7 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
         .writeText(text)
         .then(() => {
           setCopied(true);
-          setTimeout(() => setCopied(false), 1500); // Reset after 1.5 seconds
+          setTimeout(() => setCopied(false), 1500);
         })
         .catch((err) => {
           console.error("Failed to copy text: ", err);

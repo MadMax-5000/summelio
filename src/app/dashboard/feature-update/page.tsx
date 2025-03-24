@@ -19,62 +19,28 @@ export default function FeatureUpdatePage() {
             {/* Main content */}
             <div className="mx-auto max-w-3xl px-6 py-10 space-y-10">
                 <UpdateLog
-                    date="March 20, 2025"
-                    version="v1.2.0"
+                    date="March 24, 2025"
+                    version="v0.1.0"
                     updates={[
                         {
                             type: "feature",
                             details: [
-                                "Added real-time collaboration support.",
-                                "Enabled multiple team members to work concurrently.",
-                                "Improved user permissions for collaboration.",
+                                "Added files page for organizing uploaded files",
+                                "Added Release notes for updating users with changes",
+                                "Changed the UI for the Chatwrapper",
                             ],
                         },
                         {
                             type: "improvement",
                             details: [
-                                "Optimized dashboard loading speed by 40%.",
+                                "Optimized Files Uploads processing",
                                 "Reduced API response times.",
-                                "Streamlined asset loading for faster render times.",
                             ],
                         },
                         {
                             type: "fix",
                             details: [
-                                "Resolved an issue causing intermittent logouts.",
-                                "Fixed a bug in the project switching logic.",
-                                "Addressed UI glitches in mobile view.",
-                            ],
-                        },
-                    ]}
-                />
-
-                <UpdateLog
-                    date="February 15, 2025"
-                    version="v1.1.0"
-                    updates={[
-                        {
-                            type: "feature",
-                            details: [
-                                "Introduced a comprehensive analytics dashboard.",
-                                "Added custom reporting capabilities.",
-                                "Integrated real-time metrics.",
-                            ],
-                        },
-                        {
-                            type: "improvement",
-                            details: [
-                                "Enhanced dark mode with better contrast.",
-                                "Smoothed transitions between themes.",
-                                "Improved overall UI responsiveness.",
-                                "Refined typography and spacing.",
-                            ],
-                        },
-                        {
-                            type: "fix",
-                            details: [
-                                "Resolved navigation issues on smaller mobile devices.",
-                                "Fixed menu item access problems on various resolutions.",
+                                "Resolved context hallucination for Chatbots",
                             ],
                         },
                     ]}

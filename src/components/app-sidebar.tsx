@@ -113,7 +113,7 @@ export function AppSidebar() {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   {/* SignOutButton Component */}
-                  <SignOutButton redirectUrl="http://localhost:3000">
+                  <SignOutButton redirectUrl="https://summelio.com">
                     <SidebarMenuButton className="focus:outline-none focus:ring-0 focus:ring-indigo-100">
                       <LogOutIcon className="w-4 h-4 mr-2" />
                       <span>Sign out</span>

@@ -121,7 +121,7 @@ export default function FilesPage() {
     // Filter and sort files
     const filteredFiles = files
         ? files
-            .filter(file => file.name.toLowerCase().includes(searchQuery.toLowerCase()))
+            .filter(file => file.name.toLowerCase().includes(searchQuery.toLowerCase()) || file.type.toLowerCase().includes(searchQuery.toLowerCase()))
             .sort((a: FileData, b: FileData) => {
                 const dateA = new Date(a.createdAt).getTime();
                 const dateB = new Date(b.createdAt).getTime();
@@ -159,9 +159,8 @@ export default function FilesPage() {
         }
     };
 
-    // If not subscribed, don't render the dashboard content (same as Dashboard.tsx)
     if (!isLoadingSubscription && subscription && !subscription.isSubscribed) {
-        return null; // Will be redirected by the useEffect
+        return null;
     }
 
     return (
@@ -208,7 +207,7 @@ export default function FilesPage() {
                                     <DropdownMenuItem onClick={() => setSearchQuery("Web Page")}>
                                         Web Pages
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setSearchQuery("Youtube")}>
+                                    <DropdownMenuItem onClick={() => setSearchQuery("Youtube Video")}>
                                         YouTube Videos
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -294,7 +293,7 @@ export default function FilesPage() {
                                                             </div>
                                                             <Badge
                                                                 variant={getStatusBadgeVariant(file.uploadStatus) as any}
-                                                                className="font-normal text-[13px]"
+                                                                className="font-medium text-[13px]"
                                                             >
                                                                 {file.uploadStatus}
                                                             </Badge>
@@ -317,7 +316,7 @@ export default function FilesPage() {
                                                                         disabled={currentlyDeletingFile === file.id}
                                                                     >
                                                                         {currentlyDeletingFile === file.id ? (
-                                                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                            <Loader variant="circular" />
                                                                         ) : (
                                                                             <span>Delete</span>
                                                                         )}
