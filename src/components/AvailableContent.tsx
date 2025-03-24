@@ -7,7 +7,7 @@ import {
     FileText,
     FileIcon,
     FileSpreadsheet,
-    FileIcon as FilePresentation,
+    FileImage,
     Music,
     BookOpen,
     CheckCircle,
@@ -15,26 +15,28 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 export default function ContentTypes() {
     const [hoveredItem, setHoveredItem] = useState<number | null>(null)
+    const [activeTab, setActiveTab] = useState("available")
 
     const availableTypes = [
         {
             name: "YouTube Videos",
             icon: Youtube,
-            color: "bg-indigo-600",
+            description: "Instantly analyze and interact with YouTube content",
         },
         {
             name: "Web Pages",
             icon: Globe,
-            color: "bg-indigo-600",
+            description: "Extract insights from any web page",
         },
         {
             name: "PDF Documents",
             icon: FileText,
-            color: "bg-indigo-600",
+            description: "Seamless PDF document understanding",
         },
     ]
 
@@ -42,17 +44,17 @@ export default function ContentTypes() {
         {
             name: "Word Documents",
             icon: FileIcon,
-            description: "Support for Microsoft Word documents and google Docs ",
+            description: "Support for Microsoft Word documents and Google Docs",
         },
         {
             name: "Excel Spreadsheets",
             icon: FileSpreadsheet,
-            description: "Support for Microsoft Excel documents and google Sheets",
+            description: "Support for Microsoft Excel documents and Google Sheets",
         },
         {
             name: "PowerPoint",
-            icon: FilePresentation,
-            description: "Support for Microsoft PowerPoint documents and google Slides",
+            icon: FileImage,
+            description: "Support for Microsoft PowerPoint documents and Google Slides",
         },
         {
             name: "Audio Files",
@@ -67,118 +69,126 @@ export default function ContentTypes() {
     ]
 
     return (
-        <section className="py-12 px-1 md:px-2 bg-gray-50 from-indigo-50/50 via-background to-background dark:from-indigo-950/10 dark:via-background dark:to-background">
-            <div className="container mx-auto">
-                <div className="text-center mb-8">
-                    <span className="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-300 text-xs font-medium tracking-wider uppercase mb-3">
-                        NEW TYPES ADDED 🎉
-                    </span>
-                    <h2 className="text-3xl font-bold tracking-tight mb-2">Supported Content Types</h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto">
-                        Easily chat with different content formats in one App
+        <section className="relative overflow-hidden py-24 px-4 bg-gray-50 dark:bg-black">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,0,0,0.03),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(0,0,0,0.03),transparent_40%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.03),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.03),transparent_40%)] pointer-events-none"></div>
+
+            <div className="container mx-auto relative z-10 max-w-6xl">
+                <div className="text-center mb-16">
+                    <h2 className="text-6xl md:text-6xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">
+                        One App to Chat with Them All
+                    </h2>
+                    <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                        Chat with different content formats all in one place.
                     </p>
                 </div>
 
-                <Tabs defaultValue="available" className="w-full">
-                    <div className="flex justify-center mb-6">
-                        <TabsList className="flex w-full max-w-md items-center bg-gray-100 rounded-md border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                <Tabs defaultValue="available" value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <div className="flex justify-center mb-12">
+                        <TabsList className="p-1 bg-white dark:bg-black rounded-full border border-gray-200 dark:border-gray-800">
                             <TabsTrigger
                                 value="available"
-                                className="flex-1 text-center py-2 data-[state=active]:bg-indigo-600 data-[state=active]:text-white rounded-l-md transition-colors"
+                                className={cn(
+                                    "px-6 py-2 rounded-full transition-all duration-200",
+                                    activeTab === "available"
+                                        ? "bg-black text-white dark:bg-white dark:text-black"
+                                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900",
+                                )}
                             >
-                                <CheckCircle className="w-4 h-4 mr-2 inline" />
+                                <CheckCircle className="w-4 h-4 mr-2" />
                                 Available Now
                             </TabsTrigger>
                             <TabsTrigger
                                 value="coming-soon"
-                                className="flex-1 text-center py-2 data-[state=active]:bg-indigo-600 data-[state=active]:text-white rounded-r-md transition-colors"
+                                className={cn(
+                                    "px-6 py-2 rounded-full transition-all duration-200",
+                                    activeTab === "coming-soon"
+                                        ? "bg-black text-white dark:bg-white dark:text-black"
+                                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900",
+                                )}
                             >
-                                <Clock className="w-4 h-4 mr-2 inline" />
+                                <Clock className="w-4 h-4 mr-2" />
                                 Coming Soon
                             </TabsTrigger>
                         </TabsList>
                     </div>
 
-
-                    <TabsContent value="available" className="mt-0">
-                        <div className="grid gap-4 md:gap-6">
-                            {availableTypes.map((type, index) => (
-                                <div
-                                    key={index}
-                                    className={cn(
-                                        "flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border transition-all duration-300",
-                                        "hover:shadow-sm",
-                                        hoveredItem === index ? "bg-muted/50" : "bg-card/50",
-                                    )}
-                                    onMouseEnter={() => setHoveredItem(index)}
-                                    onMouseLeave={() => setHoveredItem(null)}
-                                >
-                                    <div
-                                        className={cn(
-                                            "flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center",
-                                            type.color,
-                                            "transform transition-transform duration-300",
-                                            hoveredItem === index ? "scale-110" : "",
-                                        )}
-                                    >
-                                        <type.icon className="w-6 h-6 text-white" />
-                                    </div>
-                                    <div className="flex-grow">
-                                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                            <h3 className="font-medium">{type.name}</h3>
-                                            <Badge className="bg-indigo-100 text-indigo-600 hover:bg-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 w-fit">
-                                                Available
-                                            </Badge>
+                    <TabsContent value="available" className="mt-0 space-y-4">
+                        {availableTypes.map((type, index) => (
+                            <Card
+                                key={index}
+                                className={cn(
+                                    "transition-all duration-200 border-gray-200 dark:border-gray-800",
+                                    hoveredItem === index && "shadow-lg",
+                                )}
+                                onMouseEnter={() => setHoveredItem(index)}
+                                onMouseLeave={() => setHoveredItem(null)}
+                            >
+                                <CardContent className="p-6">
+                                    <div className="flex items-center gap-6">
+                                        <div
+                                            className={cn(
+                                                "flex-shrink-0 w-14 h-14 rounded-lg flex items-center justify-center transition-all duration-200 bg-gray-100 dark:bg-gray-900",
+                                                hoveredItem === index && "scale-110",
+                                            )}
+                                        >
+                                            <type.icon className="w-6 h-6 text-black dark:text-white" />
+                                        </div>
+                                        <div className="flex-grow">
+                                            <div className="flex items-center gap-3 mb-1.5">
+                                                <h3 className="font-semibold text-base text-black dark:text-white">{type.name}</h3>
+                                                <Badge className="bg-indigo-600 text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90">
+                                                    Available
+                                                </Badge>
+                                            </div>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">{type.description}</p>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                </CardContent>
+                            </Card>
+                        ))}
                     </TabsContent>
 
-                    <TabsContent value="coming-soon" className="mt-0">
-                        <div className="grid gap-4 md:gap-6">
-                            {comingSoonTypes.map((type, index) => (
-                                <div
-                                    key={index}
-                                    className={cn(
-                                        "flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border transition-all duration-300",
-                                        "border-muted",
-                                        "hover:shadow-sm",
-                                        hoveredItem === index + 100 ? "bg-muted/30" : "bg-card/30",
-                                    )}
-                                    onMouseEnter={() => setHoveredItem(index + 100)}
-                                    onMouseLeave={() => setHoveredItem(null)}
-                                >
-                                    <div
-                                        className={cn(
-                                            "flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-muted/70",
-                                            "transform transition-transform duration-300",
-                                            hoveredItem === index + 100 ? "scale-110" : "",
-                                        )}
-                                    >
-                                        <type.icon className="w-6 h-6 text-muted-foreground" />
-                                    </div>
-                                    <div className="flex-grow">
-                                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                            <h3 className="font-medium text-muted-foreground">{type.name}</h3>
-                                            <Badge
-                                                variant="outline"
-                                                className="border-indigo-200 bg-indigo-50/50 text-indigo-500 dark:border-indigo-900/20 dark:bg-indigo-900/10 dark:text-indigo-300 w-fit"
-                                            >
-                                                Coming Soon
-                                            </Badge>
+                    <TabsContent value="coming-soon" className="mt-0 space-y-4">
+                        {comingSoonTypes.map((type, index) => (
+                            <Card
+                                key={index}
+                                className={cn(
+                                    "transition-all duration-200 border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950",
+                                    hoveredItem === index + 100 && "shadow-md",
+                                )}
+                                onMouseEnter={() => setHoveredItem(index + 100)}
+                                onMouseLeave={() => setHoveredItem(null)}
+                            >
+                                <CardContent className="p-6">
+                                    <div className="flex items-center gap-6">
+                                        <div
+                                            className={cn(
+                                                "flex-shrink-0 w-14 h-14 rounded-lg flex items-center justify-center transition-all duration-200 bg-gray-100 dark:bg-gray-900",
+                                                hoveredItem === index + 100 && "scale-110",
+                                            )}
+                                        >
+                                            <type.icon className="w-6 h-6 text-gray-400 dark:text-gray-500" />
                                         </div>
-                                        <p className="text-sm text-muted-foreground/80 mt-1">{type.description}</p>
+                                        <div className="flex-grow">
+                                            <div className="flex items-center gap-3 mb-1.5">
+                                                <h3 className="font-semibold text-base text-gray-500 dark:text-gray-400">{type.name}</h3>
+                                                <Badge
+                                                    variant="outline"
+                                                    className="border-gray-300 text-gray-500 dark:border-gray-700 dark:text-gray-400"
+                                                >
+                                                    Coming Soon
+                                                </Badge>
+                                            </div>
+                                            <p className="text-sm text-gray-500 dark:text-gray-500">{type.description}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                </CardContent>
+                            </Card>
+                        ))}
                     </TabsContent>
                 </Tabs>
             </div>
         </section>
-
     )
 }
 

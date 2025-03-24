@@ -1,3 +1,5 @@
+// C:\Users\hp\summmelio\src\components\chat\PMessage.tsx
+
 import { cn } from "@/lib/utils";
 import { ExtendedMessage } from "@/types/Pmessage";
 import ReactMarkdown from "react-markdown";
@@ -17,8 +19,6 @@ import javascript from 'highlight.js/lib/languages/javascript';
 import python from 'highlight.js/lib/languages/python';
 import cpp from 'highlight.js/lib/languages/cpp';
 import java from "highlight.js/lib/languages/java";
-
-
 
 // Register languages
 hljs.registerLanguage('javascript', javascript);
@@ -107,7 +107,8 @@ const PMessage = forwardRef<HTMLDivElement, PMessageProps>(
             )}
           </div>
           {!message.isUserMessage &&
-            (message.isComplete === undefined || message.isComplete) && (
+            message.isComplete === true &&
+            typeof message.text === "string" && (
               <TooltipProvider delayDuration={100}>
                 <Tooltip>
                   <TooltipTrigger asChild>

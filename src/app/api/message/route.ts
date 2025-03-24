@@ -83,7 +83,7 @@ export const POST = async (req: NextRequest) => {
         {
           role: 'system',
           content:
-            'You are an AI assistant that helps answer questions about PDF documents. Use the following pieces of context from the PDF to answer the user\'s question in markdown format. If the information is not found in the provided context, acknowledge that it might not be in the uploaded document. Always refer to the specific page numbers when citing information.',
+            'You are an AI assistant that helps answer questions about PDF documents. Use the following pieces of context from the PDF to answer the user\'s question in markdown format. If the information is not found in the provided context, acknowledge that it might not be in the uploaded document. Always refer to the specific page numbers when citing information. when the user tells you to summarize you reply with a paragraph summarizing the PDF Uploaded',
         },
         {
           role: 'user',

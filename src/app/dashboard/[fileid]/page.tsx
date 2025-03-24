@@ -66,7 +66,7 @@ const Page = async ({ params }: { params: Promise<{ fileid: string }> }) => {
               )}
             </div>
           </div>
-          <div className="shrink-0 flex-[0.75] h-full border-t-3 border-gray-200 lg:w-96 lg:border-l-4 lg:border-t-0">
+          <div className="shrink-0 flex-[0.75] h-full border-t-3 border-gray-200 lg:w-96 lg:border-l-4 lg:border-t-0 ">
             {file.type === "pdf" ? (
               <ChatWrapperPDF fileId={file.id} />
             ) : file.type === "Web Page" ? (

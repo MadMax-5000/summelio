@@ -1,6 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Hero() {
+  const contentTypes = ["PDF", "Web Page", "YouTube Video"];
+  const [currentType, setCurrentType] = useState(contentTypes[0]);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    let index = 0;
+
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+
+      setTimeout(() => {
+        index = (index + 1) % contentTypes.length;
+        setCurrentType(contentTypes[index]);
+        setIsAnimating(false);
+      }, 400);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="bg-gray-50">
       <header className="relative inset-x-0 top-0 z-50">
@@ -27,18 +47,27 @@ export default function Hero() {
         </div>
         <div className="mx-auto max-w-2xl py-20 sm:py-48 lg:py-10">
           <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-            <div className="relative rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-indigo-200 ">
+            {/**  <div className="relative rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-indigo-200 ">
               Browse All Content Types.{" "}
               <a href="#" className="font-semibold text-indigo-600">
                 <span aria-hidden="true" className="absolute inset-0" />
                 Read more <span aria-hidden="true">&rarr;</span>
               </a>
-            </div>
+            </div> */}
           </div>
           <div className="text-center">
-            <h1 className="text-5xl font-extrabold tracking-tight text-balance text-gray-900 sm:text-7xl">
-              Chat with Your Content —
-              <span className="relative text-indigo-500">Powered by AI</span>
+            <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-7xl flex flex-col items-center">
+              <div className="w-full">Transform your</div>
+
+              <div className="h-24 relative overflow-hidden flex items-center justify-center w-full">
+                <div
+                  className={`text-indigo-600 absolute transition-all duration-500 ease-in-out transform ${isAnimating ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}
+                >
+                  {currentType} <span className="text-gray-900">to</span>
+                </div>
+              </div>
+
+              <div className="w-full"> an AI Chatbot</div>
             </h1>
 
             <p className="mt-8 text-lg text-pretty text-gray-700 tracking-tight">
@@ -47,13 +76,14 @@ export default function Hero() {
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
                 href="#pricing"
-                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-base text-pretty font-medium text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="rounded-md bg-indigo-600 px-3 py-2 text-lg text-pretty font-normal text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Get started
               </a>
-              <a href="" className="text-base font-medium text-gray-700">
+              {/**  <a href="" className="text-base font-medium text-gray-700">
                 Learn more <span aria-hidden="true">→</span>
               </a>
+              */}
             </div>
           </div>
         </div>
