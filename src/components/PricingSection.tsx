@@ -130,21 +130,22 @@ export default function PricingSection() {
 
   const proFeatures = [
     { feature: "20 PDFs", tooltip: "Upload up to 20 PDF documents per month." },
-    { feature: "50 Pages per PDF", tooltip: "Each PDF can include up to 50 pages." },
     { feature: "50 Web Pages", tooltip: "Upload up to 50 web pages every month." },
+    { feature: "50 Youtube Videos", tooltip: "Upload up to 50 youtube videos every month." },
     { feature: "Instant AI Chat", tooltip: "Chat with your documents in real time and get instant, accurate answers." },
     { feature: "Smart & Accurate Responses", tooltip: "Our AI understands your content and gives accurate, context-driven responses every time." },
     { feature: "24/7 Email Support", tooltip: "Access round-the-clock assistance from support team." },
   ];
 
   const businessFeatures = [
-    { feature: "Unlimited PDFs", tooltip: "Upload up to 50 PDF documents per month." },
-    { feature: "2000 Pages per PDF", tooltip: "Each PDF can include up to 200 pages." },
-    { feature: "Unlimited Web Pages", tooltip: "Upload up to 100 web pages every month." },
+    { feature: "Unlimited PDFs", tooltip: "Upload unlimited PDF documents per month." },
+    { feature: "Unlimited Web Pages", tooltip: "Upload unlimited web pages every month." },
+    { feature: "Unlimited Youtube Videos", tooltip: "Upload unlimited youtube videos every month." },
     { feature: "Instant AI Chat", tooltip: "Chat with your documents in real time and get instant, accurate answers." },
     { feature: "Smart & Accurate Responses", tooltip: "Our AI understands your content and gives accurate, context-driven responses every time." },
-    { feature: "Enhanced AI Accuracy", tooltip: "Benefit from refined AI responses for complex, in-depth content." },
     { feature: "Priority 24/7 Support", tooltip: "Access our top-tier support team anytime, with priority handling for your business-critical needs." },
+    { feature: "Enhanced AI Accuracy", tooltip: "Benefit from refined AI responses for complex, in-depth content." },
+
   ];
 
   return (
